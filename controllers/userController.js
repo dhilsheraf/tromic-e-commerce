@@ -62,7 +62,8 @@ const loadSignup = async (req, res) => {
 
 const loadMyAccount = async (req,res) =>{
     try {
-        res.render("my-account")
+        const user = await User.findById(req.session.user)
+        res.render("my-account",{user})
     } catch (error) {
         console.log(error)
         res.status(500).redirect("/pageNotFound")
@@ -260,6 +261,7 @@ const login = async (req,res) => {
          
         
         req.session.user = findUser._id
+        
         res.redirect("/");
     } catch (error) {
         
@@ -302,7 +304,7 @@ const getProductDetails = async (req, res) => {
             return res.status(404).send("Product not found");
         }
         
-        // Fetch related products by category or other criteria
+        // Fetch related products by category or other criteria 
         const relatedProducts = await Product.find({  
             _id: { $ne: productId }  // Exclude the main product
         }).limit(4).lean();
@@ -313,6 +315,33 @@ const getProductDetails = async (req, res) => {
         res.status(500).send("Server Error");
     }
 };
+
+const profileUpdate = async (req,res) => {
+    try {
+        const { username, number } = req.body;
+        const userId = req.session.user; 
+    
+
+        if (!userId) {
+            return res.status(401).send({ message: 'Unauthorized' });
+        }
+
+        const user = await User.findByIdAndUpdate(
+            userId,
+            { username, number },
+            { new: true, runValidators: true }
+        );
+
+        if (!user) {
+            return res.status(404).send({ message: 'User not found' });
+        }
+
+        res.status(200).send({ message: 'Profile updated successfully', user });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({ message: 'An error occurred while updating the profile' });
+    }
+}
 
 
  
@@ -333,5 +362,6 @@ module.exports = {
     login,
     logout,
     loadProduct,
-    getProductDetails
+    getProductDetails,
+    profileUpdate
 } 

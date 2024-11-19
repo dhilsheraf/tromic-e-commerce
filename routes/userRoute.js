@@ -54,5 +54,10 @@ router.get("/products",userController.loadProduct)
 router.get('/product/:id', userController.getProductDetails);
 
 
+//profile 
+router.post("/profile-update" , userController.profileUpdate)
+
+
+
 module.exports = router ;  
    
