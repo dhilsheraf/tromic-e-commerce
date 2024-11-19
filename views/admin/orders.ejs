@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Nest Dashboard</title>
+        <meta http-equiv="x-ua-compatible" content="ie=edge" />
+        <meta name="description" content="" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta property="og:title" content="" />
+        <meta property="og:type" content="" />
+        <meta property="og:url" content="" />
+        <meta property="og:image" content="" />
+        <!-- Favicon -->
+        <link rel="shortcut icon" type="image/x-icon" href="assets/imgs/theme/favicon.svg" />
+        <!-- Template CSS -->
+        <link href="assets/css/main.css?v=1.1" rel="stylesheet" type="text/css" />
+    </head>
+
+        <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fb;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .dashboard {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .title {
+            color: #2c3345;
+        }
+
+        .title h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .title p {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .search-container {
+            position: relative;
+            width: 300px;
+        }
+
+        .search-container input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .search-container input:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .filters {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-row {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        select {
+            padding: 0.6rem 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            color: #4b5563;
+            background-color: white;
+            cursor: pointer;
+        }
+
+        .orders-table {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background-color: #f8fafc;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #4b5563;
+            font-size: 0.9rem;
+        }
+
+        td {
+            padding: 1rem;
+            border-top: 1px solid #e5e7eb;
+            font-size: 0.9rem;
+        }
+
+        tr:hover {
+            background-color: #f8fafc;
+        }
+
+        .status-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .status-pending {
+            background-color: #fff7ed;
+            color: #c2410c;
+        }
+
+        .status-received {
+            background-color: #f0fdf4;
+            color: #15803d;
+        }
+
+        .status-canceled {
+            background-color: #fef2f2;
+            color: #dc2626;
+        }
+
+        .action-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-detail {
+            background-color: #4f46e5;
+            color: white;
+        }
+
+        .btn-detail:hover {
+            background-color: #4338ca;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+        }
+
+        .page-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e5e7eb;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            color: #4b5563;
+            transition: all 0.3s;
+        }
+
+        .page-btn.active {
+            background-color: #4f46e5;
+            color: white;
+            border-color: #4f46e5;
+        }
+
+        .page-btn:hover:not(.active) {
+            background-color: #f8fafc;
+        }
+    </style>
+
+    <body>
+        <div class="screen-overlay"></div>
+        <aside class="navbar-aside" id="offcanvas_aside">
+            <div class="aside-top">
+                <a href="index.html" class="brand-wrap">
+                    <img src="assets/imgs/theme/logo.svg" class="logo" alt="Nest Dashboard" />
+                </a>
+                <div>
+                    <button class="btn btn-icon btn-aside-minimize"><i class="text-muted material-icons md-menu_open"></i></button>
+                </div>
+            </div>
+            <nav>
+                <ul class="menu-aside">
+                    <li class="menu-item">
+                        <a class="menu-link" href="index.html">
+                            <i class="icon material-icons md-home"></i>
+                            <span class="text">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="menu-item ">
+                        <a class="menu-link" href="page-products-list.html">
+                            <i class="icon material-icons md-shopping_bag"></i>
+                            <span class="text">Products</span>
+                        </a>
+                    </li>
+                    <li class="menu-item active">
+                        <a class="menu-link" href="page-orders-1.html">
+                            <i class="icon material-icons md-shopping_cart"></i>
+                            <span class="text">Orders</span>
+                    </li>
+                    <li class="menu-item ">
+                        <a class="menu-link" href="page-sellers-cards.html">
+                            <i class="icon material-icons md-store"></i>
+                            <span class="text">Sellers</span>
+                        </a>
+                    </li>
+                    <li class="menu-item ">
+                        <a class="menu-link" href="page-form-product-1.html">
+                            <i class="icon material-icons md-add_box"></i>
+                            <span class="text">Add product</span>
+                        </a>
+                    </li>
+                    <li class="menu-item ">
+                        <a class="menu-link" href="page-transactions-1.html">
+                            <i class="icon material-icons md-monetization_on"></i>
+                            <span class="text">Transactions</span>
+                        </a>
+                    </li>
+                    <li class="menu-item ">
+                        <a class="menu-link" href="#">
+                            <i class="icon material-icons md-person"></i>
+                            <span class="text">Account</span>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a class="menu-link" href="page-reviews.html">
+                            <i class="icon material-icons md-comment"></i>
+                            <span class="text">Reviews</span>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a class="menu-link" href="page-brands.html"> <i class="icon material-icons md-stars"></i> <span class="text">Brands</span> </a>
+                    </li>
+                    <li class="menu-item">
+                        <a class="menu-link" disabled href="#">
+                            <i class="icon material-icons md-pie_chart"></i>
+                            <span class="text">Statistics</span>
+                        </a>
+                    </li>
+                </ul>
+                <hr />
+                <ul class="menu-aside">
+                    <li class="menu-item ">
+                        <a class="menu-link" href="#">
+                            <i class="icon material-icons md-settings"></i>
+                            <span class="text">Settings</span>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a class="menu-link" href="page-blank.html">
+                            <i class="icon material-icons md-local_offer"></i>
+                            <span class="text"> Starter page </span>
+                        </a>
+                    </li>
+                </ul>
+                <br />
+                <br />
+            </nav>
+        </aside>
+        <main class="main-wrap">
+            <header class="main-header navbar">
+                <div class="col-nav">
+                    <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"><i class="material-icons md-apps"></i></button>
+                    <ul class="nav">
+                       
+                        <li class="nav-item">
+                            <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i> </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="requestfullscreen nav-link btn-icon"><i class="material-icons md-cast"></i></a>
+                        </li>
+                        
+                    </ul>
+                </div>
+            </header>
+            <section class="content-main">
+                <div class="content-header">
+                    <div>
+                        <h2 class="content-title card-title">Order List</h2>
+                        <p>Lorem ipsum dolor sit amet.</p>
+                    </div>
+                    <div>
+                        <input type="text" placeholder="Search order ID" class="form-control bg-white" />
+                    </div>
+                </div>
+                <div class="card mb-4">
+                    <header class="card-header">
+                        <div class="row gx-3">
+                            <div class="col-lg-4 col-md-6 me-auto">
+                                <input type="text" placeholder="Search..." class="form-control" />
+                            </div>
+                            <div class="col-lg-2 col-6 col-md-3">
+                                <select class="form-select">
+                                    <option>Status</option>
+                                    <option>Active</option>
+                                    <option>Disabled</option>
+                                    <option>Show all</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-2 col-6 col-md-3">
+                                <select class="form-select">
+                                    <option>Show 20</option>
+                                    <option>Show 30</option>
+                                    <option>Show 40</option>
+                                </select>
+                            </div>
+                        </div>
+                    </header>
+                    <!-- card-header end// -->
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>#ID</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Email</th>
+                                        <th scope="col">Total</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col">Date</th>
+                                        <th scope="col" class="text-end">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>0901</td>
+                                        <td><b>Marvin McKinney</b></td>
+                                        <td>marvin@example.com</td>
+                                        <td>$9.00</td>
+                                        <td><span class="badge rounded-pill alert-warning">Pending</span></td>
+                                        <td>03.12.2020</td>
+                                        <td class="text-end">
+                                            <a href="#" class="btn btn-md rounded font-sm">Detail</a>
+                                            <div class="dropdown">
+                                                <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
+                                                <div class="dropdown-menu">
+                                                    <a class="dropdown-item" href="#">View detail</a>
+                                                    <a class="dropdown-item" href="#">Edit info</a>
+                                                    <a class="dropdown-item text-danger" href="#">Delete</a>
+                                                </div>
+                                            </div>
+                                            <!-- dropdown //end -->
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>2323</td>
+                                        <td><b>Leslie Alexander</b></td>
+                                        <td>leslie@example.com</td>
+                                        <td>$46.61</td>
+                                        <td><span class="badge rounded-pill alert-warning">Pending</span></td>
+                                        <td>21.02.2020</td>
+                                        <td class="text-end">
+                                            <a href="#" class="btn btn-md rounded font-sm">Detail</a>
+                                            <div class="dropdown">
+                                                <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
+                                                <div class="dropdown-menu">
+                                                    <a class="dropdown-item" href="#">View detail</a>
+                                                    <a class="dropdown-item" href="#">Edit info</a>
+                                                    <a class="dropdown-item text-danger" href="#">Delete</a>
+                                                </div>
+                                            </div>
+                                            <!-- dropdown //end -->
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>1233</td>
+                                        <td><b>Esther Howard</b></td>
+                                        <td>esther@example.com</td>
+                                        <td>$12.00</td>
+                                        <td><span class="badge rounded-pill alert-danger">Canceled</span></td>
+                                        <td>03.07.2020</td>
+                                        <td class="text-end">
+                                            <a href="#" class="btn btn-md rounded font-sm">Detail</a>
+                                            <div class="dropdown">
+                                                <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
+                                                <div class="dropdown-menu">
+                                                    <a class="dropdown-item" href="#">View detail</a>
+                                                    <a class="dropdown-item" href="#">Edit info</a>
+                                                    <a class="dropdown-item text-danger" href="#">Delete</a>
+                                                </div>
+                                            </div>
+                                            <!-- dropdown //end -->
+                                        </td>
+                                    </tr>
+
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- table-responsive //end -->
+                    </div>
+                    <!-- card-body end// -->
+                </div>
+                <!-- card end// -->
+                <div class="pagination-area mt-15 mb-50">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-start">
+                            <li class="page-item active"><a class="page-link" href="#">01</a></li>
+                            <li class="page-item"><a class="page-link" href="#">02</a></li>
+                            <li class="page-item"><a class="page-link" href="#">03</a></li>
+                            <li class="page-item"><a class="page-link dot" href="#">...</a></li>
+                            <li class="page-item"><a class="page-link" href="#">16</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </section>
+            <!-- content-main end// -->
+            <footer class="main-footer font-xs">
+                <div class="row pb-30 pt-15">
+                    <div class="col-sm-6">
+                        <script>
+                            document.write(new Date().getFullYear());
+                        </script>
+                        &copy; Nest - HTML Ecommerce Template .
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="text-sm-end">All rights reserved</div>
+                    </div>
+                </div>
+            </footer>
+        </main>
+        <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
+        <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
+        <script src="assets/js/vendors/select2.min.js"></script>
+        <script src="assets/js/vendors/perfect-scrollbar.js"></script>
+        <script src="assets/js/vendors/jquery.fullscreen.min.js"></script>
+        <!-- Main Script -->
+        <script src="assets/js/main.js?v=1.1" type="text/javascript"></script>
+    </body>
+</html>

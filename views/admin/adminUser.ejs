@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Nest Dashboard</title>
+        <meta http-equiv="x-ua-compatible" content="ie=edge" />
+        <meta name="description" content="" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta property="og:title" content="" />
+        <meta property="og:type" content="" />
+        <meta property="og:url" content="" />
+        <meta property="og:image" content="" />
+        <!-- Favicon -->
+        <link rel="shortcut icon" type="image/x-icon" href="/assets/imgs/theme/favicon.svg" />
+        <!-- Template CSS -->
+        <link href="/assets/css/main.css?v=1.1" rel="stylesheet" type="text/css" />
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+    
+            .container {
+                max-width: 1200px;
+                margin: 30px auto;
+                padding: 0 20px;
+                background-color: #f8f9fa;
+            }
+    
+            .table-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+                padding: 10px 0;
+            }
+    
+            .entries-control {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+    
+            select {
+                padding: 4px 8px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                outline: none;
+            }
+    
+            .search-control {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+    
+            .search-control input {
+                padding: 4px 8px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                width: 200px;
+            }
+    
+            .table-container {
+                background: white;
+                border-radius: 4px;
+                overflow: hidden;
+            }
+    
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+    
+            th, td {
+                padding: 12px 16px;
+                text-align: left;
+                border-bottom: 1px solid #eee;
+            }
+    
+            th {
+                background-color: white;
+                font-weight: 500;
+                color: #666;
+                position: relative;
+                cursor: pointer;
+            }
+    
+            th::after {
+                content: '↕';
+                position: absolute;
+                right: 8px;
+                color: #999;
+                font-size: 12px;
+            }
+    
+            tr:last-child td {
+                border-bottom: none;
+            }
+    
+            .verified-status {
+                color: #2e7d32;
+                font-weight: 500;
+            }
+    
+            .block-btn {
+                color: #ffffff;
+                background: #007bff;
+                border-radius: 4px;
+                
+                cursor: pointer;
+                padding: 4px 8px;
+                font-weight: 500;
+            }
+    
+            .block-btn:hover {
+                text-decoration: underline;
+            }
+    
+            .table-footer {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 15px 0;
+                color: #666;
+            }
+    
+            .pagination {
+                display: flex;
+                gap: 5px;
+            }
+    
+            .pagination button {
+                padding: 6px 12px;
+                border: 1px solid #ddd;
+                background: white;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+    
+            .pagination button.active {
+                background-color: #007bff;
+                color: white;
+                border-color: #007bff;
+            }
+    
+            @media (max-width: 768px) {
+                .table-header {
+                    flex-direction: column;
+                    gap: 10px;
+                    align-items: flex-start;
+                }
+            }
+            table tbody td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+/* Optional: Center-align header text as well */
+table thead th {
+    text-align: center;
+}
+        </style>
+    </head>
+
+    <body>
+        <div class="screen-overlay"></div>
+        <aside class="navbar-aside" id="offcanvas_aside">
+            <div class="aside-top">
+                <a href="/admin/dashboard" class="brand-wrap">
+                    <img src="/assets/imgs/theme/logo.svg" class="logo" alt="Nest Dashboard" />
+                </a>
+                <div>
+                    <button class="btn btn-icon btn-aside-minimize"><i class="text-muted material-icons md-menu_open"></i></button>
+                </div>
+            </div>
+            <nav>
+                <ul class="menu-aside">
+                    <li class="menu-item">
+                        <a class="menu-link" href="/admin/dashboard">
+                            <i class="icon material-icons md-home"></i>
+                            <span class="text">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="menu-item has-submenu active">
+                        <a class="menu-link" href="/admin/users">
+                            <i class="icon material-icons md-person"></i>
+                            <span class="text">Users</span>
+                        </a>
+                       
+                    </li>
+                    <li class="menu-item ">
+                        <a class="menu-link" href="/admin/product">
+                            <i class="icon material-icons md-shopping_cart"></i>
+                            <span class="text">Products</span>
+                        </a>
+                        
+                    </li>
+                    <li class="menu-item ">
+                        <a class="menu-link" href="/admin/category">
+                            <i class="icon material-icons md-store"></i>
+                            <span class="text">Category</span>
+                        </a>
+                        
+                    </li>
+                    <li class="menu-item ">
+                        <a class="menu-link" href="#">
+                            <i class="icon material-icons md-add_box"></i>
+                            <span class="text">Add product</span>
+                        </a>
+                        
+                    </li>
+                    <li class="menu-item ">
+                        <a class="menu-link" href="#">
+                            <i class="icon material-icons md-monetization_on"></i>
+                            <span class="text">Transactions</span>
+                        </a>
+                        
+                    </li>
+                    <li class="menu-item has-submenu">
+                        <a class="menu-link" href="#">
+                            <i class="icon material-icons md-person"></i>
+                            <span class="text">Account</span>
+                        </a>
+                        
+                    </li> 
+                </ul>
+                <hr />
+               
+                <br />
+                <br />
+            </nav>
+        </aside>
+        <main class="main-wrap">
+            <header class="main-header navbar">
+                <div class="col-search">
+                    <form class="searchform">
+                        <div class="input-group">
+                            <input list="search_terms" type="text" class="form-control" placeholder="Search term" />
+                            <button class="btn btn-light bg" type="button"><i class="material-icons md-search"></i></button>
+                        </div>
+                        <datalist id="search_terms">
+                            <option value="Products"></option>
+                            <option value="New orders"></option>
+                            <option value="Apple iphone"></option>
+                            <option value="Ahmed Hassan"></option>
+                        </datalist>
+                    </form>
+                </div>
+                <div class="col-nav">
+                    <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"><i class="material-icons md-apps"></i></button>
+                    <ul class="nav">
+                        <li class="nav-item">
+                            <a class="nav-link btn-icon" href="#">
+                                <i class="material-icons md-notifications animation-shake"></i>
+                                <span class="badge rounded-pill">3</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i> </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="requestfullscreen nav-link btn-icon"><i class="material-icons md-cast"></i></a>
+                        </li>
+                        <li class="dropdown nav-item">
+                            <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownLanguage" aria-expanded="false"><i class="material-icons md-public"></i></a>
+                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownLanguage">
+                                <a class="dropdown-item text-brand" href="#"><img src="/assets/imgs/theme/flag-us.png" alt="English" />English</a>
+                                <a class="dropdown-item" href="#"><img src="/assets/imgs/theme/flag-fr.png" alt="Français" />Français</a>
+                                <a class="dropdown-item" href="#"><img src="/assets/imgs/theme/flag-jp.png" alt="Français" />日本語</a>
+                                <a class="dropdown-item" href="#"><img src="/assets/imgs/theme/flag-cn.png" alt="Français" />中国人</a>
+                            </div>
+                        </li>
+                        <li class="dropdown nav-item">
+                            <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount" aria-expanded="false"> <img class="img-xs rounded-circle" src="/assets/imgs/people/avatar-2.png" alt="User" /></a>
+                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">
+                                <a class="dropdown-item" href="#"><i class="material-icons md-perm_identity"></i>Edit Profile</a>
+                                <a class="dropdown-item" href="#"><i class="material-icons md-settings"></i>Account Settings</a>
+                                <a class="dropdown-item" href="#"><i class="material-icons md-account_balance_wallet"></i>Wallet</a>
+                                <a class="dropdown-item" href="#"><i class="material-icons md-receipt"></i>Billing</a>
+                                <a class="dropdown-item" href="#"><i class="material-icons md-help_outline"></i>Help center</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item text-danger" href="#"><i class="material-icons md-exit_to_app"></i>Logout</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </header>
+            <section class="content-main">
+                <div class="content-header">
+                    <div>
+                        <h2 class="content-title card-title">User List</h2>
+                    </div>
+                </div>
+                <div class="card mb-4">
+                    
+                    <!-- card-header end// -->
+                    <div class="card-body">
+                         
+                        
+                        <div class="container">
+                            <div class="table-header">
+                                <div class="entries-control">
+                                    Show 
+                                    <select id="entries-select">
+                                        <option value="10">10</option>
+                                        <option value="25">25</option>
+                                        <option value="50">50</option>
+                                        <option value="100">100</option>
+                                    </select>
+                                    entries
+                                </div>
+                                <div class="search-control">
+                                    Search: 
+                                    <input type="text" id="search-input" placeholder="Type to search...">
+                                </div>
+                            </div>
+                        
+                            <div class="table-container">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Sl.No.</th>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Block/Unblock</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% users.forEach((user, index) => { %>
+                                            <tr class="table-row">
+                                                <td><%= index + 1 %></td>
+                                                <td><%= user.username %></td>
+                                                <td><%= user.email %></td>
+                                                <td>
+                                                    <button class="block-btn" data-user-id="<%= user._id %>" ><%= user.isBlocked ? 'Unblock' : 'Block' %></button>
+                                                </td>
+                                            </tr>
+                                        <% }) %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        
+                            <div class="table-footer">
+                                <div class="showing-entries">
+                                    Showing 1 to 1 of 1 entries
+                                </div>
+                                <div class="pagination">
+                                    <button>Previous</button>
+                                    <button class="active">1</button>
+                                    <button>Next</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- content-main end// -->
+            <footer class="main-footer font-xs">
+                <div class="row pb-30 pt-15">
+                    <div class="col-sm-6">
+                        <script>
+                            document.write(new Date().getFullYear());
+                        </script>
+                        &copy; Nest - HTML Ecommerce Template .
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="text-sm-end">All rights reserved</div>
+                    </div>
+                </div>
+            </footer>
+        </main>
+        <script>
+            // Select the elements
+            const searchInput = document.getElementById("search-input");
+            const rows = document.querySelectorAll(".table-row");
+            const entriesSelect = document.getElementById("entries-select");
+            let entriesPerPage = parseInt(entriesSelect.value);
+            
+            // Add event listener for search input
+            searchInput.addEventListener("input", filterTable);
+            
+            // Add event listener for entries select dropdown
+            entriesSelect.addEventListener("change", function() {
+                entriesPerPage = parseInt(entriesSelect.value);
+                displayRows();
+            });
+            
+            // Function to filter rows based on search input
+            function filterTable() {
+                const searchText = searchInput.value.toLowerCase();
+            
+                rows.forEach(row => {
+                    const cells = row.getElementsByTagName("td");
+                    let match = false;
+            
+                    for (let cell of cells) {
+                        if (cell.textContent.toLowerCase().includes(searchText)) {
+                            match = true;
+                            break;
+                        }
+                    }
+            
+                    row.style.display = match ? "" : "none";
+                });
+            
+                displayRows();  // Reapply row display based on selected entries per page
+            }
+            
+            // Function to paginate and display only the selected number of rows
+            function displayRows() {
+                const visibleRows = Array.from(rows).filter(row => row.style.display !== "none");
+            
+                const totalPages = Math.ceil(visibleRows.length / entriesPerPage);
+                let currentPage = 1;
+            
+                visibleRows.forEach((row, index) => {
+                    const startIndex = (currentPage - 1) * entriesPerPage;
+                    const endIndex = currentPage * entriesPerPage;
+            
+                    // Show rows within the page range
+                    row.style.display = (index >= startIndex && index < endIndex) ? "" : "none";
+                });
+            }
+            
+            // Initialize the table by showing the first set of rows
+            displayRows();
+
+            // Add an event listener for all block/unblock buttons
+            const blockButtons = document.querySelectorAll('.block-btn');
+            blockButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const userId = this.dataset.userId;  // Get user ID from data attribute
+                    const action = this.textContent.trim().toLowerCase();  // Get current action (Block/Unblock)
+
+                    // Send a request to the server to block/unblock the user
+                    fetch(`/admin/users/block-unblock/${userId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ action })  // Send action as data
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Change button text based on the new status
+                            this.textContent = action === 'block' ? 'Unblock' : 'Block';
+                            // Optional: Change the color of the button or update UI in other ways
+                            
+                        } else {
+                            alert('Failed to update block status');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred while updating the block status');
+                    });
+                });
+            });
+
+            </script>
+        <script src="/assets/js/vendors/jquery-3.6.0.min.js"></script>
+        <script src="/assets/js/vendors/bootstrap.bundle.min.js"></script>
+        <script src="/assets/js/vendors/select2.min.js"></script>
+        <script src="/assets/js/vendors/perfect-scrollbar.js"></script>
+        <script src="/assets/js/vendors/jquery.fullscreen.min.js"></script>
+        <!-- Main Script -->
+        <script src="/assets/js/main.js" type="text/javascript"></script>
+    </body>
+</html>

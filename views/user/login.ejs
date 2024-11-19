@@ -1,0 +1,69 @@
+<%- include("../partials/header") %>
+        <!-- Begin Main Content Area -->
+        <main class="main-content">
+            <div class="breadcrumb-area breadcrumb-height" data-bg-image="/images/breadcrumb/bg/1-1-1920x400.jpg">
+                <div class="container h-100">
+                    <div class="row h-100">
+                        <div class="col-lg-12">
+                            <div class="breadcrumb-item text-night-rider">
+                                <h2 class="breadcrumb-heading">Login </h2>
+                                <ul>
+                                    <li>
+                                        <a href="index.html">Home/</a>
+                                    </li>
+                                    <li>Login</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="login-register-area section-space-y-axis-100 d-flex justify-content-center align-items-center" style="min-height: 100vh">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-6">
+                          
+                            <form action="/login" method="post">
+                                <div class="login-form">
+                                    <% if(message) { %>
+                                        <p style="color: red;"><%= message %></p>
+                                    <% } %>
+                                    <h4 class="login-title">Login</h4>
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <label>Email Address*</label>
+                                            <input type="email" placeholder="Email Address" name="email">
+                                        </div>
+                                        <div class="col-lg-12">
+                                            <label>Password*</label>
+                                            <input type="password" placeholder="Password"  name="password">
+                                        </div>
+                                        <div class="col-md-4 pt-1 mt-md-0">
+                                            <div class="forgotton-password_info">
+                                                <a href="#"> Forgotten pasward?</a>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 pt-5">
+                                            <button class="btn btn-custom-size lg-size btn-primary w-100">Login</button>
+                                        </div>
+                                        <div class="col-lg-12 pt-3 text-center">
+                                            <span>Don't have an account? <a href="/signup">Sign UP</a></span>
+                                        </div>
+                                        <div class="col-12">
+                                            <br>
+                                            <a href="/auth/google" class="google-btn w-100">
+                                                <img src="/images/logo/icons8-google-96.png" alt="Google Icon" width="20">
+                                                Sign in with Google
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <!-- Main Content Area End Here -->
+
+        <%- include("../partials/footer") %>

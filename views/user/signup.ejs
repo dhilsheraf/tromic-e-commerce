@@ -1,0 +1,167 @@
+<%- include("../partials/header.ejs") %>
+
+        <!-- Begin Main Content Area -->
+        <main class="main-content">
+            <div class="breadcrumb-area breadcrumb-height" data-bg-image="/images/breadcrumb/bg/1-1-1920x400.jpg">
+                <div class="container h-100">
+                    <div class="row h-100">
+                        <div class="col-lg-12">
+                            <div class="breadcrumb-item text-night-rider">
+                                <h2 class="breadcrumb-heading">Sign Up Page</h2>
+   
+                                <ul>
+                                    <li>
+                                        <a href="index.html">Home/</a>
+                                    </li>
+                                    <li>Register</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="login-register-area section-space-y-axis-100 d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-6 pt-10 pt-lg-0">
+
+                            <form id="signupForm" action="/signup" method="post" >
+                                <div class="login-form">
+                                    <% if(message) { %>
+                                        <p style="color: red;"><%= message %></p>
+                                    <% } %>
+                                    <h4 class="login-title">Sign Up</h4>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <label>Username</label>
+                                            <input id="username" type="text" placeholder="username" name="username">
+                                          <div class="error-container">
+                                                <div id="usernameError" class="error-message"></div>
+                                          </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <label>Email Address*</label>
+                                            <input id="email" type="email" placeholder="Email Address" name="email">
+                                            <div class="error-container">
+                                                <div id="emailError" class="error-message"></div>
+                                          </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <label>Phone Number*</label>
+                                            <input id="number" type="tel" placeholder="Phone Number" name="number">
+                                            <div class="error-container">
+                                                <div id="numberError" class="error-message"></div>
+                                          </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label>Password</label>
+                                            <input id="password" type="password" placeholder="Password" name="password">
+                                            <div class="error-container">
+                                                <div id="passwordError" class="error-message" style=""></div>
+                                          </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label>Confirm Password</label>
+                                            <input id="cpassword"  type="password" placeholder="Confirm Password" name="cpassword">
+                                            <div class="error-container">
+                                                <div id="cpasswordError" class="error-message"></div>
+                                          </div>
+                                        </div>
+                                        <div class="col-12">
+                                           
+                                            <div class="input-box button btn btn-custom-size lg-size btn-primary w-100" >
+                                                <input type="submit" value="Sign Up">
+                                              </div>
+                                        <div class="col-lg-12 pt-3 text-center">
+                                            <span>Have an account? <a href="/login">Login</a></span>
+                                        </div>
+                                        <div class="col-12">
+                                            <br>
+                                            <a href="/auth/google" class="google-btn w-100">
+                                                <img src="/images/logo/icons8-google-96.png" alt="Google Icon" width="20">
+                                                Sign Up with Google
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div> 
+                </div>
+            </div>
+        </main>
+        <!-- Main Content Area End Here -->
+
+        <script>
+    document.getElementById('signupForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent form submission
+        let isValid = true; // Flag to track validity
+        const errorMessages = {
+            username: "Username should be valid at least one character",
+            email: "A valid email is required.",
+            phone: "Phone number must be 10 digits.",
+            password: "Password must be at least 6 characters long.",
+            confirmPassword: "Passwords must match."
+        };
+
+        // Clear previous error messages
+        document.getElementById('usernameError').innerText = '';
+        document.getElementById('emailError').innerText = '';
+        document.getElementById('numberError').innerText = '';
+        document.getElementById('passwordError').innerText = '';
+        document.getElementById('cpasswordError').innerText = '';
+
+        // Validate Username
+      // Validate Username
+         const username = document.getElementById('username').value.trim();
+         const usernamePattern = /[A-Za-z]/;  // Ensure at least one letter exists
+         if (!username || !usernamePattern.test(username)) {
+         document.getElementById('usernameError').innerText = errorMessages.username;
+         isValid = false;
+          }
+
+
+        // Validate Email
+        const email = document.getElementById('email').value.trim();
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!email || !emailPattern.test(email)) {
+            document.getElementById('emailError').innerText = errorMessages.email;
+            isValid = false;
+        }
+
+        // Validate Phone Number
+        const phoneNumber = document.getElementById('number').value.trim();
+        const phonePattern = /^\d{10}$/; // Adjust for country code if needed
+        if (!phoneNumber || !phonePattern.test(phoneNumber)) {
+            document.getElementById('numberError').innerText = errorMessages.phone;
+            isValid = false;
+        }
+
+        // Validate Password
+        const password = document.getElementById('password').value;
+        // Validate Password
+         const password2 = document.getElementById('password').value;
+         const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;  // At least one lowercase, one uppercase, one digit, one special character, and minimum length 8
+         if (!password || !passwordPattern.test(password2)) {
+         document.getElementById('passwordError').innerText = 
+         `Password must be at least 8 characters long, 
+          contain an uppercase letter,a lowercase letter, a number, 
+          and a special character.`;
+         isValid = false;
+         }
+
+
+        // Validate Confirm Password
+        const confirmPassword = document.getElementById('cpassword').value;
+        if (password !== confirmPassword) {
+            document.getElementById('cpasswordError').innerText = errorMessages.confirmPassword;
+            isValid = false;
+        }
+
+        // If all fields are valid, submit the form
+        if (isValid) {
+            this.submit(); // Proceed with form submission
+        }
+    });
+</script>
+<%- include("../partials/footer.ejs") %>

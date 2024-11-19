@@ -1,0 +1,405 @@
+<%- include("../partials/header.ejs") %>
+
+<!-- Begin Main Content Area -->
+<main class="main-content">
+    <div class="breadcrumb-area breadcrumb-height" data-bg-image="/images/breadcrumb/bg/1-1-1920x400.jpg">
+        <div class="container h-100">
+            <div class="row h-100">
+                <div class="col-lg-12">
+                    <div class="breadcrumb-item text-night-rider">
+                        <h2 class="breadcrumb-heading">My Account Page</h2>
+                        <ul>
+                            <li>
+                                <a href="/">Home/</a>
+                            </li>
+                            <li>My Account</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="account-page-area section-space-y-axis-100">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3">
+                    <ul class="nav myaccount-tab-trigger" id="account-page-tab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="account-dashboard-tab" data-bs-toggle="tab" href="#account-dashboard" role="tab" aria-controls="account-dashboard" aria-selected="true">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="account-orders-tab" data-bs-toggle="tab" href="#account-orders" role="tab" aria-controls="account-orders" aria-selected="false">Orders</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="account-address-tab" data-bs-toggle="tab" href="#account-address" role="tab" aria-controls="account-address" aria-selected="false">Addresses</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="account-details-tab" data-bs-toggle="tab" href="#account-details" role="tab" aria-controls="account-details" aria-selected="false">Account Details</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="account-logout-tab" href="#" role="tab" aria-selected="false">Logout</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-lg-9">
+                    <div class="tab-content myaccount-tab-content" id="account-page-tab-content">
+                        <div class="tab-pane fade show active" id="account-dashboard" role="tabpanel" aria-labelledby="account-dashboard-tab">
+                            <div class="myaccount-dashboard text-center">
+                                <p>Your account details:</p>
+                                <ul>
+                                    <li>Username: Tromic</li>
+                                    <li>Email: tromic@example.com</li>
+                                    <li>Phone Number: 555-1234</li>
+                                </ul>
+                                <p>
+                             
+                                    <br>
+                                    <a href="#" id="editProfileButton" class="btn btn-custom-size lg-size btn-primary">Edit Profile</a>
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-pane fade" id="account-orders" role="tabpanel" aria-labelledby="account-orders-tab">
+                            <div class="myaccount-orders">
+                                <h4 class="small-title">MY ORDERS</h4>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover">
+                                        <tbody>
+                                            <tr>
+                                                <th>ORDER</th>
+                                                <th>DATE</th>
+                                                <th>STATUS</th>
+                                                <th>TOTAL</th>
+                                                <th></th>
+                                            </tr>
+                                            <tr>
+                                                <td><a class="account-order-id" href="#">#5364</a></td>
+                                                <td>Mar 27, 2019</td>
+                                                <td>On Hold</td>
+                                                <td>$162.00 for 2 items</td>
+                                                <td><a href="#" class="btn btn-dark btn-primary-hover"><span>View</span></a>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><a class="account-order-id" href="#">#5356</a></td>
+                                                <td>Mar 27, 2019</td>
+                                                <td>On Hold</td>
+                                                <td>$162.00 for 2 items</td>
+                                                <td><a href="#" class="btn btn-dark btn-primary-hover"><span>View</span></a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="account-address" role="tabpanel" aria-labelledby="account-address-tab">
+                            <div class="myaccount-address">
+                                <p>The following addresses will be used on the checkout page by default.</p>
+                                <div id="address-list" class="row">
+                                    <!-- Dynamically render addresses here -->
+                                    <div class="col-12 col-md-6 mb-3">
+                                        <div class="address-card p-3 border rounded">
+                                            <h4 class="small-title">Billing Address</h4>
+                                            <address>
+                                                1234 Heaven Street, Beverly Hill, OldYork, United States
+                                            </address>
+                                            <div class="d-flex justify-content-between">
+                                                <button class="btn btn-primary btn-sm edit-address-btn" data-id="1">Edit</button>
+                                                <button class="btn btn-danger btn-sm delete-address-btn" data-id="1">Delete</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-6 mb-3">
+                                        <div class="address-card p-3 border rounded">
+                                            <h4 class="small-title">Shipping Address</h4>
+                                            <address>
+                                                5678 Skyline Avenue, NewYork, United States
+                                            </address>
+                                            <div class="d-flex justify-content-between">
+                                                <button class="btn btn-primary btn-sm edit-address-btn" data-id="2">Edit</button>
+                                                <button class="btn btn-danger btn-sm delete-address-btn" data-id="2">Delete</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button id="addAddressButton" class="btn btn-primary mt-3">Add Address</button>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-pane fade" id="account-details" role="tabpanel" aria-labelledby="account-details-tab">
+                            <div class="myaccount-details">
+                                <form action="#" class="myaccount-form">
+                                    <div class="myaccount-form-inner">
+                                        <div class="single-input ">
+                                            <label>Username*</label>
+                                            <input type="text">
+                                        </div>
+                                        <div class="single-input">
+                                            <label>Email*</label>
+                                            <input type="email">
+                                        </div>
+                                        <div class="single-input">
+                                            <label>Current Password(leave blank to leave
+                                                unchanged)</label>
+                                            <input type="password">
+                                        </div>
+                                        <div class="single-input">
+                                            <label>New Password (leave blank to leave
+                                                unchanged)</label>
+                                            <input type="password">
+                                        </div>
+                                        <div class="single-input">
+                                            <label>Confirm New Password</label>
+                                            <input type="password">
+                                        </div>
+                                        <div class="single-input">
+                                            <button class="btn btn-custom-size lg-size btn-primary" type="submit">
+                                                <span>SAVE CHANGES</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="#" class="myaccount-form">
+                        <div class="myaccount-form-inner">
+                            <div class="single-input">
+                                <label>Username*</label>
+                                <input type="text" value="Tromic">
+                            </div>
+                            <div class="single-input">
+                                <label>Email*</label>
+                                <input type="email" value="tromic@example.com">
+                            </div>
+                            <div class="single-input">
+                                <label>Current Password (leave blank to leave unchanged)</label>
+                                <input type="password">
+                            </div>
+                            <div class="single-input">
+                                <label>New Password (leave blank to leave unchanged)</label>
+                                <input type="password">
+                            </div>
+                            <div class="single-input">
+                                <label>Confirm New Password</label>
+                                <input type="password">
+                            </div>
+                            <div class="single-input">
+                                <button class="btn btn-custom-size lg-size btn-primary w-100" type="submit">
+                                    <span>SAVE CHANGES</span>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="addressModal" tabindex="-1" aria-labelledby="addressModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addressModalLabel">Add Address</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addressForm">
+                        <div class="single-input">
+                            <label for="addressType">Address Type*</label>
+                            <select id="addressType" class="form-control">
+                                <option value="billing">Billing Address</option>
+                                <option value="shipping">Shipping Address</option>
+                            </select>
+                        </div>
+                        <div class="single-input">
+                            <label for="addressLine">Address*</label>
+                            <input type="text" id="addressLine" class="form-control" placeholder="Enter Address">
+                        </div>
+                        <div class="single-input">
+                            <label for="city">City*</label>
+                            <input type="text" id="city" class="form-control" placeholder="Enter City">
+                        </div>
+                        <div class="single-input">
+                            <label for="state">State*</label>
+                            <input type="text" id="state" class="form-control" placeholder="Enter State">
+                        </div>
+                        <div class="single-input">
+                            <label for="country">Country*</label>
+                            <input type="text" id="country" class="form-control" placeholder="Enter Country">
+                        </div>
+                        <div class="single-input">
+                            <button type="submit" class="btn btn-primary w-100">Save Address</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+</main>
+<!-- Main Content Area End Here -->
+<style>
+    /* We only need minimal custom styles since we're using Bootstrap's modal */
+    .modal-dialog {
+      max-width: 500px;
+    }
+    
+    .modal-header {
+      border-bottom: 1px solid #eee;
+      padding: 1rem 1.5rem;
+    }
+    
+    .modal-body {
+      padding: 1.5rem;
+    }
+    
+    .myaccount-form .single-input {
+      margin-bottom: 1rem;
+    }
+    
+    .myaccount-form label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+    
+    .myaccount-form input {
+      width: 100%;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    
+    .myaccount-form input:focus {
+      border-color: #666;
+      outline: none;
+      box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+    }
+    </style>
+    
+    <script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Initialize the modal
+    const modalElement = document.getElementById('editProfileModal');
+    const editProfileModal = new bootstrap.Modal(modalElement);
+
+    // Handle button click to show modal
+    const editProfileButton = document.getElementById('editProfileButton');
+    editProfileButton.addEventListener('click', function (e) {
+        e.preventDefault();
+        editProfileModal.show(); // Show the modal
+        console.log('Edit Profile button clicked');
+    });
+
+    // Handle form submission in modal
+    const form = modalElement.querySelector('form');
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        console.log('Form submitted!');
+
+        // Close the modal
+        editProfileModal.hide();
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    const addressModal = new bootstrap.Modal(document.getElementById('addressModal'));
+    const addressForm = document.getElementById('addressForm');
+    const addressList = document.getElementById('address-list');
+    const addAddressButton = document.getElementById('addAddressButton');
+    let editAddressId = null; // For tracking edit action
+
+    // Open modal for adding a new address
+    addAddressButton.addEventListener('click', () => {
+        editAddressId = null;
+        document.getElementById('addressModalLabel').textContent = 'Add Address';
+        addressForm.reset();
+        addressModal.show();
+    });
+
+    // Handle form submission for add/edit
+    addressForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const addressType = document.getElementById('addressType').value;
+        const addressLine = document.getElementById('addressLine').value;
+        const city = document.getElementById('city').value;
+        const state = document.getElementById('state').value;
+        const country = document.getElementById('country').value;
+
+        const addressHtml = `
+            <div class="col-12 col-md-6 mb-3">
+                <div class="address-card p-3 border rounded">
+                    <h4 class="small-title">${addressType === 'billing' ? 'Billing Address' : 'Shipping Address'}</h4>
+                    <address>
+                        ${addressLine}, ${city}, ${state}, ${country}
+                    </address>
+                    <div class="d-flex justify-content-between">
+                        <button class="btn btn-primary btn-sm edit-address-btn">Edit</button>
+                        <button class="btn btn-danger btn-sm delete-address-btn">Delete</button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        if (editAddressId) {
+            // Update existing address
+            const addressCard = document.querySelector(`[data-id="${editAddressId}"]`);
+            addressCard.innerHTML = addressHtml;
+        } else {
+            // Add new address
+            const newAddressDiv = document.createElement('div');
+            newAddressDiv.innerHTML = addressHtml;
+            addressList.appendChild(newAddressDiv);
+        }
+
+        addressModal.hide();
+    });
+
+    // Delegate edit and delete actions
+    addressList.addEventListener('click', function (e) {
+        if (e.target.classList.contains('edit-address-btn')) {
+            const addressCard = e.target.closest('.address-card');
+            editAddressId = addressCard.dataset.id;
+
+            // Populate modal with existing data
+            document.getElementById('addressType').value = addressCard.querySelector('h4').textContent.includes('Billing') ? 'billing' : 'shipping';
+            const addressDetails = addressCard.querySelector('address').textContent.split(', ');
+            document.getElementById('addressLine').value = addressDetails[0];
+            document.getElementById('city').value = addressDetails[1];
+            document.getElementById('state').value = addressDetails[2];
+            document.getElementById('country').value = addressDetails[3];
+
+            document.getElementById('addressModalLabel').textContent = 'Edit Address';
+            addressModal.show();
+        }
+
+        if (e.target.classList.contains('delete-address-btn')) {
+            e.target.closest('.col').remove(); // Remove address card
+        }
+    });
+});
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<%- include("../partials/footer.ejs") %>

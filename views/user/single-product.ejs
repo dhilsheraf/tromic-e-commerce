@@ -1,0 +1,380 @@
+<%- include("../partials/header.ejs") %>
+
+<main class="main-content">
+    <div class="breadcrumb-area breadcrumb-height" data-bg-image="/images/breadcrumb/bg/1-1-1920x400.jpg">
+        <div class="container h-100">
+            <div class="row h-100">
+                <div class="col-lg-12">
+                    <div class="breadcrumb-item text-night-rider">
+                        <h2 class="breadcrumb-heading">Product Style</h2>
+                        <ul>
+                            <li>
+                                <a href="index.html">Home /</a>
+                            </li>
+                            <li>Single Product</li>
+                        </ul>
+                    </div> 
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="single-product-area section-space-top-100">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="single-product-img">
+                        <div class="swiper-container single-product-slider">
+                            <div class="swiper-wrapper">
+                                <!-- Primary Image -->
+                                <div class="swiper-slide">
+                                    <a href="<%= product.images[0] %>" class="single-img gallery-popup">
+                                        <img class="img-full" src="<%= product.images[0] %>" alt="Primary Product Image">
+                                    </a>
+                                </div>
+    
+                                <!-- Additional Images -->
+                                <% product.images.forEach(image => { %>
+                                <div class="swiper-slide">
+                                    <a href="<%= image %>" class="single-img gallery-popup">
+                                        <img class="img-full" src="<%= image %>" alt="Additional Product Image">
+                                    </a>
+                                </div>
+                                <% }); %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 pt-9 pt-lg-0">
+                    <div class="single-product-content">
+                        <h2 class="title mb-3"><%= product.name %></h2>
+                        <div class="coupon-section pb-3">
+                            <label for="coupon-code">Have a Coupon?</label>
+                            <input type="text" id="coupon-code" placeholder="Enter coupon code">
+                            <button class="apply-coupon btn btn-secondary">Apply</button>
+                        </div>
+    
+                      <!-- Display Discounted Price -->
+                    <div class="price-box pb-3">
+                        <span class="original-price text-muted"><%= product.price %></span>
+                        <span class="discounted-price text-danger" id="final-price"><%= product.price %></span> <!-- Discounted Price -->
+                    </div>
+                    
+                        <!-- Stock Status -->
+                        <div class="stock-status pb-3">
+                            <% if (product.stock > 0) { %>
+                                <span class="in-stock text-success">In Stock</span>
+                            <% } else { %>
+                                <span class="out-of-stock text-danger">Out of Stock</span>
+                            <% } %>
+                        </div>
+    
+                        <!-- Rating -->
+                        <div class="rating-box-wrap pb-3">
+                            <div class="rating-box">
+                                <ul>
+                                    <li><i class="fa fa-star"></i></li>
+                                    <li><i class="fa fa-star"></i></li>
+                                    <li><i class="fa fa-star"></i></li>
+                                    <li><i class="fa fa-star"></i></li>
+                                    <li><i class="fa fa-star"></i></li>
+                                </ul>
+                            </div>
+                            <div class="review-status ps-4">
+                                <a href="#">( 5 Customer Review )</a>
+                            </div>
+                        </div>
+    
+                        <p class="short-desc mb-3"></p>
+    
+                        <!-- Quantity and Buttons -->
+                        <ul class="quantity-with-btn pb-5">
+                            <li class="quantity">
+                                <div class="cart-plus-minus">
+                                    <input class="cart-plus-minus-box" value="1" type="text">
+                                </div>
+                            </li>
+                            <li class="add-to-cart">
+                                <a class="btn btn-custom-size lg-size btn-primary" href="#">Add to cart</a>
+                            </li>
+                            <li class="wishlist-btn-wrap">
+                                <a class="custom-circle-btn" href="#">
+                                    <i class="pe-7s-like"></i>
+                                </a>
+                            </li>
+                        </ul>
+    
+                        <!-- Categories -->
+                        <div class="product-category pb-3">
+                            <span class="title">Categories :</span>
+                            <ul>
+                                <li>
+                                    <a href="#">Office,</a>
+                                </li>
+                                <li>
+                                    <a href="#">Home</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- Tags -->
+                        <div class="product-category product-tags pb-3">
+                            <span class="title">Tags :</span>
+                            <ul>
+                                <li>
+                                    <a href="#">Furniture</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+    
+                    <div class="product-category social-link align-items-center pb-lg-3">
+                        <span class="title pe-3">Share:</span>
+                        <ul>
+                            <li>
+                                <a href="#" data-tippy="Pinterest" data-tippy-inertia="true" data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-theme="sharpborder">
+                                    <i class="fa fa-pinterest-p"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" data-tippy="Twitter" data-tippy-inertia="true" data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-theme="sharpborder">
+                                    <i class="fa fa-twitter"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" data-tippy="Tumblr" data-tippy-inertia="true" data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-theme="sharpborder">
+                                    <i class="fa fa-tumblr"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" data-tippy="Dribbble" data-tippy-inertia="true" data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-theme="sharpborder">
+                                    <i class="fa fa-dribbble"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Thumbnail Images -->
+                    <div class="product-thumb-wrap pt-5 pt-lg-0 row">
+                        <div class="col-12">
+                            <div class="thumbs-arrow-holder p-0">
+                                <div class="swiper-container single-product-thumbs">
+                                    <div class="swiper-wrapper">
+                                        <a href="#" class="swiper-slide">
+                                            <img class="img-full" src="<%= product.images[0] %>" alt="Product Thumbnail">
+                                        </a>
+                                        <% product.images.forEach(image => { %>
+                                            <a href="#" class="swiper-slide">
+                                                <img class="img-full" src="<%= image %>" alt="Product Thumbnail">
+                                            </a>
+                                        <% }); %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="product-tab-area section-space-y-axis-100">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <ul class="nav product-tab-nav mb-10" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <a class="tab-btn" id="information-tab" data-bs-toggle="tab" href="#information" role="tab" aria-controls="information" aria-selected="false">
+                                Information
+                            </a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="active tab-btn" id="description-tab" data-bs-toggle="tab" href="#description" role="tab" aria-controls="description" aria-selected="true">
+                                Description
+                            </a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="tab-btn" id="reviews-tab" data-bs-toggle="tab" href="#reviews" role="tab" aria-controls="reviews" aria-selected="false">
+                                Reviews(5)
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="tab-content product-tab-content">
+                        <div class="tab-pane fade" id="information" role="tabpanel" aria-labelledby="information-tab">
+                            <div class="product-information-body">
+                                <h4 class="title">Shipping</h4>
+                                <p class="short-desc mb-4">The item will be shipped from China. So it need 15-20 days to deliver. Our product is good with reasonable price and we believe you will worth it. So please wait for it patiently! Thanks.Any question please kindly to contact us and we promise to work hard to help you to solve the problem</p>
+                                <h4 class="title">About return request</h4>
+                                <p class="short-desc mb-4">If you don't need the item with worry, you can contact us then we will help you to solve the problem, so please close the return request! Thanks</p>
+                                <h4 class="title">Guarantee</h4>
+                                <p class="short-desc mb-0">If it is the quality question, we will resend or refund to you; If you receive damaged or wrong items, please contact us and attach some pictures about product, we will exchange a new correct item to you after the confirmation.</p>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade show active" id="description" role="tabpanel" aria-labelledby="description-tab">
+                            <div class="product-description-body">
+                                <p class="short-desc mb-0"><%= product.description %></p>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
+                            <div class="product-review-body">
+                                <div class="blog-comment">
+                                    <h4 class="heading mb-7">3 Comments</h4>
+                                    <div class="blog-comment-item mb-8">
+                                        <div class="blog-comment-img">
+                                            <img src="/images/blog/avatar/3-1-101x101.png" alt="User Image">
+                                        </div>
+                                        <div class="blog-comment-content pb-8">
+                                            <div class="user-meta">
+                                                <span><strong>Aidyn Cody -</strong> Jul 21,2021 at 15 hours ago</span>
+                                            </div>
+                                            <p class="user-comment mb-4">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inci labore et dol magna aliqua. Ut enim ad minim veniam quis nostrud</p>
+                                            <a class="btn btn-custom-size comment-btn" href="#">Reply</a>
+                                        </div>
+                                    </div>
+                                    <div class="blog-comment-item relpy-item mb-8">
+                                        <div class="blog-comment-img">
+                                            <img src="/images/blog/avatar/3-2-101x101.png" alt="User Image">
+                                        </div>
+                                        <div class="blog-comment-content pb-8">
+                                            <div class="user-meta">
+                                                <span><strong>Aidyn Cody -</strong> Jul 21,2021 at 15 hours ago</span>
+                                            </div>
+                                            <p class="user-comment mb-4">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inci labore et dol magna aliqua. Ut enim ad minim veniam quis nostrud</p>
+                                            <a class="btn btn-custom-size comment-btn" href="#">Reply</a>
+                                        </div>
+                                    </div>
+                                    <div class="blog-comment-item">
+                                        <div class="blog-comment-img">
+                                            <img src="/images/blog/avatar/3-3-101x101.png" alt="User Image">
+                                        </div>
+                                        <div class="blog-comment-content">
+                                            <div class="user-meta">
+                                                <span><strong>Aidyn Cody -</strong> Jul 21,2021 at 15 hours ago</span>
+                                            </div>
+                                            <p class="user-comment mb-4">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inci labore et dol magna aliqua. Ut enim ad minim veniam quis nostrud</p>
+                                            <a class="btn btn-custom-size comment-btn" href="#">Reply</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="feedback-area pt-10">
+                                    <h2 class="heading mb-3">Add a review</h2>
+                                    <p class="short-desc mb-3">Your email address will not be published.</p>
+                                    <div class="rating-box">
+                                        <span>Your rating</span>
+                                        <ul class="ps-4">
+                                            <li><i class="fa fa-star" data-tippy="1 star" data-tippy-inertia="true" data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-theme="sharpborder"></i></li>
+                                            <li><i class="fa fa-star" data-tippy="2 star" data-tippy-inertia="true" data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-theme="sharpborder"></i></li>
+                                            <li><i class="fa fa-star" data-tippy="3 star" data-tippy-inertia="true" data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-theme="sharpborder"></i></li>
+                                            <li><i class="fa fa-star" data-tippy="4 star" data-tippy-inertia="true" data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-theme="sharpborder"></i></li>
+                                            <li><i class="fa fa-star" data-tippy="5 star" data-tippy-inertia="true" data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-theme="sharpborder"></i></li>
+                                        </ul>
+                                    </div>
+                                    <form class="feedback-form pt-8" action="#">
+                                        <div class="group-input">
+                                            <div class="form-field me-md-6 mb-6 mb-md-0">
+                                                <input type="text" name="name" placeholder="Your Name*" class="input-field">
+                                            </div>
+                                            <div class="form-field me-md-6 mb-6 mb-md-0">
+                                                <input type="text" name="email" placeholder="Your Email*" class="input-field">
+                                            </div>
+                                            <div class="form-field">
+                                                <input type="text" name="number" placeholder="Phone number" class="input-field">
+                                            </div>
+                                        </div>
+                                        <div class="form-field mt-6">
+                                            <textarea name="message" placeholder="Message" class="textarea-field"></textarea>
+                                        </div>
+                                        <div class="button-wrap mt-8">
+                                            <button type="submit" value="submit" class="btn btn-custom-size lg-size btn-primary" name="submit">Submit</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="background-img" data-bg-image="/images/background-img/1-2-1920x716.jpg">
+        <div class="product-area product-arrow section-space-y-axis-100">
+            <div class="container">
+                <div class="section-title pb-55">
+                    <h2 class="title mb-0">Related Products</h2>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="swiper-container product-slider">
+                            <div class="swiper-wrapper text-heading">
+                                <% relatedProducts.forEach(related => { %>
+                                    <div class="swiper-slide">
+                                        <div class="product-item">
+                                            <div class="product-img img-zoom-effect">
+                                                <a href="/product/<%= related._id %>">
+                                                    <img class="img-full" src="<%= related.primaryImage %>" alt="<%= related.name %>">
+                                                </a>
+                                            </div>
+                                            <div class="product-content">
+                                                <a class="product-name pb-1" href="/product/<%= related._id %>"><%= related.name %></a>
+                                                <div class="price-box">
+                                                    <div class="price-box-holder">
+                                                        <span>Price:</span>
+                                                        <span class="new-price text-primary">$<%= related.price %></span>
+                                                    </div>
+                                                </div>
+                                                <div class="product-add-action">
+                                                    <ul>
+                                                        <li>
+                                                            <a href="/cart/add/<%= related._id %>" data-tippy="Add to cart">
+                                                                <i class="pe-7s-cart"></i>
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="/wishlist/add/<%= related._id %>" data-tippy="Add to wishlist">
+                                                                <i class="pe-7s-like"></i>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <% }); %>
+                            </div>
+                        </div>
+                        
+                        <!-- Add Arrows -->
+                        <div class="product-button-wrap pt-10">
+                            <div class="product-button-prev">
+                                <i class="pe-7s-angle-left"></i>
+                            </div>
+                            <div class="product-button-next">
+                                <i class="pe-7s-angle-right"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<!-- Main Content Area End Here  -->
+<script>
+    // Select all main product images for zoom functionality
+// Select all main product images for zoom functionality
+document.querySelectorAll('.single-product-img .swiper-slide img').forEach(img => {
+    img.addEventListener('mousemove', (e) => {
+        const rect = e.target.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100; // x position as percentage
+        const y = ((e.clientY - rect.top) / rect.height) * 100; // y position as percentage
+        img.style.transformOrigin = `${x}% ${y}%`;
+        img.style.transform = "scale(1.5)";
+    });
+
+    img.addEventListener('mouseleave', () => {
+        img.style.transform = "scale(1)";
+        img.style.transformOrigin = "center center";
+    });
+});
+
+
+</script>
+<%- include("../partials/footer.ejs") %>

@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Edit Product</title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/imgs/theme/favicon.svg" />
+    <link href="/assets/css/main.css?v=1.1" rel="stylesheet" type="text/css" />
+    <style>
+        .form-container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .form-container h2 {
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            color: #333;
+        }
+        .form-container label {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+        }
+        .form-container input, .form-container textarea, .form-container select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1em;
+        }
+        .form-container .btn-submit {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            border: none;
+            width: 100%;
+        }
+        .form-container .btn-submit:hover {
+            background-color: #45a049;
+        }
+        .image-preview {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-top: 10px;
+            display: block;
+        }
+        #image-preview-container {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        .btn-back {
+            background-color: #45a049;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            border: none;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .btn-back:hover {
+            background-color: #4CAF50;
+        }
+                .btn-submit {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4CAF50; /* Green */
+            color: white;
+            border-radius: 5px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-submit:hover {
+            background-color: #45a049; /* Darker green on hover */
+        }
+
+
+    </style>
+</head>
+<body>
+
+    <div class="screen-overlay"></div>
+    <aside class="navbar-aside" id="offcanvas_aside">
+        <!-- Navbar Content -->
+        <div class="aside-top">
+            <a href="/admin/dashboard" class="brand-wrap">
+                <img src="/assets/imgs/theme/logo.svg" class="logo" alt="Nest Dashboard" />
+            </a>
+            <button class="btn btn-icon btn-aside-minimize">
+                <i class="text-muted material-icons md-menu_open"></i>
+            </button>
+        </div>
+
+        <!-- Sidebar Menu -->
+        <nav>
+            <ul class="menu-aside">
+                <li class="menu-item"><a class="menu-link" href="/admin/dashboard">
+                    <i class="icon material-icons md-home"></i>
+                     <span class="text">Dashboard</span>
+                    </a></li>
+                <li class="menu-item"><a class="menu-link" href="/admin/users">
+                    <i class="icon material-icons md-person"></i> 
+                    <span class="text">Users</span>
+                </a></li>
+                <li class="menu-item active"><a class="menu-link" href="/admin/product">
+                    <i class="icon material-icons md-add_box"></i> 
+                    <span class="text">Products</span>
+                </a></li>
+                <li class="menu-item"><a class="menu-link" href="/admin/category">
+                    <i class="icon material-icons md-store"></i>
+                     <span class="text">Category</span>
+                    </a></li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="">
+                        <i class="icon material-icons md-add_box"></i>
+                        <span class="text">pruct</span>
+                    </a>
+                   
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="#">
+                        <i class="icon material-icons md-monetization_on"></i>
+                        <span class="text">Transactions</span>
+                    </a>
+                   
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="#">
+                        <i class="icon material-icons md-person"></i>
+                        <span class="text">Account</span>
+                    </a>
+                   
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" href="#">
+                        <i class="icon material-icons md-comment"></i>
+                        <span class="text">Reviews</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" href="#"> <i class="icon material-icons md-stars"></i> 
+                        <span class="text">Brands</span>
+                     </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" disabled href="#">
+                        <i class="icon material-icons md-pie_chart"></i>
+                        <span class="text">Statistics</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+
+    <main class="main-wrap">
+        <header class="main-header navbar">
+            <!-- Navbar Content -->
+            <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside">
+                <i class="material-icons md-apps"></i>
+            </button>
+            <ul class="nav">
+                <li class="nav-item"><a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i> </a></li>
+                <li class="nav-item"><a href="#" class="requestfullscreen nav-link btn-icon"><i class="material-icons md-cast"></i></a></li>
+            </ul>
+        </header>
+        <section class="content-main">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h2 class="content-title">Edit Product</h2>
+                        </div>
+                        <div class="col-12">
+                            <div class="card mb-4">
+                                <div class="card-body">
+
+                                    <form id="product-form" action="/admin/products/edit/<%= product._id %>" method="POST" enctype="multipart/form-data">
+                                        <input type="hidden" name="product_id" value="<%= product._id %>">
+                                        
+                                        <div class="product-form">
+                                            <label for="product_name" class="form-label">Product Title</label>
+                                            <input type="text" placeholder="Type here" class="form-control" id="product_name" name="name" required value="<%= product.name %>" />
+                                        </div>
+
+                                        <div class="product-form">
+                                            <label class="form-label">Description</label>
+                                            <textarea placeholder="Type here" class="form-control" rows="4" name="description" required><%= product.description %></textarea>
+                                        </div> 
+
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="product-form">
+                                                    <label class="form-label">Regular Price</label>
+                                                    <input type="text" id="price" placeholder="" class="form-control" name="price" required value="<%= product.price %>" />
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="product-form">
+                                                    <label class="form-label">Stock Quantity</label>
+                                                    <input type="number" class="form-control" name="stock" min="0" required value="<%= product.stock %>" />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="product-form">
+                                            <label class="form-label">Category</label>
+                                            <select class="form-select" name="category" required>
+                                                <% categories.forEach(category => { %>
+                                                    <option value="<%= category._id %>" <%= product.category === category._id ? 'selected' : '' %>><%= category.name %></option>
+                                                <% }); %>
+                                            </select>
+                                        </div>
+
+                                        <div class="product-form">
+                                            <label class="form-label" style="color: rgb(0, 0, 0);">Product Images 4</label>
+                                            <div class="row">
+                                                <% for (let i = 0; i < 4; i++) { %>
+                                                    <div class="col-lg-3">
+                                                        <label class="form-label" style="color: black;"><%= i === 0 ? 'Display image' : 'Other images' %></label>
+                                        
+                                                        <!-- Display the existing image if available -->
+                                                        <% if (product.images[i]) { %>
+                                                            <img src="<%= product.images[i] %>" class="image-preview" />
+                                                            <!-- Hidden field to pass the current image URL to the back-end -->
+                                                            <input type="hidden" name="existingImages[]" value="<%= product.images[i] %>">
+                                                        <% } else { %>
+                                                            <!-- Empty hidden input if there’s no image -->
+                                                            <input type="hidden" name="existingImages[]" value="">
+                                                        <% } %>
+                                        
+                                                        <!-- Input for uploading a new image -->
+                                                        <input type="file" class="form-control" name="images" data-index="<%= i %>" onchange="previewImage(event, <%= i %>)" />
+                                                        <div id="image-preview-container-<%= i %>" class="image-preview-container"></div>
+                                                    </div>
+                                                <% } %>
+                                            </div>
+                                        </div>
+                                        
+
+                                        <div class="text-center">
+                                            <br>
+                                            <button type="submit" class="btn btn-submit rounded font-sm hover-up">Update Product</button>
+                                            <a href="/admin/products" class="btn btn-submit rounded font-sm hover-up">Back</a>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+<footer class="main-footer font-xs">
+    <div class="row pb-30 pt-15">
+        <div class="col-sm-6">
+            <script>
+                document.write(new Date().getFullYear());
+            </script>
+            &copy; Nest - HTML Ecommerce Template .
+        </div>
+        <div class="col-sm-6">
+            <div class="text-sm-end">All rights reserved</div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Preview for Primary Image
+    function previewPrimaryImage(event) {
+        const output = document.getElementById('primaryImagePreview');
+        output.src = URL.createObjectURL(event.target.files[0]);
+        output.style.display = 'block';
+    }
+
+    // Preview for Additional Images
+    function previewImage(event, index) {
+        const output = document.getElementById(`image-preview-container-${index}`);
+        const img = document.createElement('img');
+        img.src = URL.createObjectURL(event.target.files[0]);
+        img.classList.add('image-preview');
+        
+        // Clear previous image and append new preview
+        output.innerHTML = '';
+        output.appendChild(img);
+        output.style.display = 'block';
+    }
+
+
+</script>
+
+<script src="/assets/js/vendors/jquery-3.6.0.min.js"></script>
+<script src="/assets/js/vendors/bootstrap.bundle.min.js"></script>
+<script src="/assets/js/vendors/select2.min.js"></script>
+<script src="/assets/js/vendors/perfect-scrollbar.js"></script>
+<script src="/assets/js/vendors/jquery.fullscreen.min.js"></script>
+<script src="/assets/js/main.js?v=1.1" type="text/javascript"></script>
+
+</body>
+
+<script>
+    // Preview for Primary Image
+    // Preview for Additional Images
+function previewImage(event, index) {
+    const previewContainer = document.getElementById(`image-preview-container-${index}`);
+    const imageFile = event.target.files[0];
+
+    // Clear any existing preview image
+    previewContainer.innerHTML = '';
+
+    if (imageFile) {
+        const reader = new FileReader();
+
+        reader.onload = function() {
+            const imgElement = document.createElement("img");
+            imgElement.src = reader.result;
+            imgElement.classList.add("image-preview");
+
+            // Append the preview image to the container
+            previewContainer.appendChild(imgElement);
+        };
+
+        reader.readAsDataURL(imageFile);
+    }
+}
+
+</script>
+
+</html>
