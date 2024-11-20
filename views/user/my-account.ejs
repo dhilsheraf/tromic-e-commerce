@@ -98,34 +98,28 @@
                                 <p>The following addresses will be used on the checkout page by default.</p>
                                 <div id="address-list" class="row">
                                     <!-- Dynamically render addresses here -->
-                                    <div class="col-12 col-md-6 mb-3">
-                                        <div class="address-card p-3 border rounded">
-                                            <h4 class="small-title">Billing Address</h4>
-                                            <address>
-                                                1234 Heaven Street, Beverly Hill, OldYork, United States
-                                            </address>
-                                            <div class="d-flex justify-content-between">
-                                                <button class="btn btn-primary btn-sm edit-address-btn" data-id="1">Edit</button>
-                                                <button class="btn btn-danger btn-sm delete-address-btn" data-id="1">Delete</button>
+                                    <% addresses.forEach(address => { %>
+                                        <div class="col-12 col-md-6 mb-3">
+                                            <div class="address-card p-3 border rounded">
+                                                <h4 class="small-title"><%= address.addressType %> Address</h4>
+                                                <address>
+                                                    <strong>Full name:</strong> <%= address.name %><br>
+                                                    <strong>Phone:</strong> <%= address.phone %><br>
+                                                    <strong>Pincode:</strong> <%= address.pincode %><br>
+                                                    <strong>Address:</strong> <%= address.addressLine %>, <%= address.pincode %>, <%= address.city %>, <%= address.state %>, <%= address.country %>
+                                                </address>
+                                                <div class="d-flex justify-content-between">
+                                                    <button class="btn btn-primary btn-sm edit-address-btn" data-id="<%= address._id %>">Edit</button>
+                                                    <button class="btn btn-danger btn-sm delete-address-btn" data-id="<%= address._id %>">Delete</button>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-12 col-md-6 mb-3">
-                                        <div class="address-card p-3 border rounded">
-                                            <h4 class="small-title">Shipping Address</h4>
-                                            <address>
-                                                5678 Skyline Avenue, NewYork, United States
-                                            </address>
-                                            <div class="d-flex justify-content-between">
-                                                <button class="btn btn-primary btn-sm edit-address-btn" data-id="2">Edit</button>
-                                                <button class="btn btn-danger btn-sm delete-address-btn" data-id="2">Delete</button>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <% }) %>
                                 </div>
                                 <button id="addAddressButton" class="btn btn-primary mt-3">Add Address</button>
                             </div>
                         </div>
+                        
                         
                         <div class="tab-pane fade" id="account-details" role="tabpanel" aria-labelledby="account-details-tab">
                             <div class="myaccount-details">
@@ -201,17 +195,17 @@
                 <form id="addressForm">
                     <div class="single-input">
                         <label for="name">Full Name*</label>
-                        <input type="text" id="name" class="form-control" placeholder="Enter Full Name" required>
+                        <input type="text" name="name" id="name" class="form-control" placeholder="Enter Full Name" required>
                     </div>
     
                     <div class="single-input">
                         <label for="phone">Phone Number*</label>
-                        <input type="text" id="phone" class="form-control" placeholder="Enter Phone Number" required>
+                        <input type="text" name="phone" id="phone" class="form-control" placeholder="Enter Phone Number" required>
                     </div>
     
                     <div class="single-input">
                         <label for="addressType">Address Type*</label>
-                        <select id="addressType" class="form-control" required>
+                        <select id="addressType" name="addressType" class="form-control" required>
                             <option value="Home">Home</option>
                             <option value="Work">Work</option>
                             <option value="Other">Other</option>
@@ -220,27 +214,27 @@
 
                     <div class="single-input">
                         <label for="addressLine">Pincode*</label>
-                        <input type="text" id="addressLine" class="form-control" placeholder="Enter Pincode" required>
+                        <input name="pincode" type="text" id="addressLine" class="form-control" placeholder="Enter Pincode" required>
                     </div>
     
                     <div class="single-input">
                         <label for="addressLine">Address*</label>
-                        <input type="text" id="addressLine" class="form-control" placeholder="Enter Address" required>
+                        <input type="text" id="addressLine" name="addressLine" class="form-control" placeholder="Enter Address" required>
                     </div>
     
                     <div class="single-input">
-                        <label for="city">District*</label>
-                        <input type="text" id="city" class="form-control" placeholder="Enter District" required>
+                        <label for="city">City*</label>
+                        <input type="text" id="city" name="city" class="form-control" placeholder="Enter District" required>
                     </div>
     
                     <div class="single-input">
                         <label for="state">State*</label>
-                        <input type="text" id="state" class="form-control" placeholder="Enter State" required>
+                        <input type="text" name="state" id="state" class="form-control" placeholder="Enter State" required>
                     </div>
     
                     <div class="single-input">
                         <label for="country">Country*</label>
-                        <input type="text" id="country" class="form-control" placeholder="Enter Country" required>
+                        <input type="text" id="country" name="country" class="form-control" placeholder="Enter Country" required>
                     </div>
 
                     <div class="single-input">
@@ -300,11 +294,11 @@
     
     <script>
 document.addEventListener('DOMContentLoaded', function () {
-    // Initialize the modal
+
     const modalElement = document.getElementById('editProfileModal');
     const editProfileModal = new bootstrap.Modal(modalElement);
 
-    // Handle button click to show modal
+
     const editProfileButton = document.getElementById('editProfileButton');
     editProfileButton.addEventListener('click', function (e) {
         e.preventDefault();
@@ -312,7 +306,7 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log('Edit Profile button clicked');
     });
 
-    // Handle form submission in modal
+
     const form = modalElement.querySelector('form');
     form.addEventListener('submit', function (e) {
         e.preventDefault();
@@ -405,34 +399,8 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-document.getElementById('editProfileForm').addEventListener('submit', async function (e) {
-    e.preventDefault();
 
-    const formData = new FormData(this);
-    const data = Object.fromEntries(formData.entries());
 
-    try {
-        const response = await fetch('/profile-update', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data),
-        });
-
-        const result = await response.json();
-
-        if (response.ok) {
-            alert(result.message);
-            // Optionally, update the profile details on the page without a reload
-            document.querySelector('#account-dashboard li:nth-child(1)').textContent = `Username: ${data.username}`;
-            document.querySelector('#account-dashboard li:nth-child(3)').textContent = `Phone Number: ${data.number}`;
-        } else {
-            alert(result.message);
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        alert('An unexpected error occurred. Please try again.');
-    }
-});
 
 
     </script>

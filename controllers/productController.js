@@ -127,25 +127,64 @@ const editProduct = async (req, res) => {
 };
 
 
-const deleteProduct = async (req, res) => {
+const aiProduct = async (req, res) => {
+    try {
+        const product = await Product.findById(req.params.id);
+        if (!product) {
+            return res.status(404).send('Product not found');
+        }
+
+        product.isActive = !product.isActive; // Toggle the active state
+        await product.save();
+
+        res.redirect('/admin/products'); // Redirect back to the product page
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+};
+
+const loadProduct = async (req,res) => {
+    try {
+        const products = await Product.find({isActive: true}); // Fetch all products from the database
+        res.render('shop', { products });  // Send the products to the EJS template
+      } catch (err) {
+        console.error(err);
+        res.status(500).send('Server error');
+      }
+}
+ 
+const getProductDetails = async (req, res) => {
     try {
         const productId = req.params.id;
-        const product = await Product.findByIdAndUpdate(productId, { isDeleted: true }, { new: true });
-        if (!product) return res.status(404).json({ message: 'Product not found' });
-        res.json({ message: 'Product soft deleted successfully' });
+        const product = await Product.findById(productId);
+        if (!product) {
+            return res.status(404).send("Product not found");
+        }
+        
+        // Fetch related products by category or other criteria 
+        const relatedProducts = await Product.find({  
+            _id: { $ne: productId }  // Exclude the main product
+        }).limit(4).lean();
+
+        res.render("single-product", { product , relatedProducts });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        console.error("Error fetching product details:", error);
+        res.status(500).send("Server Error");
     }
 };
 
 
 
 
+
 module.exports = {
-    addProduct,
+    addProduct, 
     loadEditProduct,
     editProduct,
-    deleteProduct,
+    aiProduct,
     getProduct,
-    loadAddProduct
+    loadAddProduct,
+    loadProduct,
+    getProductDetails,
 }

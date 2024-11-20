@@ -4,6 +4,8 @@ const userController = require('../controllers/userController')
 const passport = require("passport")
 const router = express();
 const session = require('../middleware/authMiddleware');
+const productController = require('../controllers/productController')
+const addressController = require('../controllers/addressController')
 
 
 router.set("view engine", "ejs");
@@ -50,13 +52,15 @@ router.get("/pageNotFound",userController.pageNotFound)
 //logout
 router.get("/logout",userController.logout)
 
-router.get("/products",userController.loadProduct)
-router.get('/product/:id', userController.getProductDetails);
+router.get("/products",productController.loadProduct)
+router.get('/product/:id', productController.getProductDetails);
 
 
 //profile 
 router.post("/profile-update" , userController.profileUpdate)
 
+//address
+router.post('/add-address',addressController.addAddress)
 
 
 module.exports = router ;  

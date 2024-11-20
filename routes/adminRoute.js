@@ -35,7 +35,7 @@ router.post("/products/add", upload.array('images',4), productController.addProd
 router.get('/products/edit/:id', productController.loadEditProduct)
 router.post('/products/edit/:id', upload.array("images", 4),productController.editProduct);
 
-router.post('/products/delete/:id',productController.deleteProduct)
-
+router.post('/products/toggle/:id',productController.aiProduct)
+ 
 
 module.exports = router

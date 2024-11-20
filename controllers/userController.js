@@ -4,12 +4,13 @@ const bcrypt = require("bcrypt");
 const env = require('dotenv');
 const { json } = require("express");
 const Product = require("../models/productModel")
- 
+const Address = require('../models/addressModel')
 //route to home 
 
 
 const loadHome = async (req,res) =>{
     try {
+    
         const products = await Product.find({}).limit(10).lean();
 
         
@@ -62,8 +63,11 @@ const loadSignup = async (req, res) => {
 
 const loadMyAccount = async (req,res) =>{
     try {
+
         const user = await User.findById(req.session.user)
-        res.render("my-account",{user})
+        const addresses = await Address.find({userId:req.session.user})
+
+        res.render("my-account",{user,addresses})
     } catch (error) {
         console.log(error)
         res.status(500).redirect("/pageNotFound")
@@ -125,6 +129,7 @@ const signUp = async (req, res) => {
 
         if(findUser){
             return res.render('signup',{message:"User already exist"})
+
         }
         const otp = generateOTP()
         const emailSent = await sendVerificationEmail(email,otp)
@@ -286,35 +291,6 @@ const logout = async (req, res) => {
     }
 };
 
-const loadProduct = async (req,res) => {
-    try {
-        const products = await Product.find(); // Fetch all products from the database
-        res.render('shop', { products });  // Send the products to the EJS template
-      } catch (err) {
-        console.error(err);
-        res.status(500).send('Server error');
-      }
-}
- 
-const getProductDetails = async (req, res) => {
-    try {
-        const productId = req.params.id;
-        const product = await Product.findById(productId);
-        if (!product) {
-            return res.status(404).send("Product not found");
-        }
-        
-        // Fetch related products by category or other criteria 
-        const relatedProducts = await Product.find({  
-            _id: { $ne: productId }  // Exclude the main product
-        }).limit(4).lean();
-
-        res.render("single-product", { product , relatedProducts });
-    } catch (error) {
-        console.error("Error fetching product details:", error);
-        res.status(500).send("Server Error");
-    }
-};
 
 const profileUpdate = async (req,res) => {
     try {
@@ -361,7 +337,5 @@ module.exports = {
     pageNotFound,
     login,
     logout,
-    loadProduct,
-    getProductDetails,
     profileUpdate
 } 

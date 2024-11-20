@@ -11,7 +11,7 @@ const AddressSchema = new mongoose.Schema({
         type: String, 
         required: true 
     },
-    mobile: { 
+    phone: { 
         type: String, 
         required: true,
     },
@@ -23,7 +23,7 @@ const AddressSchema = new mongoose.Schema({
         type: String, 
         required: true 
     },
-    district: { 
+    city: { 
         type: String, 
         required: true 
     },
@@ -31,11 +31,11 @@ const AddressSchema = new mongoose.Schema({
         type: String, 
         required: true 
     },
-    address_line: {  
+    addressLine: {  
         type: String, 
         required: true 
     },
-    address_type: {
+    addressType: {
         type: String,
         enum: ['Home', 'Work', 'Other'],  
         required: true

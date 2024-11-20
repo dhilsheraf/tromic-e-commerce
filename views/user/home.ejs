@@ -159,8 +159,8 @@
                         <div class="col-lg-4 col-md-6 pt-7">
                             <div class="product-item">
                                 <div class="product-img img-zoom-effect">
-                                    <a href="<%= product %>">
-                                        <img class="img-full" src="<%= product.primaryImage %>" alt="Product Image">
+                                    <a href="/product/<%= product._id %>">
+                                        <img class="img-full" src="<%= product.images[0] %>" alt="Product Image">
                                     </a>
                                 </div>
                                 <div class="product-content">
@@ -170,7 +170,7 @@
                                     <div class="price-box">
                                         <div class="price-box-holder">
                                             <span>Price:</span>
-                                            <span class="new-price text-primary">$<%= product.price %></span>
+                                            <span class="new-price text-primary">₹<%= product.price %></span>
                                         </div>
                                     </div>
                                     <div class="product-add-action">
@@ -246,7 +246,7 @@
                                     <div class="product-item">
                                         <div class="product-img img-zoom-effect">
                                             <a href="/product/<%= product._id %>">
-                                                <img class="img-full" src="<%= product.primaryImage %>" alt="Product Image">
+                                                <img class="img-full" src="<%= product.images[0] %>" alt="Product Image">
                                             </a>
                                         </div>
                                         <div class="product-content">
