@@ -35,6 +35,8 @@ app.set('view engine','ejs')
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('views', path.join(__dirname, 'views')); 
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());  
+
 
 connectDB()  
   
@@ -53,7 +55,7 @@ cloudinary.config({
 app.use('/',userRoute) ;
 app.use('/admin',adminRoute)
 app.get('/test',(req,res)=>{
-    res.render('user/single-product')
+    res.render('user/passchange-effect')
 })
  
 app.listen(PORT,()=>

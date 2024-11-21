@@ -11,7 +11,11 @@ const UserSchema = new mongoose.Schema({
 
     password: { type: String, required: false },
 
-    isBlocked:{type:Boolean, default:false}
+    isBlocked:{type:Boolean, default:false},
+
+    resetToken: { type: String, default: null },
+    
+    resetTokenExpires: { type: Date, default: null },
 
   },
 {

@@ -54,7 +54,7 @@
                                 </ul>
                                 <p>
                                     <br>
-                                    <a href="#" id="editProfileButton" class="btn btn-custom-size lg-size btn-primary">Edit Profile</a>
+                                    <a href="#" id="editProfileButton" class="btn btn-custom-size lg-size btn-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal">Edit Profile</a>
                                 </p>
                             </div>
                         </div>                        
@@ -109,14 +109,26 @@
                                                     <strong>Address:</strong> <%= address.addressLine %>, <%= address.pincode %>, <%= address.city %>, <%= address.state %>, <%= address.country %>
                                                 </address>
                                                 <div class="d-flex justify-content-between">
-                                                    <button class="btn btn-primary btn-sm edit-address-btn" data-id="<%= address._id %>">Edit</button>
+                                                    <button class="btn btn-primary btn-sm edit-address-btn" 
+                                                    data-id="<%= address._id %>" 
+                                                    data-name="<%= address.name %>"
+                                                    data-phone="<%= address.phone %>"
+                                                    data-address-line="<%= address.addressLine %>"
+                                                    data-city="<%= address.city %>"
+                                                    data-state="<%= address.state %>"
+                                                    data-country="<%= address.country %>"
+                                                    data-pincode="<%= address.pincode %>"
+                                                    data-address-type="<%= address.addressType %>"
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#editAddressModal">Edit</button>
+                                                
                                                     <button class="btn btn-danger btn-sm delete-address-btn" data-id="<%= address._id %>">Delete</button>
                                                 </div>
                                             </div>
                                         </div>
                                     <% }) %>
                                 </div>
-                                <button id="addAddressButton" class="btn btn-primary mt-3">Add Address</button>
+                                <button id="addAddressButton" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#addAddressModal">Add Address</button>
                             </div>
                         </div>
                         
@@ -164,7 +176,7 @@
                             <div class="single-input">
                                 <label for="username">Username*</label>
                                 <br>
-                                <input type="text" class="form-control id="username" name="username" value="<%= user.username %>" required>
+                                <input type="text" class="form-control" id="username" name="username" value="<%= user.username %>" required>
                             </div>
                             <div class="single-input">
                                 <label for="number">Phone Number</label>
@@ -178,8 +190,8 @@
                                 </button>
                             </div>
                         </div>
-                    </form>                    
-                </div>
+                    </form>
+                </div>                
             </div>
         </div>
     </div>
@@ -240,6 +252,7 @@
 </div>
 
 <!-- Modal for Edit Address -->
+<!-- Edit Address Modal -->
 <div class="modal fade" id="editAddressModal" tabindex="-1" aria-labelledby="editAddressModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -249,50 +262,52 @@
             </div>
             <div class="modal-body">
                 <form id="editAddressForm">
-                    <div class="single-input">
-                        <label for="editName">Full Name*</label>
-                        <input type="text" name="name" id="editName" class="form-control" placeholder="Enter Full Name" required>
+                    <!-- Hidden field to store the addressId -->
+                    <input type="hidden" id="editAddressId">
+
+                    <div class="mb-3">
+                        <label for="editName" class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="editName" required>
                     </div>
-                    <div class="single-input">
-                        <label for="editPhone">Phone Number*</label>
-                        <input type="text" name="phone" id="editPhone" class="form-control" placeholder="Enter Phone Number" required>
+                    <div class="mb-3">
+                        <label for="editPhone" class="form-label">Phone Number</label>
+                        <input type="text" class="form-control" id="editPhone" value="" required>
                     </div>
-                    <div class="single-input">
-                        <label for="editAddressType">Address Type*</label>
-                        <select id="editAddressType" name="addressType" class="form-control" required>
+                    <div class="mb-3">
+                        <label for="editAddressType" class="form-label">Address Type</label>
+                        <select class="form-select" id="editAddressType" required>
                             <option value="Home">Home</option>
                             <option value="Work">Work</option>
                             <option value="Other">Other</option>
                         </select>
                     </div>
-                    <div class="single-input">
-                        <label for="editPincode">Pincode*</label>
-                        <input type="text" name="pincode" id="editPincode" class="form-control" placeholder="Enter Pincode" required>
+                    <div class="mb-3">
+                        <label for="editPincode" class="form-label">Pincode</label>
+                        <input type="text" class="form-control" id="editPincode" required>
                     </div>
-                    <div class="single-input">
-                        <label for="editAddressLine">Address*</label>
-                        <input type="text" id="editAddressLine" name="addressLine" class="form-control" placeholder="Enter Address" required>
+                    <div class="mb-3">
+                        <label for="editAddressLine" class="form-label">Address Line</label>
+                        <input type="text" class="form-control" id="editAddressLine" required>
                     </div>
-                    <div class="single-input">
-                        <label for="editCity">City*</label>
-                        <input type="text" id="editCity" name="city" class="form-control" placeholder="Enter City" required>
+                    <div class="mb-3">
+                        <label for="editCity" class="form-label">City</label>
+                        <input type="text" class="form-control" id="editCity" required>
                     </div>
-                    <div class="single-input">
-                        <label for="editState">State*</label>
-                        <input type="text" name="state" id="editState" class="form-control" placeholder="Enter State" required>
+                    <div class="mb-3">
+                        <label for="editState" class="form-label">State</label>
+                        <input type="text" class="form-control" id="editState" required>
                     </div>
-                    <div class="single-input">
-                        <label for="editCountry">Country*</label>
-                        <input type="text" id="editCountry" name="country" class="form-control" placeholder="Enter Country" required>
+                    <div class="mb-3">
+                        <label for="editCountry" class="form-label">Country</label>
+                        <input type="text" class="form-control" id="editCountry" required>
                     </div>
-                    <div class="single-input">
-                        <button type="submit" class="btn btn-primary w-100">Update Address</button>
-                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Save Changes</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
 
     
 </main>
@@ -339,134 +354,44 @@
     
     <script>
 
-    document.addEventListener('DOMContentLoaded', function () {
-        // Edit Profile Modal
-        const editProfileModal = new bootstrap.Modal(document.getElementById('editProfileModal'));
-        const editProfileButton = document.getElementById('editProfileButton');
+document.addEventListener('DOMContentLoaded', () => {
+    // Event delegation for dynamically loaded delete buttons
+    document.addEventListener('click', function (event) {
+        if (event.target.classList.contains('delete-address-btn')) {
+            const addressId = event.target.getAttribute('data-id');
 
-        editProfileButton.addEventListener('click', function (e) {
-            e.preventDefault();
-            editProfileModal.show(); // Show the modal
-        });
-
-        const profileForm = document.getElementById('editProfileForm');
-        profileForm.addEventListener('submit', function (e) {
-            e.preventDefault();
-            console.log('Profile form submitted!');
-            // Add logic to save profile changes here
-            editProfileModal.hide();
-        });
-
-        // Address Modal
-        const addAddressModal = new bootstrap.Modal(document.getElementById('addAddressModal'));
-        const editAddressModal = new bootstrap.Modal(document.getElementById('editAddressModal'));
-        const addressList = document.getElementById('address-list');
-        let editAddressId = null; // For tracking edit action
-
-        // Add Address
-        const addAddressButton = document.getElementById('addAddressButton');
-        addAddressButton.addEventListener('click', function () {
-            editAddressId = null; // Reset editing ID
-            document.getElementById('addAddressForm').reset(); // Clear form
-            addAddressModal.show();
-        });
-
-        document.getElementById('addAddressForm').addEventListener('submit', function (e) {
-            e.preventDefault();
-            console.log('Adding new address');
-            // Logic to handle adding a new address
-            addAddressModal.hide();
-        });
-
-        // Edit Address
-        addressList.addEventListener('click', function (e) {
-            if (e.target.classList.contains('edit-address-btn')) {
-                editAddressId = e.target.dataset.id; // Set edit ID
-                console.log(`Editing address with ID: ${editAddressId}`);
-                // Populate the form with the selected address's data here
-                editAddressModal.show();
+            // Confirm the deletion action with the user
+            if (confirm('Are you sure you want to delete this address?')) {
+                // Send the delete request to the server
+                fetch(`/delete-address/${addressId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Address deleted successfully!');
+                        // Remove the address card from the DOM
+                        const addressCard = event.target.closest('.address-card');
+                        if (addressCard) {
+                            addressCard.remove();
+                        }
+                    } else {
+                        alert(`Error deleting address: ${data.error}`);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while deleting the address. Please try again.');
+                });
             }
-        });
-
-        document.getElementById('editAddressForm').addEventListener('submit', function (e) {
-            e.preventDefault();
-            console.log(`Updating address with ID: ${editAddressId}`);
-            // Logic to handle editing the address
-            editAddressModal.hide();
-        });
+        }
     });
-
-    document.getElementById('addressForm').addEventListener('submit', async function (e) {
-    e.preventDefault();
-
-    const formData = new FormData(this);
-    const data = Object.fromEntries(formData.entries());
-
-    try {
-        const response = await fetch('/add-address', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data),
-        });
-
-        const result = await response.json();
-
-        if (response.ok) {
-            alert(result.message);
-            // Optionally append the new address to the UI
-            const addressHtml = `
-                <div class="col-12 col-md-6 mb-3">
-                    <div class="address-card p-3 border rounded">
-                        <h4 class="small-title">${data.addressType}</h4>
-                        <address>
-                            ${data.addressLine}, ${data.city}, ${data.state}, ${data.country}, ${data.pincode}
-                        </address>
-                        <div class="d-flex justify-content-between">
-                            <button class="btn btn-primary btn-sm edit-address-btn">Edit</button>
-                            <button class="btn btn-danger btn-sm delete-address-btn">Delete</button>
-                        </div>
-                    </div>
-                </div>`;
-            document.getElementById('address-list').innerHTML += addressHtml;
-            document.getElementById('addressModal').reset();
-        } else {
-            alert(result.message);
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        alert('An unexpected error occurred. Please try again.');
-    }
 });
 
-document.getElementById('editProfileForm').addEventListener('submit', async function (e) {
-    e.preventDefault();
-
-    const formData = new FormData(this);
-    const data = Object.fromEntries(formData.entries());
-
-    try {
-        const response = await fetch('/profile-update', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data),
-        });
-
-        const result = await response.json();
-
-        if (response.ok) {
-            alert(result.message);
-            // Optionally, update the profile details on the page without a reload
-            document.querySelector('#account-dashboard li:nth-child(1)').textContent = `Username: ${data.username}`;
-            document.querySelector('#account-dashboard li:nth-child(3)').textContent = `Phone Number: ${data.number}`;
-        } else {
-            alert(result.message);
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        alert('An unexpected error occurred. Please try again.');
-    }
-});
-
+          
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 

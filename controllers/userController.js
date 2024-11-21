@@ -5,6 +5,7 @@ const env = require('dotenv');
 const { json } = require("express");
 const Product = require("../models/productModel")
 const Address = require('../models/addressModel')
+const crypto = require('crypto')
 //route to home 
 
 
@@ -319,9 +320,116 @@ const profileUpdate = async (req,res) => {
     }
 }
 
+const forgotPasswordLoad = async (req,res) => {
+    try {
+        res.render('forgotPassword')
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({ message: 'An error occurred while forgot password loading' });
+    }
+}
 
+const forgotPassword = async (req,res) => {
+        const { email } = req.body;
+      
+        try {
+          const user = await User.findOne({ email });
+          if (!user) {
+            return res.send("If this email exists, a reset link has been sent.");
+          }
+      
+          // Generate Reset Token
+          const resetToken = crypto.randomBytes(32).toString("hex");
+          user.resetToken = resetToken;
+          user.resetTokenExpires = Date.now() + 3600000; // 1 hour
+          await user.save();
+      
+          // Send Email
+          const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+              user: process.env.NODEMAILER_EMAIL,
+              pass: process.env.NODEMAILER_PASSWORD,
+            },
+          });
+      
+          const resetUrl = `http://localhost:${process.env.PORT}/reset-password/${resetToken}`;
+          const mailOptions = {
+            to: user.email,
+            subject: "Password Reset",
+            html:  `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #f7f7f7; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+              <h2 style="text-align: center; color: #333;">Password Reset Request</h2>
+              <p style="font-size: 16px; line-height: 1.5; color: #555;">
+                Hello, <br />
+                You requested a password reset for your account. Please click the button below to reset your password. 
+              </p>
+              <div style="text-align: center; margin: 20px 0;">
+                <a href="${resetUrl}" style="background-color: #4CAF50; color: white; padding: 14px 25px; text-decoration: none; font-size: 16px; border-radius: 5px; transition: background-color 0.3s;">
+                  Reset Password
+                </a>
+              </div>
+              <p style="font-size: 14px; color: #777; text-align: center;">
+                If you did not request this, please ignore this email.
+              </p>
+              <p style="font-size: 14px; color: #777; text-align: center;">
+                This link will expire in 1 hour.
+              </p>
+            </div>
+          `,
+          };
+      
+          await transporter.sendMail(mailOptions);
+          res.redirect('/forgot-password?status=sent')
+        } catch (err) {
+          console.error(err);
+          res.status(500).send("Something went wrong.");
+        }
+      }
+
+ const resetPasswordLoad = async (req, res) => {
+    try {
+        const { token } = req.params;
+  
+    const user = await User.findOne({ resetToken: token, resetTokenExpires: { $gt: Date.now() } });
+    if (!user) {
+      return res.send("Expired the time");
+    }
+  
+    res.render("resetPassword", { token });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Something went wrong.");
+    }
+  }
+
+
+const resetPassword = async (req, res) => {
+try {
+    const { token } = req.params;
+    const { password } = req.body;
+  
+    const user = await User.findOne({ resetToken: token, resetTokenExpires: { $gt: Date.now() } });
+    if (!user) {
+      return res.send("Invalid or expired reset token.");
+    }
+  
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(password, 10);
+    user.password = hashedPassword;
+    user.resetToken = null;
+    user.resetTokenExpires = null;
+    await user.save();
+  
+    res.render('passchange-effect');
+} catch (error) {
+    console.error(error);
+        res.status(500).send("Something went wrong.");
+}
+  }
  
- 
+
+
 module.exports = {
     loadHome,
     loadSignup,
@@ -337,5 +445,9 @@ module.exports = {
     pageNotFound,
     login,
     logout,
-    profileUpdate
+    profileUpdate,
+    forgotPasswordLoad,
+    forgotPassword,
+    resetPasswordLoad,
+    resetPassword
 } 
