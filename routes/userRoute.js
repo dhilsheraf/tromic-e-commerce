@@ -70,7 +70,7 @@ router.get('/forgot-password',userController.forgotPasswordLoad)
 router.post('/forgot-password',userController.forgotPassword)
 router.get("/reset-password/:token",userController.resetPasswordLoad)
 router.post("/reset-password/:token",userController.resetPassword)
-
+router.post('/change-password',userController.changePassword)
 
 module.exports = router ;  
    

@@ -43,11 +43,11 @@ const CartSchema = new mongoose.Schema({
 });
 
 
-// Middleware to calculate total quantity and price before saving
+
 CartSchema.pre('save', function (next) {
     this.totalQuantity = this.items.reduce((sum, item) => sum + item.quantity, 0);
     this.totalPrice = this.items.reduce((sum, item) => sum + item.total, 0);
     next();
-});
+}); 
 
 module.exports = mongoose.model('Cart', CartSchema);

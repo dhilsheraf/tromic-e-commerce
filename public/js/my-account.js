@@ -144,5 +144,79 @@
                 });
             });
             
+            // address delete
+
+
+            document.addEventListener('DOMContentLoaded', () => {
+                // Event delegation for dynamically loaded delete buttons
+                document.addEventListener('click', function (event) {
+                    if (event.target.classList.contains('delete-address-btn')) {
+                        const addressId = event.target.getAttribute('data-id');
             
+                        // Confirm the deletion action with the user
+                        if (confirm('Are you sure you want to delete this address?')) {
+                            // Send the delete request to the server
+                            fetch(`/delete-address/${addressId}`, {
+                                method: 'DELETE',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    alert('Address deleted successfully!');
+                                    // Remove the address card from the DOM
+                                    const addressCard = event.target.closest('.address-card');
+                                    if (addressCard) {
+                                        addressCard.remove();
+                                    }
+                                } else {
+                                    alert(`Error deleting address: ${data.error}`);
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                alert('An error occurred while deleting the address. Please try again.');
+                            });
+                        }
+                    }
+                });
+            });
             
+
+            
+            document.getElementById('changePasswordForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const currentPassword = document.getElementById('currentPassword').value;
+    const newPassword = document.getElementById('newPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+
+    if (newPassword !== confirmPassword) {
+        alert('Passwords do not match.');
+        return;
+    }
+
+    try {
+        const response = await fetch('/change-password', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ currentPassword, newPassword, confirmPassword }),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            alert(result.message || 'Password updated successfully.');
+            document.getElementById('changePasswordForm').reset();
+        } else {
+            alert(result.error || 'An error occurred while changing the password.');
+        }
+    } catch (error) {
+        alert('Network error: ' + error.message);
+    }
+});
+

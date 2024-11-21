@@ -55,7 +55,7 @@ cloudinary.config({
 app.use('/',userRoute) ;
 app.use('/admin',adminRoute)
 app.get('/test',(req,res)=>{
-    res.render('user/passchange-effect')
+    res.render('user/cart')
 })
  
 app.listen(PORT,()=>
