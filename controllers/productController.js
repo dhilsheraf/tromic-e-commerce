@@ -29,15 +29,15 @@ const getProduct = async (req, res) => {
     }
 };
 
- 
-const loadAddProduct = async (req,res) =>{
-      try {
+
+const loadAddProduct = async (req, res) => {
+    try {
         const categories = await Category.find({ isActive: true });
         res.render('admin/addProduct', { categories });
-      } catch (error) {
+    } catch (error) {
         console.error('Error loading add product page:', error);
         res.status(500).render('admin/404');
-      }
+    }
 }
 
 const addProduct = async (req, res) => {
@@ -97,11 +97,11 @@ const editProduct = async (req, res) => {
         // Check if there are new images uploaded and update them based on index
         if (req.files && req.files.length > 0) {
             req.files.forEach((file, index) => {
-                updatedImages[index] = file.path; 
+                updatedImages[index] = file.path;
             });
         }
 
-        
+
         const updatedProduct = await Product.findByIdAndUpdate(
             req.params.id,
             {
@@ -144,16 +144,16 @@ const aiProduct = async (req, res) => {
     }
 };
 
-const loadProduct = async (req,res) => {
+const loadProduct = async (req, res) => {
     try {
-        const products = await Product.find({isActive: true}); // Fetch all products from the database
+        const products = await Product.find({ isActive: true }); // Fetch all products from the database
         res.render('shop', { products });  // Send the products to the EJS template
-      } catch (err) {
+    } catch (err) {
         console.error(err);
         res.status(500).send('Server error');
-      }
+    }
 }
- 
+
 const getProductDetails = async (req, res) => {
     try {
         const productId = req.params.id;
@@ -161,25 +161,28 @@ const getProductDetails = async (req, res) => {
         if (!product) {
             return res.status(404).send("Product not found");
         }
-        
+
         // Fetch related products by category or other criteria 
-        const relatedProducts = await Product.find({  
+        const relatedProducts = await Product.find({
             _id: { $ne: productId }  // Exclude the main product
         }).limit(4).lean();
 
-        res.render("single-product", { product , relatedProducts });
+        res.render("single-product", { product, relatedProducts });
     } catch (error) {
         console.error("Error fetching product details:", error);
-        res.status(500).send("Server Error");
+        res.status(500).render('error')
     }
 };
 
+const error = async (req, res) => {
+    res.render('error')
+}
 
 
 
 
 module.exports = {
-    addProduct, 
+    addProduct,
     loadEditProduct,
     editProduct,
     aiProduct,

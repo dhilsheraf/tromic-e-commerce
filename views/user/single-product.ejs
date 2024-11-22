@@ -1,4 +1,95 @@
 <%- include("../partials/header.ejs") %>
+<style>
+.cart-plus-minus-box {
+    width: 50px;
+    text-align: center;
+}
+
+
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+/* Container Styles */
+.quantity {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.cart-plus-minus {
+    display: flex;
+    align-items: center;
+    max-width: 180px;
+    height: 44px;
+    background: #505050;
+    border-radius: 22px;
+    padding: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Input Styles */
+.cart-plus-minus-box {
+    width: 60px;
+    height: 36px;
+    text-align: center;
+    border: none;
+    background: #444;
+    color: white;
+    font-size: 16px;
+    font-weight: 500;
+    margin: 0 4px;
+    border-radius: 18px;
+    padding: 0;
+    outline: none;
+}
+
+/* Button Styles */
+.minus-btn,
+.plus-btn {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: white;
+    color: #444;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+/* Button Hover Effects */
+.minus-btn:hover,
+.plus-btn:hover {
+    background: #ebebeb;
+}
+
+/* Button Active State */
+.minus-btn:active,
+.plus-btn:active {
+    transform: scale(0.95);
+}
+
+/* Disabled State */
+
+/* Remove number input arrows */
+.cart-plus-minus-box::-webkit-inner-spin-button,
+.cart-plus-minus-box::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Focus state */
+.cart-plus-minus:focus-within {
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+}
+</style>
 
 <main class="main-content">
     <div class="breadcrumb-area breadcrumb-height" data-bg-image="/images/breadcrumb/bg/1-1-1920x400.jpg">
@@ -55,8 +146,8 @@
     
                       <!-- Display Discounted Price -->
                     <div class="price-box pb-3">
-                        <span class="original-price text-muted"><%= product.price %></span>
-                        <span class="discounted-price text-danger" id="final-price"><%= product.price %></span> <!-- Discounted Price -->
+                        <del> <span class="original-price text-muted">₹<%= product.price %></span></del>
+                        <span class="discounted-price text-danger" id="final-price">₹<%= product.price %></span> <!-- Discounted Price -->
                     </div>
                     
                         <!-- Stock Status -->
@@ -90,11 +181,16 @@
                         <ul class="quantity-with-btn pb-5">
                             <li class="quantity">
                                 <div class="cart-plus-minus">
-                                    <input class="cart-plus-minus-box" value="1" type="text">
+                                    <button class="minus-btn" type="button">+</button>
+                                    <input class="cart-plus-minus-box" type="text" value="1" readonly data-stock="10">
+                                    <button class="plus-btn" type="button">-</button>
                                 </div>
-                            </li>
+                            </li>                                                    
                             <li class="add-to-cart">
-                                <a class="btn btn-custom-size lg-size btn-primary" href="#">Add to cart</a>
+                                <button class="btn btn-custom-size lg-size btn-primary" 
+                                        data-product-id="<%= product._id %>" >
+                                    Add to cart
+                                </button>
                             </li>
                             <li class="wishlist-btn-wrap">
                                 <a class="custom-circle-btn" href="#">
@@ -309,7 +405,7 @@
                                         <div class="product-item">
                                             <div class="product-img img-zoom-effect">
                                                 <a href="/product/<%= related._id %>">
-                                                    <img class="img-full" src="<%= related.primaryImage %>" alt="<%= related.name %>">
+                                                    <img class="img-full" src="<%= related.images[0] %>" alt="<%= related.name %>">
                                                 </a>
                                             </div>
                                             <div class="product-content">
@@ -358,23 +454,61 @@
 </main>
 <!-- Main Content Area End Here  -->
 <script>
-    // Select all main product images for zoom functionality
-// Select all main product images for zoom functionality
-document.querySelectorAll('.single-product-img .swiper-slide img').forEach(img => {
-    img.addEventListener('mousemove', (e) => {
-        const rect = e.target.getBoundingClientRect();
-        const x = ((e.clientX - rect.left) / rect.width) * 100; // x position as percentage
-        const y = ((e.clientY - rect.top) / rect.height) * 100; // y position as percentage
-        img.style.transformOrigin = `${x}% ${y}%`;
-        img.style.transform = "scale(1.5)";
-    });
 
-    img.addEventListener('mouseleave', () => {
-        img.style.transform = "scale(1)";
-        img.style.transformOrigin = "center center";
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    const addToCartButtons = document.querySelectorAll(".btn.btn-custom-size.lg-size.btn-primary");
+
+    addToCartButtons.forEach(button => {
+        button.addEventListener("click", async (e) => {
+            e.preventDefault();
+
+            const productId = button.dataset.productId;
+            const quantityInput = button.closest(".quantity-with-btn").querySelector('.cart-plus-minus-box');
+            const quantity = parseInt(quantityInput.value, 10);
+            const maxStock = parseInt(quantityInput.dataset.stock, 10);
+
+            if (quantity <= 0) {
+                alert("Quantity must be at least one.");
+                return;
+            }
+
+            if (quantity > maxStock) {
+                alert(`Only ${maxStock} items are available in stock.`);
+                return;
+            }
+
+            try {
+                const response = await fetch('/add-cart', {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ productId, quantity }),
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    alert("Product added to cart successfully!");
+                    window.location.href = '/cart';
+                } else {
+                    alert(result.message || "Failed to add product to cart.");
+                    window.location.href =  '/login'
+                }
+            } catch (error) {
+                console.error("Error adding to cart:", error);
+                alert("An error occurred. Please try again.");
+            }
+        });
     });
 });
 
 
+
+
 </script>
+
+<script src="/js/singleProduct.js"></script>
 <%- include("../partials/footer.ejs") %>

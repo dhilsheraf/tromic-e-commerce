@@ -31,7 +31,7 @@ const loadAdminLogin = (req,res) =>{
         res.render('admin/adminlogin',{message:""})
     } catch (error) {
         console.log("error while admin login",error)
-        res.status(500).render('error')
+        res.status(500).render('admin/404')
     }
 }
 
@@ -40,22 +40,34 @@ const loadAdminDashboard = async (req,res) =>{
         res.render('admin/adminDashboard')
     } catch (error) {
         console.log("error while loading admin dashboard");
-        res.status(500).render('error')
+        res.status(500).render('admin/404')
     }
 }
 
-const loadUsers = async (req,res) =>{
+const loadUsers = async (req, res) => {
     try {
-        // Fetch users from the database
-        const users = await User.find({});
-        
+        const { page = 1, limit = 10 } = req.query; // Default to page 1 and 10 entries per page
+
+        const totalUsers = await User.countDocuments();
+
+        const users = await User.find({})
+            .skip((page - 1) * limit) // Skip entries for previous pages
+            .limit(parseInt(limit)); // Limit the number of users fetched
+
         // Render the EJS view and pass the user data
-        res.render('admin/adminUser', { users });
+        res.render('admin/adminUser', {
+            users,
+            totalUsers,
+            currentPage: parseInt(page),
+            totalPages: Math.ceil(totalUsers / limit),
+            limit: parseInt(limit)
+        });
     } catch (error) {
         console.error("Error fetching users:", error);
         res.status(500).send("Internal Server Error");
     }
-}
+};
+
 
 const blockunblock = async (req, res) => {
     const userId = req.params.userId;
@@ -85,11 +97,27 @@ const blockunblock = async (req, res) => {
     }
 };
 
+const logout = async (req, res) => {
+    try {
+        req.session.destroy((err) => {
+            if (err) {
+                console.log("Session destruction error", err.message);
+                res.status(500).render('admin/404')
+            } else {
+                return res.redirect("/admin");
+            }
+        });
+    } catch (error) {
+        console.log("Logout error", error);
+        res.redirect("");
+    }
+};
 
 module.exports = {
     loadAdminLogin,
     adminLogin,
     loadAdminDashboard,
     loadUsers,
-    blockunblock
+    blockunblock,
+    logout
 }

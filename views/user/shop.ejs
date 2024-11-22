@@ -1,164 +1,221 @@
 <%- include("../partials/header.ejs") %>
-<main class="main-content">
-    <div class="breadcrumb-area breadcrumb-height" data-bg-image="/images/breadcrumb/bg/1-1-1920x400.jpg">
-        <div class="container h-100">
-            <div class="row h-100">
-                <div class="col-lg-12">
-                    <div class="breadcrumb-item text-night-rider">
-                        <h2 class="breadcrumb-heading">Shop Layout</h2>
-                        <ul>
-                            <li>
-                                <a href="index.html">Home /</a>
-                            </li>
-                            <li>Shop Default</li>
-                        </ul>
+    <main class="main-content">
+        <div class="breadcrumb-area breadcrumb-height" data-bg-image="/images/breadcrumb/bg/1-1-1920x400.jpg">
+            <div class="container h-100">
+                <div class="row h-100">
+                    <div class="col-lg-12">
+                        <div class="breadcrumb-item text-night-rider">
+                            <h2 class="breadcrumb-heading">Shop Layout</h2>
+                            <ul>
+                                <li>
+                                    <a href="index.html">Home /</a>
+                                </li>
+                                <li>Shop Default</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="shop-area section-space-y-axis-100">
-        <div class="container">
-            <div class="row">
-                <div class="col-xl-3 col-lg-4 order-lg-1 order-2 pt-10 pt-lg-0">
-                    <div class="sidebar-area style-2">
-                        
-                        <div class="widgets-area mb-9">
-                            <h2 class="widgets-title mb-5">Shop By Categories</h2>
-                            <div class="widgets-item">
-                                <ul class="widgets-category">
-                                    <li>
-                                        <a href="#">Accesasories
-                                            <span>(6)</span> <input type="checkbox" name="" id="">
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Computer
-                                            <span>(4)</span> <input type="checkbox">
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Covid-19
-                                            <span>(2)</span> <input type="checkbox">
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Electronics
-                                            <span>(6)</span> <input type="checkbox">
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Frame Sunglasses
-                                            <span>(12)</span> <input type="checkbox" name="" id="">
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Furniture
-                                          <input type="checkbox">
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Genuine Leather   <input type="checkbox">
-                                           
-                                        </a>
-                                    </li>
-                                    <button class="" >Apply</button>
-                                </ul>
-                            </div>
-                        </div>
+        <div class="shop-area section-space-y-axis-100">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-3 col-lg-4 order-lg-1 order-2 pt-10 pt-lg-0">
+                        <div class="sidebar-area style-2">
 
+                            <div class="widgets-area mb-9">
+                                <h2 class="widgets-title mb-5">Shop By Categories</h2>
+                                <div class="widgets-item">
+                                    <ul class="widgets-category">
+                                        <li>
+                                            <a href="#">Accesasories
+                                                <span>(6)</span> <input type="checkbox" name="" id="">
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">Computer
+                                                <span>(4)</span> <input type="checkbox">
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">Covid-19
+                                                <span>(2)</span> <input type="checkbox">
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">Electronics
+                                                <span>(6)</span> <input type="checkbox">
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">Frame Sunglasses
+                                                <span>(12)</span> <input type="checkbox" name="" id="">
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">Furniture
+                                                <input type="checkbox">
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">Genuine Leather <input type="checkbox">
+
+                                            </a>
+                                        </li>
+                                        <button class="">Apply</button>
+                                    </ul>
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
-                </div>
-                <div class="col-xl-9 col-lg-8 order-lg-2 order-1">
-                    <div class="product-topbar">
-                        <ul>
-                            <li class="page-count">
-                                <span>23</span> Product Found of <span>50</span>
-                            </li>
-                            <li class="product-view-wrap">
-                                <ul class="nav" role="tablist">
-                                    <div class="widgets-searchbox ">
-                                        <form id="widgets-searchbox" action="#">
-                                            <input class="input-field" type="text" placeholder="Search">
-                                            <button class="widgets-searchbox-btn" type="submit">
-                                                <i class="pe-7s-search"></i>
-                                            </button>
-                                        </form>
-                                    </div>
-                                 
-                                </ul>
-                            </li>
-                            <li class="short">
-                                <select class="nice-select rounded-0">
-                                    <option value="1">Sort by Default</option>
-                                    <option value="2">Sort by High Price</option>
-                                    <option value="3">Sort by Low Price</option>
-                                </select>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="tab-content text-charcoal pt-8">
-                        <div class="tab-pane fade show active" id="grid-view" role="tabpanel" aria-labelledby="grid-view-tab">
-                            <div class="product-grid-view row">
-                                <!-- Loop through all products -->
-                                <% products.forEach(product => { %>
-                                    <div class="col-xl-4 col-sm-6">
-                                        <div class="product-item">
-                                            <div class="product-img img-zoom-effect">
-                                                <!-- Dynamically load the primary image for each product -->
-                                                <a href="/product/<%= product._id %>">
-                                                    <img class="img-full" src="<%= product.images[0] %>" alt="<%= product.name %>">
-                                                </a>
-                                            </div>
-                                            <div class="product-content">
-                                                <!-- Product name and price -->
-                                                <a class="product-name pb-1" href="/product/<%= product._id %>"><%= product.name %></a>
-                                                <div class="price-box">
-                                                    <div class="price-box-holder">
-                                                        <span>Price:</span>
-                                                        <span class="new-price text-primary"><%= product.price %></span>
-                                                    </div>
+                    <div class="col-xl-9 col-lg-8 order-lg-2 order-1">
+                        <div class="product-topbar">
+                            <ul>
+                                <li class="page-count">
+                                    <span>23</span> Product Found of <span>50</span>
+                                </li>
+                                <li class="product-view-wrap">
+                                    <ul class="nav" role="tablist">
+                                        <div class="widgets-searchbox ">
+                                            <form id="widgets-searchbox" action="#">
+                                                <input class="input-field" type="text" placeholder="Search">
+                                                <button class="widgets-searchbox-btn" type="submit">
+                                                    <i class="pe-7s-search"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+
+                                    </ul>
+                                </li>
+                                <li class="short">
+                                    <select class="nice-select rounded-0">
+                                        <option value="1">Sort by Default</option>
+                                        <option value="2">Sort by High Price</option>
+                                        <option value="3">Sort by Low Price</option>
+                                    </select>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="tab-content text-charcoal pt-8">
+                            <div class="tab-pane fade show active" id="grid-view" role="tabpanel"
+                                aria-labelledby="grid-view-tab">
+                                <div class="product-grid-view row">
+                                    <!-- Loop through all products -->
+                                    <% products.forEach(product=> { %>
+                                        <div class="col-xl-4 col-sm-6">
+                                            <div class="product-item">
+                                                <div class="product-img img-zoom-effect">
+                                                    <!-- Dynamically load the primary image for each product -->
+                                                    <a href="/product/<%= product._id %>">
+                                                        <img class="img-full" src="<%= product.images[0] %>"
+                                                            alt="<%= product.name %>">
+                                                    </a>
                                                 </div>
-                                                <div class="product-add-action">
-                                                    <ul>
-                                                        <li>
-                                                            <a href="cart.html" data-tippy="Add to cart">
-                                                                <i class="pe-7s-cart"></i>
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="wishlist.html" data-tippy="Add to wishlist">
-                                                                <i class="pe-7s-like"></i>
-                                                            </a>
-                                                        </li>
-                                                    </ul>
+                                                <div class="product-content">
+                                                    <!-- Product name and price -->
+                                                    <a class="product-name pb-1" href="/product/<%= product._id %>">
+                                                        <%= product.name %>
+                                                    </a>
+                                                    <div class="price-box">
+                                                        <div class="price-box-holder">
+                                                            <span>Price:</span>
+                                                            <span class="new-price text-primary">
+                                                                <%= product.price %>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="product-add-action">
+                                                        <ul>
+                                                            <li>
+                                                                <button class="add-to-cart-btn"
+                                                                    data-id="<%= product._id %>"
+                                                                    data-tippy="Add to cart">
+                                                                    <i class="pe-7s-cart"></i>
+                                                                </button>
+                                                            </li>
+                                                            <li>
+                                                                <a href="wishlist.html" data-tippy="Add to wishlist">
+                                                                    <i class="pe-7s-like"></i>
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                <% }); %> <!-- End of loop -->
+                                        <% }); %> <!-- End of loop -->
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    
-                    <div class="pagination-area pt-10">
-                        <nav aria-label="Page navigation example">
-                            <ul class="pagination justify-content-end">
-                                <li class="page-item">
-                                    <a class="page-link" href="#" aria-label="Previous">&laquo;</a>
-                                </li>
-                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#" aria-label="Next">&raquo;</a>
-                                </li>
-                            </ul>
-                        </nav>
+
+                        <div class="pagination-area pt-10">
+                            <nav aria-label="Page navigation example">
+                                <ul class="pagination justify-content-end">
+                                    <li class="page-item">
+                                        <a class="page-link" href="#" aria-label="Previous">&laquo;</a>
+                                    </li>
+                                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="#" aria-label="Next">&raquo;</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</main>
+    </main>
 
-<%- include("../partials/footer.ejs") %>
+    <script>
+        document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+            button.addEventListener('click', async function () {
+                const productId = this.getAttribute('data-id');
+                try {
+                    const response = await fetch('/add-cart', {
+                        method: "POST",
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ productId, quantity: 1 })
+                    });
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        alert(result.message || "Product added to Cart");
+                    } else {
+                        if (response.status === 401) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Please log in',
+                                text: result.message || 'You need to be logged in to add items to your cart.',
+                                showCancelButton: true,
+                                cancelButtonText: 'Cancel',
+                                confirmButtonText: 'Login',
+                                reverseButtons: true
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    // Redirect to login page
+                                    window.location.replace('/login'); // Use replace to navigate away from the current page
+                                }
+                            });
+                        }
+
+                        else {
+                            alert(result.message || "Failed to add product to cart");
+                        }
+                    }
+                } catch (error) {
+                    console.error("Error while adding product to cart: ", error);
+                    alert("Something went wrong");
+                }
+            });
+        });
+
+    </script>
+<script src=""></script>
+    <%- include("../partials/footer.ejs") %>
+
+
+        <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.13/dist/sweetalert2.min.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.13/dist/sweetalert2.min.js"></script>

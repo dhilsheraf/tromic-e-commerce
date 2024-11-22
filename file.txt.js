@@ -1,0 +1,287 @@
+exports.getCart = async (req, res) => {
+    const { userId } = req.params;
+    const cart = await Cart.findOne({ userId }).populate('items.productId');
+
+    if (!cart) return res.json({ items: [], totalPrice: 0, totalQuantity: 0 });
+
+    // Update prices dynamically
+    cart.items.forEach(item => {
+        const currentProduct = item.productId; // Populated product
+        item.price = currentProduct.price; // Update price from the database
+        item.total = currentProduct.price * item.quantity; // Update total
+    });
+
+    cart.totalPrice = cart.items.reduce((sum, item) => sum + item.total, 0);
+    await cart.save(); // Save updated prices to the database
+
+    res.json(cart);
+};
+
+
+//checkout
+
+exports.checkout = async (req, res) => {
+    const { userId } = req.body;
+    const cart = await Cart.findOne({ userId }).populate('items.productId');
+
+    if (!cart) return res.status(400).json({ message: 'Cart is empty' });
+
+    let isPriceUpdated = false;
+
+    cart.items.forEach(item => {
+        const currentProduct = item.productId;
+        if (item.price !== currentProduct.price) {
+            item.price = currentProduct.price;
+            item.total = currentProduct.price * item.quantity;
+            isPriceUpdated = true;
+        }
+    });
+
+    if (isPriceUpdated) {
+        cart.totalPrice = cart.items.reduce((sum, item) => sum + item.total, 0);
+        await cart.save();
+        return res.status(400).json({ message: 'Cart prices were updated. Please review the updated prices.' });
+    }
+
+    res.json({ message: 'Checkout successful' });
+};
+
+
+
+// List Products in Cart
+exports.listCart = async (req, res) => {
+    const { userId } = req.params;
+    const cart = await Cart.findOne({ userId }).populate('items.productId');
+    res.json(cart);
+};
+
+// Remove Product from Cart
+exports.removeFromCart = async (req, res) => {
+    const { userId, productId } = req.body;
+
+    const cart = await Cart.findOne({ userId });
+    if (!cart) return res.status(404).send('Cart not found');
+
+    cart.items = cart.items.filter(item => item.productId.toString() !== productId);
+    await cart.save();
+    res.json(cart);
+};
+
+
+
+
+
+
+<%- include("../partials/header.ejs") %>
+<style>
+.cart-plus-minus-box {
+    width: 50px;
+    text-align: center;
+}
+
+
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+/* Container Styles */
+.quantity {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.cart-plus-minus {
+    display: flex;
+    align-items: center;
+    max-width: 180px;
+    height: 44px;
+    background: #505050;
+    border-radius: 22px;
+    padding: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Input Styles */
+.cart-plus-minus-box {
+    width: 60px;
+    height: 36px;
+    text-align: center;
+    border: none;
+    background: #444;
+    color: white;
+    font-size: 16px;
+    font-weight: 500;
+    margin: 0 4px;
+    border-radius: 18px;
+    padding: 0;
+    outline: none;
+}
+
+/* Button Styles */
+.minus-btn,
+.plus-btn {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: white;
+    color: #444;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+/* Button Hover Effects */
+.minus-btn:hover,
+.plus-btn:hover {
+    background: #ebebeb;
+}
+
+/* Button Active State */
+.minus-btn:active,
+.plus-btn:active {
+    transform: scale(0.95);
+}
+
+/* Disabled State */
+
+/* Remove number input arrows */
+.cart-plus-minus-box::-webkit-inner-spin-button,
+.cart-plus-minus-box::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Focus state */
+.cart-plus-minus:focus-within {
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+}
+</style>
+
+<main class="main-content">
+  
+    
+                        <!-- Quantity and Buttons -->
+                        <ul class="quantity-with-btn pb-5">
+                            <li class="quantity">
+                                <div class="cart-plus-minus">
+                                    <button class="minus-btn" type="button">+</button>
+                                    <input class="cart-plus-minus-box" type="text" value="1" readonly data-stock="10">
+                                    <button class="plus-btn" type="button">-</button>
+                                </div>
+                            </li>                                                    
+                            <li class="add-to-cart">
+                                <button class="btn btn-custom-size lg-size btn-primary" 
+                                        data-product-id="<%= product._id %>" >
+                                    Add to cart
+                                </button>
+                            </li>
+                            <li class="wishlist-btn-wrap">
+                                <a class="custom-circle-btn" href="#">
+                                    <i class="pe-7s-like"></i>
+                                </a>
+                            </li>
+                        </ul>
+    
+                        <!-- Categories -->
+                     
+    
+                   
+
+                    <!-- Thumbnail Images -->
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    
+   
+    <div class="background-img" data-bg-image="/images/background-img/1-2-1920x716.jpg">
+        <div class="product-area product-arrow section-space-y-axis-100">
+            <div class="container">
+               
+                <div class="row">
+                    <div class="col-lg-12">
+                        
+                        
+                        <!-- Add Arrows -->
+                        <div class="product-button-wrap pt-10">
+                            <div class="product-button-prev">
+                                <i class="pe-7s-angle-left"></i>
+                            </div>
+                            <div class="product-button-next">
+                                <i class="pe-7s-angle-right"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- Main Content Area End Here  -->
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+
+    const addToCartButtons = document.querySelectorAll(".btn.btn-custom-size.lg-size.btn-primary");
+
+    addToCartButtons.forEach(button => {
+        button.addEventListener("click", async (e) => {
+            e.preventDefault();
+
+            const productId = button.dataset.productId ;
+            const quantityInput = button.closest("quantity-with-btn").querySelector('.cart-plus-minus-box')
+
+            const quantity = parseInt(quantityInput.value,10);
+            const maxStock = parseInt(quantityInput.dataset.stock , 10)
+
+            if(quantity <= 0 ){
+                alert("Quantity must be at least one ");
+                return;
+            }
+
+            if(quantity > maxStock ){
+                alert(`Only ${maxStock } items are available in the stock`);
+                return ;
+            }
+
+            try {
+                const response = await fetch('/add-cart', {
+                    method: "POST",
+                    headers: {
+                        "Content-Type" : "application/json",
+                    },
+                    body: JSON.stringify({ productId , quantity })
+                } );
+                const result = await response.json();
+
+                if(response.ok) {
+                     alert("Product added to cart successfully!");
+                    window.location.href = '/cart'
+                } else {
+                    alert(result.message || "Failed to add product to cart ");
+                }
+
+            } catch (error) {
+                console.error("Error adding to cart : ",error );
+                alert("An error occured . Please try again.")
+            }
+
+        })
+    })
+
+  })
+
+
+
+</script>
+
+<script src="/js/singleProduct.js"></script>
+<%- include("../partials/footer.ejs") %>

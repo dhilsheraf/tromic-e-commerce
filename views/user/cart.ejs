@@ -1,6 +1,5 @@
 <%- include("../partials/header.ejs") %>
 
-
 <main class="main-content">
     <div class="breadcrumb-area breadcrumb-height" data-bg-image="/images/breadcrumb/bg/1-1-1920x400.jpg">
         <div class="container h-100">
@@ -19,131 +18,86 @@
             </div>
         </div>
     </div>
+
     <div class="cart-area section-space-y-axis-100">
         <div class="container">
             <div class="row">
                 <div class="col-12">
-                    <form action="javascript:void(0)">
-                        <div class="table-content table-responsive">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th class="product_remove">remove</th>
-                                        <th class="product-thumbnail">images</th>
-                                        <th class="cart-product-name">Product</th>
-                                        <th class="product-price">Unit Price</th>
-                                        <th class="product-quantity">Quantity</th>
-                                        <th class="product-subtotal">Total</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td class="product_remove">
-                                            <a href="#">
-                                                <i class="pe-7s-trash" data-tippy="Remove" data-tippy-inertia="true" data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-theme="sharpborder"></i>
-                                            </a>
-                                        </td>
-                                        <td class="product-thumbnail">
-                                            <a href="#">
-                                                <img src="/images/product/small-size/2-1-112x112.png" alt="Cart Thumbnail">
-                                            </a>
-                                        </td>
-                                        <td class="product-name"><a href="#">Tail Light</a></td>
-                                        <td class="product-price"><span class="amount">$80.00</span></td>
-                                        <td class="quantity">
-                                            <div class="cart-plus-minus">
-                                                <input class="cart-plus-minus-box" value="1" type="text">
-                                                <div class="dec qtybutton">
-                                                    <i class="fa fa-minus"></i>
-                                                </div>
-                                                <div class="inc qtybutton">
-                                                    <i class="fa fa-plus"></i>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="product-subtotal"><span class="amount">$80.00</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="product_remove">
-                                            <a href="#">
-                                                <i class="pe-7s-trash" data-tippy="Remove" data-tippy-inertia="true" data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-theme="sharpborder"></i>
-                                            </a>
-                                        </td>
-                                        <td class="product-thumbnail">
-                                            <a href="#">
-                                                <img src="/images/product/small-size/2-2-112x112.png" alt="Cart Thumbnail">
-                                            </a>
-                                        </td>
-                                        <td class="product-name"><a href="#">Wiper Blades</a></td>
-                                        <td class="product-price"><span class="amount">$80.00</span></td>
-                                        <td class="quantity">
-                                            <div class="cart-plus-minus">
-                                                <input class="cart-plus-minus-box" value="1" type="text">
-                                                <div class="dec qtybutton">
-                                                    <i class="fa fa-minus"></i>
-                                                </div>
-                                                <div class="inc qtybutton">
-                                                    <i class="fa fa-plus"></i>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="product-subtotal"><span class="amount">$80.00</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="product_remove">
-                                            <a href="#">
-                                                <i class="pe-7s-trash" data-tippy="Remove" data-tippy-inertia="true" data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-theme="sharpborder"></i>
-                                            </a>
-                                        </td>
-                                        <td class="product-thumbnail">
-                                            <a href="#">
-                                                <img src="/images/product/small-size/2-3-112x112.png" alt="Cart Thumbnail">
-                                            </a>
-                                        </td>
-                                        <td class="product-name"><a href="#">Suspension</a></td>
-                                        <td class="product-price"><span class="amount">$80.00</span></td>
-                                        <td class="quantity">
-                                            <div class="cart-plus-minus">
-                                                <input class="cart-plus-minus-box" value="1" type="text">
-                                                <div class="dec qtybutton">
-                                                    <i class="fa fa-minus"></i>
-                                                </div>
-                                                <div class="inc qtybutton">
-                                                    <i class="fa fa-plus"></i>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="product-subtotal"><span class="amount">$80.00</span></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                    <% if (cart.items.length === 0) { %>
+                        <!-- Message if cart is empty -->
+                        <div class="empty-cart-message">
+                            <h3>Your cart is empty!</h3>
+                            <p>There are no products in your cart. Please start shopping.</p>
+                            <a href="/products" class="button">Browse Shopping</a>
                         </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="coupon-all">
-                                    <div class="coupon">
-                                        <input id="coupon_code" class="input-text" name="coupon_code" value="" placeholder="Coupon code" type="text">
-                                        <input class="button mt-xxs-30" name="apply_coupon" value="Apply coupon" type="submit">
-                                    </div>
-                                    <div class="coupon2">
-                                        <input class="button" name="update_cart" value="Update cart" type="submit">
+                    <% } else { %>
+                        <!-- If cart has products -->
+                        <form action="javascript:void(0)">
+                            <div class="table-content table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th class="product_remove">remove</th>
+                                            <th class="product-thumbnail">images</th>
+                                            <th class="cart-product-name">Product</th>
+                                            <th class="product-price">Unit Price</th>
+                                            <th class="product-quantity">Quantity</th>
+                                            <th class="product-subtotal">Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% cart.items.forEach(item => { %>
+                                            <tr>
+                                                <td class="product_remove">
+                                                    <a href="#" class="delete-item" data-id="<%= item.productId._id %>">
+                                                        <i class="pe-7s-trash"></i>
+                                                    </a>
+                                                </td>                                                
+                                                <td class="product-thumbnail">
+                                                    <a href="/product/<%=item.productId._id%>">
+                                                        <img src="<%= item.productId.images[0] %>" style="height: 50px;" width="50px" alt="Cart Thumbnail">
+                                                    </a>
+                                                </td>
+                                                <td class="product-name"><a href="/product/<%=item.productId._id%>"> <%= item.productId.name %> </a></td>
+                                                <td class="product-price"><span class="amount">₹<%= item.productId.price %></span></td>
+                                                <td class="quantity">
+                                                    <div class="cart-plus-minus">
+                                                        <button class="dec qtybutton " data-id="<%= item.productId._id %>" style="background: none; border: none; font-size: large; padding-left: 5px;" >-</button>
+                                                        <input class="cart-plus-minus-box" value=" <%= item.quantity %> " type="text" readonly>
+                                                        <button class="inc qtybutton" data-id="<%= item.productId._id %>" style="background: none; border: none; font-size: large; padding-right: 5px">+</button>
+                                                    </div>                                                                                                        
+                                                </td>
+                                                <td class="product-subtotal"><span class="amount">₹<%= item.quantity * item.productId.price %></span></td>
+                                            </tr>
+                                        <% }) %>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="coupon-all">
+                                        <div class="coupon">
+                                            <input id="coupon_code" class="input-text" name="coupon_code" value="" placeholder="Coupon code" type="text">
+                                            <input class="button mt-xxs-30" name="apply_coupon" value="Apply coupon" type="submit">
+                                        </div> 
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-5 ml-auto">
-                                <div class="cart-page-total">
-                                    <h2>Cart totals</h2>
-                                    <ul>
-                                        <li>Subtotal <span>$118.60</span></li>
-                                        <li>Total <span>$118.60</span></li>
-                                    </ul>
-                                    <a href="#">Proceed to checkout</a>
+                            <div class="row">
+                                <div class="col-md-5 ml-auto">
+                                    <div class="cart-page-total">
+                                        <h2>Cart totals</h2>
+                                        <ul>
+                                            <li>Subtotal <span>$<%= cart.totalPrice %></span></li>
+                                            <li>Total <span>$<%= cart.totalPrice %></span></li>
+                                        </ul>
+                                        <a href="#">Proceed to checkout</a>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </form>
+                        </form>
+                    <% } %>
                 </div>
             </div>
         </div>
@@ -151,3 +105,82 @@
 </main>
 
 <%- include("../partials/footer.ejs") %>
+
+<script>
+        //function for inc and dec for cart
+    document.addEventListener("DOMContentLoaded", ()=> {
+        document.querySelectorAll(".inc.qtybutton").forEach( button => {
+            button.addEventListener('click', ()=> {
+                const productId = button.getAttribute('data-id');
+                updateCartQuantity(productId,1)
+            })
+        })
+
+        document.querySelectorAll('.dec.qtybutton').forEach(button => {
+            button.addEventListener('click' ,()=>{
+                const productId = button.getAttribute('data-id');
+                updateCartQuantity(productId, -1)
+            } )
+        })
+        const updateCartQuantity = (productId,quantity) => {
+        fetch('/update-cart',{
+            method: "POST",
+            headers: {
+                'Content-Type' : 'application/json',
+            },
+            body : JSON.stringify({productId , quantity})
+        })
+         .then(response => response.json())
+         .then(data => {
+            if(data.success) {
+                location.reload();
+            }else{
+                alert(data.message)
+            }
+         })
+         .catch(error => {
+            console.error('Error while updating Cart : ',error)
+         });
+    };
+
+    });
+
+document.addEventListener("DOMContentLoaded", ()=> {
+    document.querySelectorAll(".delete-item").forEach((button) => {
+        button.addEventListener("click", (e) => {
+            e.preventDefault();
+
+            const productId = button.getAttribute("data-id");
+
+            if(confirm("Are you sure you want to remove this item from you cart ?")){
+                deleteCartItem(productId);
+            }
+        });
+    });
+
+    const deleteCartItem = (productId) => {
+        fetch("/delete-cart",{
+            method: "DELETE",
+            headers: {
+                "Content-Type":"application/json",
+            },
+            body: JSON.stringify({ productId }),
+        })
+
+        .then((response) => response.json())
+        .then((data) => {
+            if(data.success){
+                location.reload();
+            }else{
+                alert(data.message);
+            }
+        }) 
+        .catch((error)=>{
+            console.error("Error while deleting the item from cart : ",error)
+        })
+    }
+})
+
+
+</script>
+

@@ -192,7 +192,7 @@ table thead th {
                        
                     </li>
                     <li class="menu-item ">
-                        <a class="menu-link" href="/admin/product">
+                        <a class="menu-link" href="/admin/products">
                             <i class="icon material-icons md-shopping_cart"></i>
                             <span class="text">Products</span>
                         </a>
@@ -208,7 +208,7 @@ table thead th {
                     <li class="menu-item ">
                         <a class="menu-link" href="#">
                             <i class="icon material-icons md-add_box"></i>
-                            <span class="text">Add product</span>
+                            <span class="text">Orders</span>
                         </a>
                         
                     </li>
@@ -303,15 +303,15 @@ table thead th {
                         <div class="container">
                             <div class="table-header">
                                 <div class="entries-control">
-                                    Show 
-                                    <select id="entries-select">
-                                        <option value="10">10</option>
-                                        <option value="25">25</option>
-                                        <option value="50">50</option>
-                                        <option value="100">100</option>
+                                    Show
+                                    <select id="entries-select" onchange="updateEntries()">
+                                        <option value="10" <%= limit === 10 ? 'selected' : '' %>>10</option>
+                                        <option value="25" <%= limit === 25 ? 'selected' : '' %>>25</option>
+                                        <option value="50" <%= limit === 50 ? 'selected' : '' %>>50</option>
+                                        <option value="100" <%= limit === 100 ? 'selected' : '' %>>100</option>
                                     </select>
                                     entries
-                                </div>
+                                </div>                                
                                 <div class="search-control">
                                     Search: 
                                     <input type="text" id="search-input" placeholder="Type to search...">
@@ -345,14 +345,22 @@ table thead th {
                         
                             <div class="table-footer">
                                 <div class="showing-entries">
-                                    Showing 1 to 1 of 1 entries
+                                    Showing <%= (currentPage - 1) * limit + 1 %> to 
+                                    <%= Math.min(currentPage * limit, totalUsers) %> of <%= totalUsers %> entries
                                 </div>
                                 <div class="pagination">
-                                    <button>Previous</button>
-                                    <button class="active">1</button>
-                                    <button>Next</button>
+                                    <% if (currentPage > 1) { %>
+                                        <a href="?page=<%= currentPage - 1 %>&limit=<%= limit %>" class="btn">Previous</a>
+                                    <% } %>
+                                    <% for (let i = 1; i <= totalPages; i++) { %>
+                                        <a href="?page=<%= i %>&limit=<%= limit %>" 
+                                           class="btn <%= i === currentPage ? 'active' : '' %>"><%= i %></a>
+                                    <% } %>
+                                    <% if (currentPage < totalPages) { %>
+                                        <a href="?page=<%= currentPage + 1 %>&limit=<%= limit %>" class="btn">Next</a>
+                                    <% } %>
                                 </div>
-                            </div>
+                            </div>                            
                         </div>
                     </div>
                 </div>
@@ -460,6 +468,15 @@ table thead th {
                     });
                 });
             });
+
+            function updateEntries() {
+        const limit = document.getElementById('entries-select').value;
+        const params = new URLSearchParams(window.location.search);
+        params.set('limit', limit); // Update limit in query params
+        params.set('page', 1); // Reset to first page
+        window.location.search = params.toString(); // Navigate with updated params
+    }
+
 
             </script>
         <script src="/assets/js/vendors/jquery-3.6.0.min.js"></script>

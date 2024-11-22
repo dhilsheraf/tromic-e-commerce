@@ -1,17 +1,35 @@
 const Category = require('../models/categoryModel');
 
 
-const loadCategory = async (rreq,res)=> {
+const loadCategory = async (req,res)=> {
 
     try {
-        const categories = await Category.find();
+
+        const { page = 1 , limit = 10, search = ""} = req.query;
+
+        const query = search 
+              ? { name : { $regex: search, $options: "i"}} : {};
+
+        const categories = await Category.find(query)
+        .skip((page - 1) * limit ).limit(parseInt(limit));
        
+        const totalCount = await Category.countDocuments(query);
+
+        const totalPages = Math.ceil(totalCount / limit );
+
         if(!categories || categories.length === 0){
             return res.render('admin/category',{category:[],message:"No Categories"})
         }
-        res.render("admin/category",{categories});
+        res.render("admin/category",{ 
+            categories,
+            currentPage : parseInt(page) ,
+            totalPages,
+            limit : parseInt(limit),
+            totalCount,
+
+        })
     } catch (error) {
-        console.log(error.message);
+        console.log("Error loading category : ",error.message);
         res.render('admin/404')
     }
 }
