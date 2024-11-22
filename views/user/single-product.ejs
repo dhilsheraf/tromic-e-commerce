@@ -146,7 +146,7 @@
     
                       <!-- Display Discounted Price -->
                     <div class="price-box pb-3">
-                        <del> <span class="original-price text-muted">₹<%= product.price %></span></del>
+                        <del> <span class="original-price text-muted">₹<%= product.price - 1 %></span></del>
                         <span class="discounted-price text-danger" id="final-price">₹<%= product.price %></span> <!-- Discounted Price -->
                     </div>
                     
@@ -181,9 +181,9 @@
                         <ul class="quantity-with-btn pb-5">
                             <li class="quantity">
                                 <div class="cart-plus-minus">
-                                    <button class="minus-btn" type="button">+</button>
+                                    <button class="minus-btn" type="button">-</button>
                                     <input class="cart-plus-minus-box" type="text" value="1" readonly data-stock="10">
-                                    <button class="plus-btn" type="button">-</button>
+                                    <button class="plus-btn" type="button">+</button>
                                 </div>
                             </li>                                                    
                             <li class="add-to-cart">
@@ -470,12 +470,12 @@ document.addEventListener("DOMContentLoaded", () => {
             const maxStock = parseInt(quantityInput.dataset.stock, 10);
 
             if (quantity <= 0) {
-                alert("Quantity must be at least one.");
+                Swal.fire("Quantity must be at least one.");
                 return;
             }
 
             if (quantity > maxStock) {
-                alert(`Only ${maxStock} items are available in stock.`);
+                Swal.fire("Quantity must be at least one.")
                 return;
             }
 
@@ -491,15 +491,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 const result = await response.json();
 
                 if (response.ok) {
-                    alert("Product added to cart successfully!");
+                   Swal.fire("Quantity must be at least one.")
                     window.location.href = '/cart';
                 } else {
-                    alert(result.message || "Failed to add product to cart.");
+                    Swal.fire(result.message || "Failed to add product to cart.");
                     window.location.href =  '/login'
                 }
             } catch (error) {
                 console.error("Error adding to cart:", error);
-                alert("An error occurred. Please try again.");
+                Swal.fire("An error occurred. Please try again.");
             }
         });
     });

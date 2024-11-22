@@ -182,7 +182,8 @@
                     const result = await response.json();
 
                     if (response.ok) {
-                        alert(result.message || "Product added to Cart");
+                        
+                        Swal.fire(result.message || "Product added to Cart")
                     } else {
                         if (response.status === 401) {
                             Swal.fire({
@@ -202,7 +203,11 @@
                         }
 
                         else {
-                            alert(result.message || "Failed to add product to cart");
+                            Swal.fire({
+                                    icon: "error",
+                                    title: "Oops...",
+                                    text: result.message || "Failed to add product to cart",
+                                    });
                         }
                     }
                 } catch (error) {

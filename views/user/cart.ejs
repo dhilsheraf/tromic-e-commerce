@@ -135,7 +135,7 @@
             if(data.success) {
                 location.reload();
             }else{
-                alert(data.message)
+                Swal.fire(data.message)
             }
          })
          .catch(error => {
@@ -152,9 +152,23 @@ document.addEventListener("DOMContentLoaded", ()=> {
 
             const productId = button.getAttribute("data-id");
 
-            if(confirm("Are you sure you want to remove this item from you cart ?")){
-                deleteCartItem(productId);
-            }
+            Swal.fire({
+                title:"Are you sure",
+                text:" To remove this item from you cart ?",
+                type:'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Confirm'
+            }).then((result) => {
+                if(result.isConfirmed) {
+                    deleteCartItem(productId);
+                    Swal.fire('Deleted',
+                        'Your item has been removed from the cart',
+                        'success'
+                    )
+                }
+            })
         });
     });
 

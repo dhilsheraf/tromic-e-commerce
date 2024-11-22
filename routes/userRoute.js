@@ -7,6 +7,7 @@ const session = require('../middleware/authMiddleware');
 const productController = require('../controllers/productController')
 const addressController = require('../controllers/addressController')
 const cartController = require('../controllers/cartController')
+const orderController = require('../controllers/orderController');
 
 router.set("view engine", "ejs");
 router.set("views", "./views/user");
@@ -71,11 +72,14 @@ router.post('/forgot-password', userController.forgotPassword)
 router.get("/reset-password/:token", userController.resetPasswordLoad)
 router.post("/reset-password/:token", userController.resetPassword)
 router.post('/change-password', userController.changePassword)
-
+ 
 //cart
 router.get('/cart',session.checkUserSession,cartController.listCart)
 router.post('/add-cart', cartController.addToCart)
 router.post('/update-cart',cartController.updateCartQuantity)
 router.delete('/delete-cart',cartController.deleteCart) 
+
+//checkout
+router.get('/checkout',session.checkUserSession)
 
 module.exports = router;
