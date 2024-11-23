@@ -45,69 +45,104 @@
                             <div class="different-address">
                                 <div class="ship-different-title">
                                     <h3>
-                                        <label>New Address</label>
-                                        <input id="ship-box" type="checkbox">
+                                        <label>Select Address</label>
                                     </h3>
                                 </div>
-                                <div id="ship-box-info" class="row">
-                                   
-                                    <div class="col-md-12">
-                                        <div class="checkout-form-list">
-                                            <label>Full Name <span class="required">*</span></label>
-                                            <input placeholder="Enter Full Name" type="text">
+                                
+                                <!-- Displaying existing addresses if available -->
+                                <div id="existing-addresses" class="row">
+                                    <% if (userAddresses && userAddresses.length > 0) { %>
+                                        <div class="col-md-12">
+                                            <label for="selectAddress">Choose an Address</label>
                                         </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <div class="checkout-form-list">
-                                            <label>Phone <span class="required">*</span></label>
-                                            <input type="text" placeholder="Phone number">
+                                        <% userAddresses.forEach((address, index) => { %>
+                                            <div class="col-md-12 address-box">
+                                                <input type="radio" 
+                                                    id="address-<%= address._id %>" 
+                                                    name="address" 
+                                                    value="<%= address._id %>" 
+                                                    <% if (index === 0) { %> checked <% } %> 
+                                                    required >
+                                                <label for="address-<%= address.id %>">
+                                                    <div class="address-details">
+                                                        <h5><%= address.addressType %> Address</h5>
+                                                        <h6><%= address.name %></h6>
+                                                        <p><%= address.city %>, <%= address.state %>, <%= address.country %></p>
+                                                        <p><%= address.phone %></p>
+                                                        <p><%= address.addressLine %>, <%= address.pincode %></p>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        <% }); %>
+                                    <% } else { %>
+                                        <!-- No existing addresses, show new address form -->
+                                        <div class="col-md-12">
+                                            <label>No address found, please add a new address</label>
                                         </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <div class="checkout-form-list">
-                                            <label for="editAddressType" class="form-label">Address Type</label>
-                                            <select class="form-select" id="editAddressType" required>
-                                                <option value="Home">Home</option>
-                                                <option value="Work">Work</option>
-                                                <option value="Other">Other</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <div class="checkout-form-list">
-                                            <label>Pincode <span class="required">*</span></label>
-                                            <input placeholder="Pincode" type="text">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <div class="checkout-form-list">
-                                            <label>Address <span class="required">*</span></label>
-                                            <input placeholder="Address" type="text">
-                                        </div>
-                                    </div>
-                                   
-                                    <div class="col-md-12">
-                                        <div class="checkout-form-list">
-                                            <label>City <span class="required">*</span></label>
-                                            <input type="text" placeholder="City">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <div class="checkout-form-list">
-                                            <label>State <span class="required">*</span></label>
-                                            <input placeholder="Enter state" type="text">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <div class="checkout-form-list">
-                                            <label>Country <span class="required">*</span></label>
-                                            <input placeholder="Enter Country" type="text">
-                                        </div>
-                                    </div>
+                                    <% } %>
                                     
+
+                                    <!-- New Address Form if no addresses exist -->
+                                    <div id="new-address-form" class="row" <% if (userAddresses.length > 0) { %> style="display:none;" <% } %> >
+                                        <div class="col-md-12">
+                                            <div class="checkout-form-list">
+                                                <label>Full Name <span class="required">*</span></label>
+                                                <input id="fullName" placeholder="Enter Full Name" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="checkout-form-list">
+                                                <label>Phone <span class="required">*</span></label>
+                                                <input id="phone" type="text" placeholder="Phone number">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="checkout-form-list">
+                                                <label for="addressType" class="form-label">Address Type</label>
+                                                <select class="form-select" id="addressType" required>
+                                                    <option value="Home">Home</option>
+                                                    <option value="Work">Work</option>
+                                                    <option value="Other">Other</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="checkout-form-list">
+                                                <label>Pincode <span class="required">*</span></label>
+                                                <input id="pincode" placeholder="Pincode" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="checkout-form-list">
+                                                <label>Address <span class="required">*</span></label>
+                                                <input id="address" placeholder="Address" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="checkout-form-list">
+                                                <label>City <span class="required">*</span></label>
+                                                <input id="city" type="text" placeholder="City">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="checkout-form-list">
+                                                <label>State <span class="required">*</span></label>
+                                                <input id="state" placeholder="Enter state" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="checkout-form-list">
+                                                <label>Country <span class="required">*</span></label>
+                                                <input id="country" placeholder="Enter Country" type="text">
+                                            </div>
+                                        </div>
+                                        <!-- Save Address Button -->
+                                        <div class="col-md-12">
+                                            <button id="saveAddressButton" class="btn btn-primary" onclick="saveAddress()">Save Address</button>
+                                        </div>
+                                    </div>
                                     
                                 </div>
-                               
                             </div>
                         </div>
                     </form>
@@ -119,94 +154,85 @@
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th class="cart-product-name">Product</th>
-                                        <th class="cart-product-total">Total</th>
+                                        <th><strong>Product</strong></th>
+                                        <th><strong>Total</strong></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr class="cart_item">
-                                        <td class="cart-product-name"> Vestibulum suscipit<strong class="product-quantity">
-                                            × 1</strong></td>
-                                        <td class="cart-product-total"><span class="amount">$165.00</span></td>
-                                    </tr>
-                                    <tr class="cart_item">
-                                        <td class="cart-product-name"> Vestibulum suscipit<strong class="product-quantity">
-                                            × 1</strong></td>
-                                        <td class="cart-product-total"><span class="amount">$165.00</span></td>
-                                    </tr>
+                                    <% cartItems.forEach(item => { %>
+                                        <tr>
+                                            <td><%= item.name %> x <%= item.quantity %></td>
+                                            <td>₹<%= item.total.toFixed(2) %></td>
+                                        </tr>
+                                    <% }); %>
                                 </tbody>
                                 <tfoot>
-                                    <tr class="cart-subtotal">
-                                        <th>Cart Subtotal</th>
-                                        <td><span class="amount">$215.00</span></td>
-                                    </tr>
                                     <tr class="order-total">
-                                        <th>Order Total</th>
-                                        <td><strong><span class="amount">$215.00</span></strong></td>
+                                        <th >Order Total</th>
+                                        <td><strong>₹<%= cartTotal.toFixed(2) %></strong></td>
                                     </tr>
                                 </tfoot>
                             </table>
+                            
                         </div>
                         <div class="payment-method">
                             <div class="payment-accordion">
                                 <div id="accordion">
+                                    <!-- Wallet Payment Option -->
                                     <div class="card">
-                                        <div class="card-header" id="#payment-1">
+                                        <h4 class="panel-title">Payment method</h4>
+                                        <br>
+                                        <div class="card-header" id="payment-1">
                                             <h5 class="panel-title">
-                                                <a href="#" class="" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true">
-                                                    Direct Bank Transfer.
-                                                </a>
+                                                <label for="wallet-payment" class="d-flex align-items-center">
+                                                    <input type="radio" id="wallet-payment" name="payment-method" value="wallet">&nbsp;
+                                                    Wallet
+                                                </label>
                                             </h5>
                                         </div>
-                                        <div id="collapseOne" class="collapse show" data-bs-parent="#accordion">
-                                            <div class="card-body">
-                                                <p>Make your payment directly into our bank account. Please use your Order
-                                                    ID as the payment
-                                                    reference. Your order won’t be shipped until the funds have cleared in
-                                                    our account.</p>
-                                            </div>
+                                        <div class="card-body">
+                                            <p>Currenly on working</p>
                                         </div>
                                     </div>
+                        
+                                    <!-- Online Payment Option -->
                                     <div class="card">
-                                        <div class="card-header" id="#payment-2">
+                                        <div class="card-header" id="payment-2">
                                             <h5 class="panel-title">
-                                                <a href="#" class="collapsed" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false">
-                                                    Cheque Payment
-                                                </a>
+                                                <label for="online-payment" class="d-flex align-items-center">
+                                                    <input type="radio" id="online-payment" name="payment-method" value="online">&nbsp;
+                                                    Online
+                                                </label>
                                             </h5>
                                         </div>
-                                        <div id="collapseTwo" class="collapse" data-bs-parent="#accordion">
-                                            <div class="card-body">
-                                                <p>Make your payment directly into our bank account. Please use your Order
-                                                    ID as the payment
-                                                    reference. Your order won’t be shipped until the funds have cleared in
-                                                    our account.</p>
-                                            </div>
+                                        <div class="card-body">
+                                            <!-- <p>Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order won’t be shipped until the funds have cleared in our account.</p> -->
+                                             <p>Currenly on working</p>
                                         </div>
                                     </div>
+                        
+                                    <!-- Cash on Delivery Option -->
                                     <div class="card">
-                                        <div class="card-header" id="#payment-3">
+                                        <div class="card-header" id="payment-3">
                                             <h5 class="panel-title">
-                                                <a href="#" class="collapsed" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false">
-                                                    PayPal
-                                                </a>
+                                                <label for="cod-payment" class="d-flex align-items-center">
+                                                    <input  type="radio" id="cod-payment" name="payment-method" value="cod">&nbsp;
+                                                    Cash on delivery
+                                                </label>
                                             </h5>
                                         </div>
-                                        <div id="collapseThree" class="collapse" data-bs-parent="#accordion">
-                                            <div class="card-body">
-                                                <p>Make your payment directly into our bank account. Please use your Order
-                                                    ID as the payment
-                                                    reference. Your order won’t be shipped until the funds have cleared in
-                                                    our account.</p>
-                                            </div>
+                                        <div class="card-body">
+                                            <p>Product will be shipped in 14 working days</p>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="order-button-payment">
-                                    <input value="Place order" type="submit">
                                 </div>
                             </div>
-                        </div>
+                        
+                            <!-- Order Button -->
+                            <div class="order-button-payment" style="text-align: center;">
+                                <button id="placeOrderButton" class="btn btn-primary px-10" onclick="placeOrder()">Place order</button>
+                            </div>
+                        </div>                        
                     </div>
                 </div>
             </div>

@@ -146,8 +146,44 @@ const aiProduct = async (req, res) => {
 
 const loadProduct = async (req, res) => {
     try {
-        const products = await Product.find({ isActive: true }); // Fetch all products from the database
-        res.render('shop', { products });  // Send the products to the EJS template
+
+        const {search = '' , sort = '' , page = 1 , limit = 12 } = req.query;
+        console.log(`query params : `,{search,sort,page,limit})
+        
+        
+        const skip = (page - 1 ) * limit ;
+
+        const searchFilter = search 
+          ? { name : {$regex: search , $options: 'i'}} : {} ;
+
+
+          let sortOption = {} ;
+          if(sort === 'price-asc' ) sortOption.price = 1 ;
+          else if(sort === 'price-desc' ) sortOption.price = -1 ;
+          else if(sort === 'new-arrivals' ) sortOption.createdAt = 1 ;
+          else if(sort === 'a-z' ) sortOption.name = 1 ;
+          else if(sort === 'z-a' ) sortOption.name = -1 ;
+
+          console.log('Sort Otpion' ,sortOption)
+
+
+        
+
+        const products = await Product.find({ isActive: true , ...searchFilter}) 
+        .sort(sortOption)
+        .skip(skip)
+        .limit(Number(limit));
+        
+        const totalProducts = await Product.countDocuments({ isActive:true,...searchFilter})
+      
+        res.render('shop', { 
+            products,
+            currentPage: Number(page),
+            totalPages: Math.ceil(totalProducts/ limit),
+            totalProducts,
+            search,
+            sort,
+         });  
     } catch (err) {
         console.error(err);
         res.status(500).send('Server error');
@@ -157,10 +193,12 @@ const loadProduct = async (req, res) => {
 const getProductDetails = async (req, res) => {
     try {
         const productId = req.params.id;
-        const product = await Product.findById(productId);
+        const product = await Product.findById(productId).populate('category');
         if (!product) {
             return res.status(404).send("Product not found");
         }
+
+        
 
         // Fetch related products by category or other criteria 
         const relatedProducts = await Product.find({
@@ -174,9 +212,6 @@ const getProductDetails = async (req, res) => {
     }
 };
 
-const error = async (req, res) => {
-    res.render('error')
-}
 
 
 

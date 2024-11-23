@@ -80,6 +80,8 @@ router.post('/update-cart',cartController.updateCartQuantity)
 router.delete('/delete-cart',cartController.deleteCart) 
 
 //checkout
-router.get('/checkout',session.checkUserSession)
+router.get('/checkout',session.checkUserSession,orderController.getCheckout)
+router.post('/checkout',orderController.checkout)
+
 
 module.exports = router;

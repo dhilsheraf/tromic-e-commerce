@@ -1,4 +1,5 @@
 <%- include("../partials/header.ejs") %>
+<style></style>
     <main class="main-content">
         <div class="breadcrumb-area breadcrumb-height" data-bg-image="/images/breadcrumb/bg/1-1-1920x400.jpg">
             <div class="container h-100">
@@ -22,78 +23,87 @@
                 <div class="row">
                     <div class="col-xl-3 col-lg-4 order-lg-1 order-2 pt-10 pt-lg-0">
                         <div class="sidebar-area style-2">
-
-                            <div class="widgets-area mb-9">
-                                <h2 class="widgets-title mb-5">Shop By Categories</h2>
-                                <div class="widgets-item">
-                                    <ul class="widgets-category">
-                                        <li>
-                                            <a href="#">Accesasories
-                                                <span>(6)</span> <input type="checkbox" name="" id="">
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Computer
-                                                <span>(4)</span> <input type="checkbox">
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Covid-19
-                                                <span>(2)</span> <input type="checkbox">
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Electronics
-                                                <span>(6)</span> <input type="checkbox">
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Frame Sunglasses
-                                                <span>(12)</span> <input type="checkbox" name="" id="">
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Furniture
-                                                <input type="checkbox">
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Genuine Leather <input type="checkbox">
-
-                                            </a>
-                                        </li>
-                                        <button class="">Apply</button>
-                                    </ul>
+                            <% if (products.length===0) { %>
+                                <div class="no-products">
+                                    <p>No products found matching your criteria.</p>
                                 </div>
-                            </div>
+                                <% } %>
+                                    <div class="widgets-area mb-9">
+                                        <h2 class="widgets-title mb-5">Shop By Categories</h2>
+                                        <div class="widgets-item">
+                                            <ul class="widgets-category">
+                                                <li>
+                                                    <a href="#">Accesasories
+                                                        <span>(6)</span> <input type="checkbox" name="" id="">
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#">Computer
+                                                        <span>(4)</span> <input type="checkbox">
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#">Covid-19
+                                                        <span>(2)</span> <input type="checkbox">
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#">Electronics
+                                                        <span>(6)</span> <input type="checkbox">
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#">Frame Sunglasses
+                                                        <span>(12)</span> <input type="checkbox" name="" id="">
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#">Furniture
+                                                        <input type="checkbox">
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#">Genuine Leather <input type="checkbox">
+
+                                                    </a>
+                                                </li>
+                                                <button class="">Apply</button>
+                                            </ul>
+                                        </div>
+                                    </div>
 
                         </div>
                     </div>
                     <div class="col-xl-9 col-lg-8 order-lg-2 order-1">
                         <div class="product-topbar">
                             <ul>
-                                <li class="page-count">
-                                    <span>23</span> Product Found of <span>50</span>
-                                </li>
+                                    <li class="page-count">
+                                        <span><%= products.length %></span> Product Found of <span><%= totalProducts %></span>
+                                    </li>                                                                    </li>
                                 <li class="product-view-wrap">
                                     <ul class="nav" role="tablist">
                                         <div class="widgets-searchbox ">
-                                            
-                                                <input class="input-field" type="text" placeholder="Search">
-                                                <button class="widgets-searchbox-btn" type="submit">
-                                                    <i class="pe-7s-search"></i>
-                                                </button>
-                                            
+
+                                            <input class="input-field" type="text" value="<%= search %>" placeholder="Search">
+                                                <button class="widgets-searchbox-btn" type="button" onclick="searchProducts()"><i class="pe-7s-search"></i></button>
+                                                
+                                            </button>
+
                                         </div>
 
                                     </ul>
                                 </li>
                                 <li class="short">
-                                    <select class="nice-select rounded-0">
-                                        <option value="">Sort by Default</option>
-                                        <option value="price-asc">Sort by Price: Low to High</option>
-                                        <option value="price-desc">Sort by Price: High to Low</option>
-                                        <option value="new-arrivals">New Arrivals</option>
+                                    <select class="nice-select rounded-0" onchange="sortProducts()">
+                                        <option value="" <%=sort==='' ? 'selected' :'' %>>Sort by Default</option>
+                                        <option value="price-asc" <%=sort==='price-asc' ? 'selected' : '' %>>Price: Low
+                                            to High</option>
+                                        <option value="price-desc" <%=sort==='price-desc' ? 'selected' : '' %>>Price:
+                                            High to Low</option>
+                                        <option value="new-arrivals" <%=sort==='new-arrivals' ? 'selected' : '' %>>New
+                                            Arrivals</option>
+                                        <option value="a-z" <%=sort==='a-z' ? 'selected' : '' %>>A-Z</option>
+                                        <option value="z-a" <%=sort==='z-a' ? 'selected' : '' %>>Z-A</option>
                                     </select>
                                 </li>
                             </ul>
@@ -152,16 +162,30 @@
 
                         <div class="pagination-area pt-10">
                             <nav aria-label="Page navigation example">
+
                                 <ul class="pagination justify-content-end">
-                                    <li class="page-item">
-                                        <a class="page-link" href="#" aria-label="Previous">&laquo;</a>
-                                    </li>
-                                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                    <li class="page-item">
-                                        <a class="page-link" href="#" aria-label="Next">&raquo;</a>
-                                    </li>
+                                    <% if (currentPage> 1) { %>
+                                        <li class="page-item">
+                                            <a class="page-link"
+                                                href="?page=<%= currentPage - 1 %>&search=<%= search %>&sort=<%= sort %>">&laquo;</a>
+                                        </li>
+                                        <% } %>
+                                            <% for (let i=1; i <=totalPages; i++) { %>
+                                                <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                                                    <a class="page-link"
+                                                        href="?page=<%= i %>&search=<%= search %>&sort=<%= sort %>">
+                                                        <%= i %>
+                                                    </a>
+                                                </li>
+                                                <% } %>
+                                                    <% if (currentPage < totalPages) { %>
+                                                        <li class="page-item">
+                                                            <a class="page-link"
+                                                                href="?page=<%= currentPage + 1 %>&search=<%= search %>&sort=<%= sort %>">&raquo;</a>
+                                                        </li>
+                                                        <% } %>
                                 </ul>
+
                             </nav>
                         </div>
                     </div>
@@ -169,7 +193,7 @@
             </div>
         </div>
     </main>
-
+    <%- include("../partials/footer.ejs") %>
     <script>
         document.querySelectorAll('.add-to-cart-btn').forEach(button => {
             button.addEventListener('click', async function () {
@@ -219,8 +243,36 @@
         });
 
     </script>
-    <script src=""></script>
-    <%- include("../partials/footer.ejs") %>
+    <script>
+        async function fetchProducts() {
+            const search = document.querySelector('.input-field').value;
+            const sort = document.querySelector('.nice-select').value;
+            const page = 1;
+
+            try {
+                const response = await fetch(`/products?page=${page}&search=${search}&sort=${sort}`);
+                if (response.ok) {
+                    const html = await response.text();
+                    document.querySelector('.shop-area').innerHTML = html
+
+                } else {
+                    console.error("Failed to fetch products:", response.status)
+                }
+            } catch (error) {
+                console.error("Error fetching products", error)
+            }
+
+        }
+
+        function searchProducts() {
+            fetchProducts();
+        }
+        function sortProducts() {
+            fetchProducts()
+        }
+
+    </script>
+  
 
 
         <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.13/dist/sweetalert2.min.css" rel="stylesheet">

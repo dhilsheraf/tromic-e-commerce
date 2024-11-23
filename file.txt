@@ -295,3 +295,30 @@ exports.removeFromCart = async (req, res) => {
                                 </div> -->
 
                                 
+
+         <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th class="cart-product-name">Product</th>
+                                        <th class="cart-product-total">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="cart_item">
+                                        <td class="cart-product-name"> Vestibulum suscipit<strong class="product-quantity">
+                                            × 1</strong></td>
+                                        <td class="cart-product-total"><span class="amount">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$165.00</span></td>
+                                    </tr>
+                                    <tr class="cart_item">
+                                        <td class="cart-product-name"> Vestibulum suscipit<strong class="product-quantity">
+                                            × 1</strong></td>
+                                        <td class="cart-product-total"><span class="amount">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$165.00</span></td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr class="order-total">
+                                        <th>Order Total</th>
+                                        <td><strong><span class="amount">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$215.00</span></strong></td>
+                                    </tr>
+                                </tfoot>
+                            </table>                       

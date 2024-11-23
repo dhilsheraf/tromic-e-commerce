@@ -153,7 +153,7 @@
                         <!-- Stock Status -->
                         <div class="stock-status pb-3">
                             <% if (product.stock > 0) { %>
-                                <span class="in-stock text-success">In Stock</span>
+                                <span class="in-stock text-success"><%= product.stock %> stock left</span>
                             <% } else { %>
                                 <span class="out-of-stock text-danger">Out of Stock</span>
                             <% } %>
@@ -201,25 +201,22 @@
     
                         <!-- Categories -->
                         <div class="product-category pb-3">
-                            <span class="title">Categories :</span>
+                            <span class="title">Category :</span>
                             <ul>
                                 <li>
-                                    <a href="#">Office,</a>
-                                </li>
-                                <li>
-                                    <a href="#">Home</a>
+                                    <a href="#"><%= product.category.name %></a>
                                 </li>
                             </ul>
                         </div>
                         <!-- Tags -->
-                        <div class="product-category product-tags pb-3">
+                        <!-- <div class="product-category product-tags pb-3">
                             <span class="title">Tags :</span>
                             <ul>
                                 <li>
                                     <a href="#">Furniture</a>
                                 </li>
                             </ul>
-                        </div>
+                        </div> -->
                     </div>
     
                     <div class="product-category social-link align-items-center pb-lg-3">
