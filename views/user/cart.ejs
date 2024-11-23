@@ -37,22 +37,19 @@
                                 <table class="table">
                                     <thead>
                                         <tr>
-                                            <th class="product_remove">remove</th>
+                                            
                                             <th class="product-thumbnail">images</th>
                                             <th class="cart-product-name">Product</th>
                                             <th class="product-price">Unit Price</th>
                                             <th class="product-quantity">Quantity</th>
                                             <th class="product-subtotal">Total</th>
+                                            <th class="product_remove">remove</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <% cart.items.forEach(item => { %>
                                             <tr>
-                                                <td class="product_remove">
-                                                    <a href="#" class="delete-item" data-id="<%= item.productId._id %>">
-                                                        <i class="pe-7s-trash"></i>
-                                                    </a>
-                                                </td>                                                
+                                                                                                
                                                 <td class="product-thumbnail">
                                                     <a href="/product/<%=item.productId._id%>">
                                                         <img src="<%= item.productId.images[0] %>" style="height: 50px;" width="50px" alt="Cart Thumbnail">
@@ -63,11 +60,16 @@
                                                 <td class="quantity">
                                                     <div class="cart-plus-minus">
                                                         <button class="dec qtybutton " data-id="<%= item.productId._id %>" style="background: none; border: none; font-size: large; padding-left: 5px;" >-</button>
-                                                        <input class="cart-plus-minus-box" value=" <%= item.quantity %> " type="text" readonly>
+                                                        <input class="cart-plus-minus-box" value=" <%= item.quantity %> "  type="text" readonly>
                                                         <button class="inc qtybutton" data-id="<%= item.productId._id %>" style="background: none; border: none; font-size: large; padding-right: 5px">+</button>
                                                     </div>                                                                                                        
                                                 </td>
                                                 <td class="product-subtotal"><span class="amount">₹<%= item.quantity * item.productId.price %></span></td>
+                                                <td class="product_remove">
+                                                    <a href="#" class="delete-item" data-id="<%= item.productId._id %>">
+                                                        <i class="pe-7s-trash"></i>
+                                                    </a>
+                                                </td>
                                             </tr>
                                         <% }) %>
                                     </tbody>

@@ -148,7 +148,6 @@ const loadProduct = async (req, res) => {
     try {
 
         const {search = '' , sort = '' , page = 1 , limit = 12 } = req.query;
-        console.log(`query params : `,{search,sort,page,limit})
         
         
         const skip = (page - 1 ) * limit ;
@@ -164,9 +163,9 @@ const loadProduct = async (req, res) => {
           else if(sort === 'a-z' ) sortOption.name = 1 ;
           else if(sort === 'z-a' ) sortOption.name = -1 ;
 
-          console.log('Sort Otpion' ,sortOption)
 
-
+          
+        const category = await Category.find({isActive:true});
         
 
         const products = await Product.find({ isActive: true , ...searchFilter}) 
@@ -183,6 +182,7 @@ const loadProduct = async (req, res) => {
             totalProducts,
             search,
             sort,
+            category
          });  
     } catch (err) {
         console.error(err);

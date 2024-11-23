@@ -4,6 +4,9 @@ const addAddress = async (req,res) => {
     try {
         const userId = req.session.user ;
 
+        console.log(req.body);
+        
+
         const { name, phone, addressType, pincode, addressLine, city, state, country } = req.body;
 
         const newAddress = new Address({

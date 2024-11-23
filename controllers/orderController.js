@@ -4,18 +4,18 @@ const Address = require('../models/addressModel');
 const User = require('../models/userModel')
 const Cart = require('../models/cartModel')
 
-const getCheckout = async (req,res) => {
+const getCheckout = async (req, res) => {
     try {
 
-        const user = await User.findById(req.session.user) ;
-        
-        
+        const user = await User.findById(req.session.user);
 
-        const userAddresses = await Address.find({userId:req.session.user})
 
-        const cart = await Cart.findOne({userId : req.session.user}).populate('items.productId','name price');
 
-        if(!cart || cart.items.length === 0 ){
+        const userAddresses = await Address.find({ userId: req.session.user })
+
+        const cart = await Cart.findOne({ userId: req.session.user }).populate('items.productId', 'name price');
+
+        if (!cart || cart.items.length === 0) {
             return res.redirect('/cart')
         }
 
@@ -26,26 +26,26 @@ const getCheckout = async (req,res) => {
             total: item.productId.price * item.quantity
         }))
 
-        cartTotal = cartItems.reduce((sum,item)=> sum + item.total , 0 );
-        
+        cartTotal = cartItems.reduce((sum, item) => sum + item.total, 0);
+
         res.render('checkout', {
             userAddresses,
             cartItems,
             cartTotal
         })
 
-        
+
     } catch (error) {
-        console.error('Error while feth products : ',error);
+        console.error('Error while feth products : ', error);
         res.status(500).render('error')
     }
 }
 
 const checkout = async (params) => {
     try {
-        
+
     } catch (error) {
-        
+
     }
 }
 
