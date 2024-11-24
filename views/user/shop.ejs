@@ -182,7 +182,8 @@
 
                         if (response.ok) {
 
-                            Swal.fire(result.message || "Product added to Cart")
+                            window.location.href = '/cart';
+                            
                         } else {
                             if (response.status === 401) {
                                 Swal.fire({
