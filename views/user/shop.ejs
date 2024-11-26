@@ -1,104 +1,113 @@
-    <%- include("../partials/header.ejs") %>
+<%- include("../partials/header.ejs") %>
     <style></style>
-        <main class="main-content">
-            <div class="breadcrumb-area breadcrumb-height" data-bg-image="/images/breadcrumb/bg/1-1-1920x400.jpg">
-                <div class="container h-100">
-                    <div class="row h-100">
-                        <div class="col-lg-12">
-                            <div class="breadcrumb-item text-night-rider">
-                                <h2 class="breadcrumb-heading">Shop Layout</h2>
-                                <ul>
-                                    <li>
-                                        <a href="index.html">Home /</a>
-                                    </li>
-                                    <li>Shop Default</li>
-                                </ul>
-                            </div>
+    <main class="main-content">
+        <div class="breadcrumb-area breadcrumb-height" data-bg-image="/images/breadcrumb/bg/1-1-1920x400.jpg">
+            <div class="container h-100">
+                <div class="row h-100">
+                    <div class="col-lg-12">
+                        <div class="breadcrumb-item text-night-rider">
+                            <h2 class="breadcrumb-heading">Shop Layout</h2>
+                            <ul>
+                                <li>
+                                    <a href="index.html">Home /</a>
+                                </li>
+                                <li>Shop Default</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="shop-area section-space-y-axis-100">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-xl-3 col-lg-4 order-lg-1 order-2 pt-10 pt-lg-0">
-                            <div class="sidebar-area style-2">
-                                <% if (products.length===0) { %>
-                                    <div class="no-products">
-                                        <p>No products found matching your criteria.</p>
-                                    </div>
-                                    <% } %>
-                                        <div class="widgets-area mb-9">
-                                            <h2 class="widgets-title mb-5">Shop By Categories</h2>
-                                            <div class="widgets-item">
-                                                <ul class="widgets-category">
-                                                    <% category.forEach(item =>{ %>
-                                                        <li>
-                                                            <a href="#"><%= item.name %>
+        </div>
+        <div class="shop-area section-space-y-axis-100">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-3 col-lg-4 order-lg-1 order-2 pt-10 pt-lg-0">
+                        <div class="sidebar-area style-2">
+                            <% if (products.length===0) { %>
+                                <div class="no-products">
+                                    <p>No products found matching your criteria.</p>
+                                </div>
+                                <% } %>
+                                    <div class="widgets-area mb-9">
+                                        <h2 class="widgets-title mb-5">Shop By Categories</h2>
+                                        <div class="widgets-item">
+                                            <ul class="widgets-category">
+                                                <% category.forEach(item=>{ %>
+                                                    <li>
+                                                        <a href="#">
+                                                            <%= item.name %>
                                                                 <input type="checkbox" name="" id="">
-                                                            </a>
-                                                        </li>
-                                                <% }) %>
-                                                <div class="text-center">
-                                                    <button class="btn btn-danger">Apply</button>
-                                                </div>
-                                                </ul>
-                                            </div>
+                                                        </a>
+                                                    </li>
+                                                    <% }) %>
+                                                        <div class="text-center">
+                                                            <button class="btn btn-danger">Apply</button>
+                                                        </div>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                        </div>
+                    </div>
+                    <div class="col-xl-9 col-lg-8 order-lg-2 order-1">
+                        <div class="product-topbar">
+                            <ul>
+                                <li class="page-count">
+                                    <span>
+                                        <%= products.length %>
+                                    </span> Product Found of <span>
+                                        <%= totalProducts %>
+                                    </span>
+                                </li>
+                                </li>
+                                <li class="product-view-wrap">
+                                    <ul class="nav" role="tablist">
+                                        <div class="widgets-searchbox ">
+
+                                            <input class="input-field" type="text" value="<%= search %>"
+                                                placeholder="Search">
+                                            <button class="widgets-searchbox-btn" type="button"
+                                                onclick="searchProducts()"><i class="pe-7s-search"></i></button>
+
+                                            </button>
+
                                         </div>
 
-                            </div>
+                                    </ul>
+                                </li>
+                                <li class="short">
+                                    <select class="nice-select rounded-0" onchange="sortProducts()">
+                                        <option value="" <%=sort==='' ? 'selected' :'' %>>Sort by Default</option>
+                                        <option value="price-asc" <%=sort==='price-asc' ? 'selected' : '' %>>Price: Low
+                                            to High</option>
+                                        <option value="price-desc" <%=sort==='price-desc' ? 'selected' : '' %>>Price:
+                                            High to Low</option>
+                                        <option value="new-arrivals" <%=sort==='new-arrivals' ? 'selected' : '' %>>New
+                                            Arrivals</option>
+                                        <option value="a-z" <%=sort==='a-z' ? 'selected' : '' %>>A-Z</option>
+                                        <option value="z-a" <%=sort==='z-a' ? 'selected' : '' %>>Z-A</option>
+                                    </select>
+                                </li>
+                            </ul>
                         </div>
-                        <div class="col-xl-9 col-lg-8 order-lg-2 order-1">
-                            <div class="product-topbar">
-                                <ul>
-                                        <li class="page-count">
-                                            <span><%= products.length %></span> Product Found of <span><%= totalProducts %></span>
-                                        </li>                                                                    </li>
-                                    <li class="product-view-wrap">
-                                        <ul class="nav" role="tablist">
-                                            <div class="widgets-searchbox ">
-
-                                                <input class="input-field" type="text" value="<%= search %>" placeholder="Search">
-                                                    <button class="widgets-searchbox-btn" type="button" onclick="searchProducts()"><i class="pe-7s-search"></i></button>
-                                                    
-                                                </button>
-
-                                            </div>
-
-                                        </ul>
-                                    </li>
-                                    <li class="short">
-                                        <select class="nice-select rounded-0" onchange="sortProducts()">
-                                            <option value="" <%=sort==='' ? 'selected' :'' %>>Sort by Default</option>
-                                            <option value="price-asc" <%=sort==='price-asc' ? 'selected' : '' %>>Price: Low
-                                                to High</option>
-                                            <option value="price-desc" <%=sort==='price-desc' ? 'selected' : '' %>>Price:
-                                                High to Low</option>
-                                            <option value="new-arrivals" <%=sort==='new-arrivals' ? 'selected' : '' %>>New
-                                                Arrivals</option>
-                                            <option value="a-z" <%=sort==='a-z' ? 'selected' : '' %>>A-Z</option>
-                                            <option value="z-a" <%=sort==='z-a' ? 'selected' : '' %>>Z-A</option>
-                                        </select>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="tab-content text-charcoal pt-8">
-                                <div class="tab-pane fade show active" id="grid-view" role="tabpanel"
-                                    aria-labelledby="grid-view-tab">
-                                    <div class="product-grid-view row">
-                                        <!-- Loop through all products -->
-                                        <% products.forEach(product=> { %>
-                                            <div class="col-xl-4 col-sm-6">
-                                                <div class="product-item">
-                                                    <div class="product-img img-zoom-effect">
-                                                        <!-- Dynamically load the primary image for each product -->
-                                                        <a href="/product/<%= product._id %>">
-                                                            <img class="img-full" src="<%= product.images[0] %>"
-                                                                alt="<%= product.name %>">
-                                                        </a>
-                                                    </div>
-                                                    <div class="product-content">
-                                                        <!-- Product name and price -->
+                        <div class="tab-content text-charcoal pt-8">
+                            <div class="tab-pane fade show active" id="grid-view" role="tabpanel"
+                                aria-labelledby="grid-view-tab">
+                                <div class="product-grid-view row">
+                                    <!-- Loop through all products -->
+                                    <% products.forEach(product=> { %>
+                                        <div class="col-xl-4 col-sm-6">
+                                            <div class="product-item">
+                                                <div class="product-img img-zoom-effect">
+                                                    <!-- Dynamically load the primary image for each product -->
+                                                    <a href="/product/<%= product._id %>">
+                                                        <img class="img-full" src="<%= product.images[0] %>"
+                                                            alt="<%= product.name %>">
+                                                    </a>
+                                                </div>
+                                                <div class="product-content">
+                                                    <!-- Product name and price -->
+                                                    <div>
                                                         <a class="product-name pb-1" href="/product/<%= product._id %>">
                                                             <%= product.name %>
                                                         </a>
@@ -110,64 +119,65 @@
                                                                 </span>
                                                             </div>
                                                         </div>
-                                                        <div class="product-add-action">
-                                                            <ul>
-                                                                <li>
-                                                                    <button class="add-to-cart-btn"
-                                                                        data-id="<%= product._id %>"
-                                                                        data-tippy="Add to cart">
-                                                                        <i class="pe-7s-cart"></i>
-                                                                    </button>
-                                                                </li>
-                                                                <li>
-                                                                    <a href="wishlist.html" data-tippy="Add to wishlist">
-                                                                        <i class="pe-7s-like"></i>
-                                                                    </a>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
+                                                    </div>
+                                                    <div class="product-add-action">
+                                                        <ul>
+                                                            <li>
+                                                                <button class="add-to-cart-btn"
+                                                                    data-id="<%= product._id %>"
+                                                                    data-tippy="Add to cart">
+                                                                    <i class="pe-7s-cart"></i>
+                                                                </button>
+                                                            </li>
+                                                            <li>
+                                                                <a href="wishlist.html" data-tippy="Add to wishlist">
+                                                                    <i class="pe-7s-like"></i>
+                                                                </a>
+                                                            </li>
+                                                        </ul>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <% }); %> <!-- End of loop -->
-                                    </div>
+                                        </div>
+                                        <% }); %> <!-- End of loop -->
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="pagination-area pt-10">
-                                <nav aria-label="Page navigation example">
+                        <div class="pagination-area pt-10">
+                            <nav aria-label="Page navigation example">
 
-                                    <ul class="pagination justify-content-end">
-                                        <% if (currentPage> 1) { %>
-                                            <li class="page-item">
-                                                <a class="page-link"
-                                                    href="?page=<%= currentPage - 1 %>&search=<%= search %>&sort=<%= sort %>">&laquo;</a>
-                                            </li>
-                                            <% } %>
-                                                <% for (let i=1; i <=totalPages; i++) { %>
-                                                    <li class="page-item <%= i === currentPage ? 'active' : '' %>">
-                                                        <a class="page-link"
-                                                            href="?page=<%= i %>&search=<%= search %>&sort=<%= sort %>">
-                                                            <%= i %>
-                                                        </a>
-                                                    </li>
-                                                    <% } %>
-                                                        <% if (currentPage < totalPages) { %>
-                                                            <li class="page-item">
-                                                                <a class="page-link"
-                                                                    href="?page=<%= currentPage + 1 %>&search=<%= search %>&sort=<%= sort %>">&raquo;</a>
-                                                            </li>
-                                                            <% } %>
-                                    </ul>
+                                <ul class="pagination justify-content-end">
+                                    <% if (currentPage> 1) { %>
+                                        <li class="page-item">
+                                            <a class="page-link"
+                                                href="?page=<%= currentPage - 1 %>&search=<%= search %>&sort=<%= sort %>">&laquo;</a>
+                                        </li>
+                                        <% } %>
+                                            <% for (let i=1; i <=totalPages; i++) { %>
+                                                <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                                                    <a class="page-link"
+                                                        href="?page=<%= i %>&search=<%= search %>&sort=<%= sort %>">
+                                                        <%= i %>
+                                                    </a>
+                                                </li>
+                                                <% } %>
+                                                    <% if (currentPage < totalPages) { %>
+                                                        <li class="page-item">
+                                                            <a class="page-link"
+                                                                href="?page=<%= currentPage + 1 %>&search=<%= search %>&sort=<%= sort %>">&raquo;</a>
+                                                        </li>
+                                                        <% } %>
+                                </ul>
 
-                                </nav>
-                            </div>
+                            </nav>
                         </div>
                     </div>
                 </div>
             </div>
-        </main>
-        <%- include("../partials/footer.ejs") %>
+        </div>
+    </main>
+    <%- include("../partials/footer.ejs") %>
         <script>
             document.querySelectorAll('.add-to-cart-btn').forEach(button => {
                 button.addEventListener('click', async function () {
@@ -183,23 +193,10 @@
                         if (response.ok) {
 
                             window.location.href = '/cart';
-                            
+
                         } else {
                             if (response.status === 401) {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Please log in',
-                                    text: result.message || 'You need to be logged in to add items to your cart.',
-                                    showCancelButton: true,
-                                    cancelButtonText: 'Cancel',
-                                    confirmButtonText: 'Login',
-                                    reverseButtons: true
-                                }).then((result) => {
-                                    if (result.isConfirmed) {
-                                        // Redirect to login page
-                                        window.location.replace('/login'); // Use replace to navigate away from the current page
-                                    }
-                                });
+                                window.location.href = '/login'
                             }
 
                             else {
@@ -247,8 +244,8 @@
             }
 
         </script>
-    
 
 
-            <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.13/dist/sweetalert2.min.css" rel="stylesheet">
-            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.13/dist/sweetalert2.min.js"></script>
+
+        <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.13/dist/sweetalert2.min.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.13/dist/sweetalert2.min.js"></script>

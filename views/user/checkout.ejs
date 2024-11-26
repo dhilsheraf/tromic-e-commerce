@@ -10,9 +10,10 @@
                         <h2 class="breadcrumb-heading">Checkout Page</h2>
                         <ul>
                             <li>
-                                <a href="index.html">Home \ </a>
+                                <a href="/">Home \ </a>
                             </li>
-                            <li>Checkout</li>
+                            <li><a href="/cart">Cart \</a></li>
+                            <li> Checkout</li>
                         </ul>
                     </div>
                 </div>
@@ -47,12 +48,14 @@
                                     <h3>
                                         <label>Select Address</label>
                                     </h3>
+                                    <button class="btn btn-primary px-5" onclick="myaccount()">Add new Address or Edit Address</button>
+                                    <br><br>
                                 </div>
                                 
                                 <!-- Displaying existing addresses if available -->
                                 <div id="existing-addresses" class="row">
                                     <% if (userAddresses && userAddresses.length > 0) { %>
-                                        <div class="col-md-12">
+                                                                                                                       <div class="col-md-12">
                                             <label for="selectAddress">Choose an Address</label>
                                         </div>
                                         <% userAddresses.forEach((address, index) => { %>
@@ -216,7 +219,7 @@
                                         <div class="card-header" id="payment-3">
                                             <h5 class="panel-title">
                                                 <label for="cod-payment" class="d-flex align-items-center">
-                                                    <input  type="radio" id="cod-payment" name="payment-method" value="cod">&nbsp;
+                                                    <input  type="radio" id="cod-payment" name="payment-method" value="COD">&nbsp;
                                                     Cash on delivery
                                                 </label>
                                             </h5>
@@ -291,7 +294,7 @@
                 Swal.fire("Address saved successfully!");
                 window.location.reload(); 
             } else {
-                alert( data.message);
+                Swal.fire( data.message);
                 window.location.reload()
             }
         })
@@ -302,5 +305,54 @@
 }
 
 </script>
+<script>
 
+function myaccount(){
+    window.location.href = '/my-account'
+}
+
+    //order placing
+window.placeOrder = function() {
+    console.log("Place order function triggered.");
+    const selectAddressId = document.querySelector('input[name="address"]:checked')?.value ;
+    const paymentMethod = document.querySelector('input[name="payment-method"]:checked')?.value ;
+
+            if (!selectAddressId) {
+            Swal.fire("Please select an address.");
+            return;
+        }
+
+        if (!paymentMethod) {
+            Swal.fire("Please select a payment method.");
+            return;
+        }
+
+    const orderData = {
+    addressId: selectAddressId,
+    paymentMethod,
+    cartItems: <%- JSON.stringify(cartItems || [] ) %>
+};
+
+
+    fetch('/checkout',{
+        method: 'POST',
+        headers : { 'Content-Type':'application/json' },
+        body: JSON.stringify(orderData),
+    })
+    .then((response) => response.json())
+    .then((data) => {
+        if(data.success) {
+            window.location.href = '/order-confirm/' + data.orderId;
+        }else{
+            Swal.fire(data.message || "An error occured while placing the order.");
+        }
+    }).catch((error) => {
+        console.error('Error',error);
+        Swal.fire("An error occured while placing the order")
+    })
+}
+
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <%- include("../partials/footer.ejs") %>

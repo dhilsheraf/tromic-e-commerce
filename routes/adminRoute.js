@@ -6,6 +6,7 @@ const categoryController = require("../controllers/categoryController")
 const productController = require("../controllers/productController")
 const upload = require('../middleware/upload')
 const admin = require('../middleware/authMiddleware')
+const orderController = require('../controllers/orderController')
 
 
 router.get("/",admin.existAdmin, adminController.loadAdminLogin)
@@ -37,5 +38,7 @@ router.post('/products/edit/:id', upload.array("images", 4), productController.e
 
 router.post('/products/toggle/:id', productController.aiProduct)
 
+//orders
+router.get('/orders',orderController.showOrder)
 
 module.exports = router

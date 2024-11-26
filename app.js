@@ -43,7 +43,6 @@ connectDB()
 
 
 
-// Configure Cloudinary with credentials from .env
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
@@ -54,9 +53,9 @@ cloudinary.config({
  
 app.use('/',userRoute) ;
 app.use('/admin',adminRoute)
-app.get('/test',(req,res)=>{
-    res.render('user/checkout')
-})
+// app.get('/test',(req,res)=>{
+//     res.render('admin/orders')
+// })
  
 app.listen(PORT,()=>
 console.log(`Server is running on http://localhost:${PORT}`), 

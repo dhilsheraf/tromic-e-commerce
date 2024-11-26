@@ -18,7 +18,7 @@ const adminLogin = async (req,res) => {
             }
         }
         else {
-            res.render('admin/adminlogin',{messasge:"You are not admin"})
+            res.render('admin/adminlogin',{message:"You are not admin"})
         }
     } catch (error) {
         console.log(error);
@@ -112,6 +112,7 @@ const logout = async (req, res) => {
         res.redirect("");
     }
 };
+
 
 module.exports = {
     loadAdminLogin,

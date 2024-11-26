@@ -6,6 +6,8 @@ const { json } = require("express");
 const Product = require("../models/productModel")
 const Address = require('../models/addressModel')
 const crypto = require('crypto')
+const Order = require('../models/orderModel')
+
 //route to home 
 
 
@@ -64,11 +66,13 @@ const loadSignup = async (req, res) => {
 
 const loadMyAccount = async (req,res) =>{
     try {
-
+        const userId = req.session.user
         const user = await User.findById(req.session.user)
         const addresses = await Address.find({userId:req.session.user})
+        const orders = await Order.find({userId}).populate('products.product','name price')
+        .populate('addressId','addressLine city');
 
-        res.render("my-account",{user,addresses})
+        res.render("my-account",{user,addresses,orders})
     } catch (error) {
         console.log(error)
         res.status(500).redirect("/pageNotFound")

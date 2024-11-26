@@ -12,7 +12,7 @@ const orderSchema = new mongoose.Schema(
             {
                 product: {
                     type: ObjectId,
-                    ref: 'Cart', 
+                    ref: 'Product', 
                     required: true,
                 },
                 price: {
@@ -26,8 +26,8 @@ const orderSchema = new mongoose.Schema(
                 },
                 status: {
                     type: String,
-                    enum: ['pending', 'confirmed', 'packed', 'shipped', 'delivered', 'cancelled', 'return'],
-                    default: 'pending',
+                    enum: ['Pending', 'packed', 'shipped', 'delivered', 'cancelled', 'return'],
+                    default: 'Pending',
                 }                
             },
         ],
@@ -37,8 +37,8 @@ const orderSchema = new mongoose.Schema(
         },
         status: {
             type: String,
-            enum: ['pending', 'confirmed','packed','shipped', 'delivered', 'cancelled','return' ],
-            default: 'pending',
+            enum: ['Pending','packed','shipped', 'delivered', 'cancelled','return' ],
+            default: 'Pending',
         },
         payment: {
             type: String,

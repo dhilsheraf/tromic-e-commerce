@@ -39,7 +39,7 @@ router.get("/login", session.existUser, userController.loadLogin);
 router.post("/login", userController.login)
 
 //google authentication
-router.get("/auth/google", passport.authenticate('google', { scope: ['profile', 'email'] }))
+router.get("/auth/google" ,passport.authenticate('google', { scope: ['profile', 'email'] }))
 router.get("/auth/google/callback", passport.authenticate('google', { failureRedirect: '/signup' }), (req, res) => {
     res.redirect('/');
 })
@@ -82,6 +82,7 @@ router.delete('/delete-cart',cartController.deleteCart)
 //checkout
 router.get('/checkout',session.checkUserSession,orderController.getCheckout)
 router.post('/checkout',orderController.checkout)
-
+router.get('/order-confirm/:orderId',orderController.orderConfirm)
+router.get('/order/:id',orderController.orderDetail)
 
 module.exports = router;
