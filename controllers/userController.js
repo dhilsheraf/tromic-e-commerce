@@ -237,11 +237,7 @@ const resendOTP = async (req,res)=>{
 
 const loadLogin = async (req,res)=>{
     try {
-        if(!req.session.user){
-            return res.render('login',{message:""})
-        }else{
-            res.redirect('/')
-        }
+        res.render('login',{message:""})
     } catch (error) {
         res.redirect("/pageNotFound")
     }

@@ -8,7 +8,7 @@ const productSchema = new mongoose.Schema({
     category: { type: ObjectId , ref: 'Category', required: true },
     images: { type: [String], required: true },  
     stock: { type: Number, default: 0 },
-    isActive: { type: Boolean, default: false }, // Soft delete flag
+    isActive: { type: Boolean, default: true }, // Soft delete flag
 }, { timestamps: true });
 
 const Product = mongoose.model('Product', productSchema);

@@ -200,36 +200,6 @@
         .page-btn:hover:not(.active) {
             background-color: #f8fafc;
         }
-        .status-pending {
-    background-color: #fff7ed;
-    color: #c2410c;
-        }
-
-        .status-packed {
-            background-color: #e0f2fe;
-            color: #0369a1;
-        }
-
-        .status-shipped {
-            background-color: #f0fdf4;
-            color: #15803d;
-        }
-
-        .status-delivered {
-            background-color: #ecfdf5;
-            color: #065f46;
-        }
-
-        .status-cancelled {
-            background-color: #fef2f2;
-            color: #dc2626;
-        }
-
-        .status-return {
-            background-color: #fefce8;
-            color: #d97706;
-        }
-
     </style>
 
     <body>
@@ -261,6 +231,7 @@
                         <a class="menu-link" href="/admin/products">
                             <i class="icon material-icons md-add_box"></i>
                             <span class="text">Products</span>
+                            </a>
                     </li>
                     <li class="menu-item ">
                         <a class="menu-link" href="/admin/category">
@@ -349,41 +320,26 @@
                 </div>
                 <div class="card mb-4">
                     <header class="card-header">
-                        <form method="GET" class="row gx-3">
                         <div class="row gx-3">
                             <div class="col-lg-4 col-md-6 me-auto">
-                                <input
-                                    type="text"
-                                    name="search"
-                                    value="<%= search %>"
-                                    placeholder="Search by username or phone"
-                                    class="form-control"
-                                />
+                                <input type="text" placeholder="Search..." class="form-control" />
                             </div>
                             <div class="col-lg-2 col-6 col-md-3">
-                                <select class="form-select" name="status">
-                                    <option value="all" <%= status === 'all' ? 'selected' : '' %>>All</option>
-                                    <option value="Pending" <%= status === 'Pending' ? 'selected' : '' %>>Pending</option>
-                                    <option value="Packed" <%= status === 'Packed' ? 'selected' : '' %>>Packed</option>
-                                    <option value="Shipped" <%= status === 'Shipped' ? 'selected' : '' %>>Shipped</option>
-                                    <option value="Delivered" <%= status === 'Delivered' ? 'selected' : '' %>>Delivered</option>
-                                    <option value="Cancelled" <%= status === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
-                                    <option value="Return" <%= status === 'Return' ? 'selected' : '' %>>Return</option>
+                                <select class="form-select">
+                                    <option>Status</option>
+                                    <option>Active</option>
+                                    <option>Disabled</option>
+                                    <option>Show all</option>
                                 </select>
                             </div>
                             <div class="col-lg-2 col-6 col-md-3">
-                                <select class="form-select" name="limit">
-                                    <option value="10" <%= limit === 10 ? 'selected' : '' %>>Show 10</option>
-                                    <option value="20" <%= limit === 20 ? 'selected' : '' %>>Show 20</option>
-                                    <option value="30" <%= limit === 30 ? 'selected' : '' %>>Show 30</option>
+                                <select class="form-select">
+                                    <option>Show 20</option>
+                                    <option>Show 30</option>
+                                    <option>Show 40</option>
                                 </select>
                             </div>
                         </div>
-                        <div class="col-lg-2 col-md-3">
-                            <button type="submit" class="btn btn-primary">Apply</button>
-                        </div>
-                    </form>
-                
                     </header>
                     <!-- card-header end// -->
                     <div class="card-body">
@@ -393,13 +349,12 @@
                                     <tr>
                                         <th>No.</th>
                                         <th>User</th>
-                                        <th>Phone</th>
-                                        <th>Products</th>
+                                        <th>Contact</th>
+                                        <th>Email</th>
                                         <th>Total</th>
-                                        <th>Status</th>
                                         <th>Payment</th>
                                         <th>Date</th>
-                                        <th class="text-end">Status</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -415,36 +370,12 @@
                                                 <td><%= index+1 %></td>
                                                 <td><%= order.userId.username %></td>
                                                 <td><%= order.userId.number %></td>
-                                                <td>
-                                                    <% order.products.forEach(item => { %>
-                                                        <div>
-                                                            <strong><%= item.product.name %></strong>
-                                                            - <%= item.quantity %> x $<%= item.price %>
-                                                        </div>
-                                                    <% }); %>
-                                                </td>
-                                                <td>$<%= order.totalPrice %></td>
-                                                <td>
-                                                    <span class="status-badge status-<%= order.status.toLowerCase() %>">
-                                                        <%= order.status %>
-                                                    </span>
-                                                </td>
+                                                <td><%= order.userId.email %></td>
+                                                <td>₹<%= order.totalPrice %></td>
                                                 <td><%= order.payment %></td>
                                                 <td><%= new Date(order.createdAt).toLocaleDateString() %></td>
-                                                <td class="text-end">
-                                                    <a href="/admin/orders/<%= order._id %>" class="btn btn-md btn-detail">Detail</a>
-                                                    <div class="dropdown">
-                                                        <a href="#" data-bs-toggle="dropdown" class="btn btn-light btn-sm font-sm">
-                                                            <i class="material-icons md-more_horiz"></i>
-                                                        </a>
-                                                        <div class="dropdown-menu">
-                                                            <a class="dropdown-item" href="/admin/orders/<%= order._id %>/edit">Edit</a>
-                                                            <a class="dropdown-item text-danger" href="/admin/orders/<%= order._id %>/delete">Delete</a>
-                                                            <a class="dropdown-item" href="/admin/orders/<%= order._id %>/edit">Edit</a>
-                                                            <a class="dropdown-item" href="/admin/orders/<%= order._id %>/edit">Edit</a>
-                                                            <a class="dropdown-item" href="/admin/orders/<%= order._id %>/edit">Edit</a>
-                                                        </div>
-                                                    </div>
+                                                <td >
+                                                    <a href="/admin/orders/<%= order._id %>" class="btn btn-md btn-detail">Action</a>
                                                 </td>
                                             </tr>
                                         <% }); %>
@@ -459,18 +390,19 @@
                 </div>
                 <!-- card end// -->
                 <div class="pagination-area mt-15 mb-50">
-                    <nav aria-label="Page navigation">
+                    <nav aria-label="Page navigation example">
                         <ul class="pagination justify-content-start">
-                            <% for (let i = 1; i <= totalPages; i++) { %>
-                                <li class="page-item <%= currentPage === i ? 'active' : '' %>">
-                                    <a class="page-link" href="?page=<%= i %>&limit=<%= limit %>&search=<%= search %>&status=<%= status %>">
-                                        <%= i %>
-                                    </a>
-                                </li>
-                            <% } %>
+                            <li class="page-item active"><a class="page-link" href="#">01</a></li>
+                            <li class="page-item"><a class="page-link" href="#">02</a></li>
+                            <li class="page-item"><a class="page-link" href="#">03</a></li>
+                            <li class="page-item"><a class="page-link dot" href="#">...</a></li>
+                            <li class="page-item"><a class="page-link" href="#">16</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a>
+                            </li>
                         </ul>
                     </nav>
-                </div>                
+                </div>
             </section>
             <!-- content-main end// -->
             <footer class="main-footer font-xs">

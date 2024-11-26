@@ -53,9 +53,9 @@ cloudinary.config({
  
 app.use('/',userRoute) ;
 app.use('/admin',adminRoute)
-// app.get('/test',(req,res)=>{
-//     res.render('admin/orders')
-// })
+app.get('/test',(req,res)=>{
+    res.render('admin/orderAction')
+})
  
 app.listen(PORT,()=>
 console.log(`Server is running on http://localhost:${PORT}`), 

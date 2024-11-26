@@ -83,6 +83,6 @@ router.delete('/delete-cart',cartController.deleteCart)
 router.get('/checkout',session.checkUserSession,orderController.getCheckout)
 router.post('/checkout',orderController.checkout)
 router.get('/order-confirm/:orderId',orderController.orderConfirm)
-router.get('/order/:id',orderController.orderDetail)
+router.get('/order/:orderId',orderController.detailOrder)
 
 module.exports = router;

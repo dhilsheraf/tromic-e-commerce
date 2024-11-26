@@ -123,27 +123,27 @@ const orderConfirm = async (req,res) => {
     }
 }
 
-const orderDetail = async (req,res) => {
+const detailOrder = async (req,res) => {
     try {
+        const orderId = req.params.orderId;
+    
 
-        const { id } = req.params
-
-        const order = await Order.findById(id)
-            .populate('products.product', 'name price')
-            .populate('userId',)
-            .populate('addressId');
-
-        if(!order){
-            console.log('ordernot found')
-            return res.status(404).render('error')
+        const order = await Order.findById(orderId).populate('products.product')
+          .populate('userId') 
+          .populate('addressId'); 
+    
+        // If order is not found, show an error message
+        if (!order) {
+          return res.status(404).render('error', { message: 'Order not found' });
         }
-         res.render('orderDetail',{order});
-    } catch (error) {
-        console.error("Error occured while order ordert",error)
-        res.render('error')
-    }
+    
+        // Render the order details page with the order data
+        res.render('orderDetail', { order });
+      } catch (err) {
+        console.error(err);
+        res.status(500).render('error', { message: 'Server error' });
+      }
 }
-
 
 //Admin Side 
 
@@ -167,8 +167,9 @@ const showOrder = async (req,res) => {
         const orders = await Order.find(query).populate('userId').populate('products.product').populate('addressId').lean();
 
        const totalOrders = await Order.countDocuments(query);
+       const totalPages = Math.ceil(totalOrders/limit);
 
-        res.render('admin/orders',{ orders });
+        res.render('admin/orders',{ orders ,totalPages , currenPage : Number(page), search , status});
 
     } catch (error) {
         console.log("Error occured while ",error)
@@ -177,10 +178,33 @@ const showOrder = async (req,res) => {
 }
 
 
+const orderAction = async (req,res) => {
+    try {
+
+        const { orderId } = req.params
+
+        const order = await Order.findById(orderId)
+            .populate('products.product', '')
+            .populate('userId',)
+            .populate('addressId');
+        if(!order){
+            console.log('ordernot found')
+            return res.status(404).render('error')
+        }
+         res.render('admin/orderAction',{order});
+    } catch (error) {
+        console.error("Error occured while order ordert",error)
+        res.render('admin/404')
+    }
+}
+
+
+
 module.exports = {
     getCheckout,
     checkout,
     orderConfirm,
-    orderDetail,
-    showOrder
+    detailOrder,
+    showOrder,
+    orderAction
 }

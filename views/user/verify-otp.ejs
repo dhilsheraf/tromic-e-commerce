@@ -184,25 +184,29 @@
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    document.getElementById("otp").focus();
-    let timer = 60;
-    let timerInterval;
+   document.getElementById("otp").focus();
+let timer = 60;
+let timerInterval;
 
-    function startTimer() {
-        timerInterval = setInterval(() => {
-            timer--;
-            document.getElementById("timerValue").textContent = timer;
-            if (timer <= 0) {
-                clearInterval(timerInterval);
-                document.getElementById("timerValue").classList.add("expired");
-                document.getElementById("timerValue").textContent = "Expired";
-                document.getElementById("otp").disabled = true;
-            }
-        }, 1000);
-    }
-    startTimer();
+function startTimer() {
+    timerInterval = setInterval(() => {
+        timer--;
+        document.getElementById("timerValue").textContent = timer;
+        if (timer <= 0) {
+            clearInterval(timerInterval);
+            document.getElementById("timerValue").classList.add("expired");
+            document.getElementById("timerValue").textContent = "Expired";
+            document.getElementById("otp").disabled = true;
 
-    function validateOTPFORM() {
+            // Re-enable the resend button after 60 seconds
+            document.getElementById("resendButton").disabled = false;
+        }
+    }, 1000);
+}
+
+startTimer();
+
+function validateOTPFORM() {
     const otpInput = document.getElementById("otp").value;
     console.log("OTP sent:", otpInput); // Ensure OTP is being logged correctly
     $.ajax({
@@ -238,34 +242,38 @@
     return false; // Prevent the default form submission
 }
 
-    function resendOTP(){
-        clearInterval(timerInterval);
-        timer = 60;
-        document.getElementById("otp").disabled = false;
-        document.getElementById("timerValue").classList.remove("expired");
-        startTimer();
-        $.ajax({
-            type:"POST",
-            url:"/resend-otp",
-            success: function(response){
-                if(response.success){
-                    Swal.fire({
-                        icon:"success",
-                        title: "OTP resent successfully",
-                        showConfirmButton:false,
-                        timer:1500
-                    });
-                }else{
-                    Swal.fire({
-                        icon:"error",
-                        title:"Error",
-                        text:"An error occurred while resending OTP. Please try again."
-                    });
-                }
+function resendOTP() {
+    clearInterval(timerInterval);
+    timer = 60;
+    document.getElementById("otp").disabled = false;
+    document.getElementById("timerValue").classList.remove("expired");
+    startTimer();
+
+    // Disable the resend OTP button until the timer reaches 0
+    document.getElementById("resendButton").disabled = true;
+
+    $.ajax({
+        type: "POST",
+        url: "/resend-otp",
+        success: function(response) {
+            if (response.success) {
+                Swal.fire({
+                    icon: "success",
+                    title: "OTP resent successfully",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "An error occurred while resending OTP. Please try again."
+                });
             }
-        });
-        return false; // Prevent default button behavior
-    }
+        }
+    });
+    return false; // Prevent default button behavior
+}
 </script>
 </body>
 </html>

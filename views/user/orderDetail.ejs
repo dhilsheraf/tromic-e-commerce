@@ -26,7 +26,7 @@
     .order-header h2 {
       color: #4CAF50;
     }
-    .order-details, .order-products, .order-address {
+    .order-details, .order-products, .order-address, .order-actions {
       margin-bottom: 20px;
     }
     .order-products table {
@@ -43,6 +43,25 @@
       font-size: 1.2em;
       font-weight: bold;
       color: #4CAF50;
+    }
+    .order-actions {
+      text-align: center;
+    }
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      font-size: 16px;
+      margin: 5px;
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-cancel {
+      background-color: #e74c3c;
+      color: white;
+    }
+    .btn:hover {
+      opacity: 0.9;
     }
   </style>
 </head>
@@ -96,9 +115,18 @@
     <div class="order-details">
       <h3>User Details</h3>
       <p>
-        Name: <%= order.userId.username %><br>
+        Name: <%= order.userId.usename %><br>
         Email: <%= order.userId.email %>
       </p>
+    </div>
+
+    <!-- Cancel Order Button -->
+    <div class="order-actions">
+      <% if (order.status === 'Pending') { %>
+        <form method="POST" action="/profile/orders/cancel/<%= order._id %>">
+          <button type="submit" class="btn btn-cancel">Cancel Order</button>
+        </form>
+      <% } %>
     </div>
   </div>
 </body>
