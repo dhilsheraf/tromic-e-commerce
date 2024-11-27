@@ -198,6 +198,71 @@ const orderAction = async (req,res) => {
     }
 }
 
+const orderStatus = async (req,res) => {
+    const { orderId , productId } = req.params ; 
+    const { status } = req.body;
+    try {
+
+        const validStatus = ['Pending','shipped','on delivery','delivered', 'cancelled','return']
+
+        if(!validStatus.includes(status)){
+            return res.status(404).json({ succes:false , message: 'Invalid status error'})
+        }
+
+        const order = await Order.findById(orderId);
+
+        if(!order){
+            return res.status(404).json({success:false , message:'order not found' });
+        }
+        
+        const productItem = order.products.find( p => p.product.toString() === productId );
+
+        if(!productItem) {
+            return res.status(404).json({success: false , message: 'Product not found'});
+        }
+
+        productItem.status = status ; 
+
+        await order.save();
+
+        res.json({success: true , message:'Product status update successfull',order})
+        
+    } catch (error) {
+        console.error("Error occure while updateing the product status",error.message);
+        res.status(500).json({success:false , message:'Internal server errore'})
+    }
+}
+
+const cancelOrder = async (req,res) => {
+    const {orderId , productId } = req.body ;
+    try {
+
+        const order = await Order.findById(orderId);
+        if(!order) return res.status(404).json({message:"Order not found"});
+        
+        const productIndex = order.products.findIndex( p => p.product._id.toString() === productId )
+
+        if(productIndex <= -1) return res.status(404).json({message:"Product not found in the order"})
+
+            if(order.products[productIndex].status !== 'Pending' ) return res.status(400).json({message:"Product cannot be cancelled"})
+        
+        const product = await Product.findById({_id:productId});
+        if(!product) return res.status(404).json({message:"Product not found "});
+
+        product.stock += order.products[productIndex].quantity;
+
+        await product.save();
+        
+        order.products[productIndex].status = 'cancelled';
+        await order.save();
+        
+        res.status(200).json({ message: "Order item cancelled successfully" });
+
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ message: "An error occurred while cancelling the order" });
+    }
+}
 
 
 module.exports = {
@@ -206,5 +271,7 @@ module.exports = {
     orderConfirm,
     detailOrder,
     showOrder,
-    orderAction
+    orderAction,
+    orderStatus,
+    cancelOrder
 }

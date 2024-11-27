@@ -4,21 +4,21 @@ const Category = require('../models/categoryModel')
 const getProduct = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1; // Default to page 1 if no page is specified
-        const limit = 10; // Number of products per page
+        const limit = 10; 
         const skip = (page - 1) * limit;
 
-        // Fetch the total number of products
+
         const totalProducts = await Product.countDocuments();
         const totalPages = Math.ceil(totalProducts / limit);
 
-        // Fetch only the products for the current page
+
         const products = await Product.find({})
             .skip(skip)
             .limit(limit)
             .populate('category');
 
-        // Render the products page with pagination data
-        res.render('admin/product', {
+
+            res.render('admin/product', {
             products,
             currentPage: page,
             totalPages,
@@ -42,29 +42,40 @@ const loadAddProduct = async (req, res) => {
 
 const addProduct = async (req, res) => {
     try {
+
         const { name, description, price, stock, category } = req.body;
 
-        // Retrieve image URLs from Cloudinary (from req.files)
-        const images = req.files.map(file => file.path);  // Assuming multer uploads the images to Cloudinary
 
-        // Create new product
+        if (!name || !description || !price || !stock || !category) {
+            return res.status(400).json({ message: "All fields are required." });
+        }
+
+        const existingProduct = await Product.findOne({ name: name.trim() });
+
+        if (existingProduct) {
+            return res.status(400).json({
+                message: `A product with the name "${name}" already exists.`,
+            });
+        }
+
+        const imagePaths = req.files.map((file) => file.path);
+
+
         const newProduct = new Product({
             name,
             description,
-            price,
-            stock,
+            price: parseFloat(price),
+            stock: parseInt(stock, 10),
             category,
-            images,  // Store Cloudinary image URLs
+            images: imagePaths, // Save image paths
         });
 
-        // Save the product to the database
         await newProduct.save();
 
-        // Respond with success or redirect
-        res.redirect('/admin/products');
+        return res.status(201).json({ message: "Product added successfully." });
     } catch (error) {
-        console.error(error);
-        res.status(500).send('Error while adding product');
+        console.error("Error adding product:", error);
+        return res.status(500).json({ message: "Server error. Please try again later." });
     }
 };
 
@@ -127,17 +138,21 @@ const editProduct = async (req, res) => {
 };
 
 
+
 const aiProduct = async (req, res) => {
     try {
+
         const product = await Product.findById(req.params.id);
         if (!product) {
+            console.log("product not found")
             return res.status(404).send('Product not found');
+            
         }
+         
+        product.isActive = !product.isActive;
+        await product.save(); // Save the updated product
 
-        product.isActive = !product.isActive; // Toggle the active state
-        await product.save();
-
-        res.redirect('/admin/products'); // Redirect back to the product page
+        res.redirect('/admin/products'); 
     } catch (error) {
         console.error(error);
         res.status(500).send('Internal Server Error');

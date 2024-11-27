@@ -94,8 +94,8 @@
 
         <script>
     document.getElementById('signupForm').addEventListener('submit', function(event) {
-        event.preventDefault(); // Prevent form submission
-        let isValid = true; // Flag to track validity
+        event.preventDefault(); 
+        let isValid = true; 
         const errorMessages = {
             username: "Username should be valid at least one character",
             email: "A valid email is required.",
@@ -104,15 +104,15 @@
             confirmPassword: "Passwords must match."
         };
 
-        // Clear previous error messages
+
         document.getElementById('usernameError').innerText = '';
         document.getElementById('emailError').innerText = '';
         document.getElementById('numberError').innerText = '';
         document.getElementById('passwordError').innerText = '';
         document.getElementById('cpasswordError').innerText = '';
 
-        // Validate Username
-      // Validate Username
+
+
          const username = document.getElementById('username').value.trim();
          const usernamePattern = /[A-Za-z]/;  // Ensure at least one letter exists
          if (!username || !usernamePattern.test(username)) {
@@ -121,7 +121,6 @@
           }
 
 
-        // Validate Email
         const email = document.getElementById('email').value.trim();
         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!email || !emailPattern.test(email)) {
@@ -129,7 +128,7 @@
             isValid = false;
         }
 
-        // Validate Phone Number
+        // number
         const phoneNumber = document.getElementById('number').value.trim();
         const phonePattern = /^\d{10}$/; // Adjust for country code if needed
         if (!phoneNumber || !phonePattern.test(phoneNumber)) {
@@ -139,8 +138,8 @@
 
         // Validate Password
         const password = document.getElementById('password').value;
-        // Validate Password
-         const password2 = document.getElementById('password').value;
+
+        const password2 = document.getElementById('password').value;
          const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;  // At least one lowercase, one uppercase, one digit, one special character, and minimum length 8
          if (!password || !passwordPattern.test(password2)) {
          document.getElementById('passwordError').innerText = 
@@ -151,16 +150,14 @@
          }
 
 
-        // Validate Confirm Password
         const confirmPassword = document.getElementById('cpassword').value;
         if (password !== confirmPassword) {
             document.getElementById('cpasswordError').innerText = errorMessages.confirmPassword;
             isValid = false;
         }
 
-        // If all fields are valid, submit the form
         if (isValid) {
-            this.submit(); // Proceed with form submission
+            this.submit(); 
         }
     });
 </script>

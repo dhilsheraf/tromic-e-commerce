@@ -1,5 +1,14 @@
 <%- include("../partials/header.ejs") %>
-    <style></style>
+    <style>
+        .product-grid-view .col-xl-4.col-sm-6 {
+  margin-bottom: 30px;
+}
+.price-box-holder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+    </style>
     <main class="main-content">
         <div class="breadcrumb-area breadcrumb-height" data-bg-image="/images/breadcrumb/bg/1-1-1920x400.jpg">
             <div class="container h-100">
@@ -9,7 +18,7 @@
                             <h2 class="breadcrumb-heading">Shop Layout</h2>
                             <ul>
                                 <li>
-                                    <a href="index.html">Home /</a>
+                                    <a href="/">Home /</a>
                                 </li>
                                 <li>Shop Default</li>
                             </ul>
@@ -113,7 +122,7 @@
                                                         </a>
                                                         <div class="price-box">
                                                             <div class="price-box-holder">
-                                                                <span>Price:</span>
+                                                                <span>Price ₹ :</span>
                                                                 <span class="new-price text-primary">
                                                                     <%= product.price %>
                                                                 </span>
@@ -130,9 +139,7 @@
                                                                 </button>
                                                             </li>
                                                             <li>
-                                                                <a href="wishlist.html" data-tippy="Add to wishlist">
-                                                                    <i class="pe-7s-like"></i>
-                                                                </a>
+                                                                <button class="add-to-wishlist-btn" > <i class="pe-7s-like" data-tippy="Add to wishlist"></i></button>
                                                             </li>
                                                         </ul>
                                                     </div>

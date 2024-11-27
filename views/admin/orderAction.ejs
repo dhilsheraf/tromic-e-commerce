@@ -1,233 +1,296 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <title>Order Detail - Admin</title>
-        <meta http-equiv="x-ua-compatible" content="ie=edge" />
-        <meta name="description" content="Admin Order Details" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta property="og:title" content="Order Detail" />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="order-detail.html" />
-        <meta property="og:image" content="" />
-        <link rel="shortcut icon" type="image/x-icon" href="/assets/imgs/theme/favicon.svg" />
-        <link href="/assets/css/main.css?v=1.1" rel="stylesheet" type="text/css" />
-    </head>
 
-    <body>
-        <div class="screen-overlay"></div>
-        <!-- Sidebar -->
-        <aside class="navbar-aside" id="offcanvas_aside">
-            <div class="aside-top">
-                <a href="/" class="brand-wrap">
-                    <img src="/assets/imgs/theme/logo.svg" class="logo" alt="Nest Dashboard" />
-                </a>
-                <div>
-                    <button class="btn btn-icon btn-aside-minimize"><i class="text-muted material-icons md-menu_open"></i></button>
+<head>
+    <meta charset="utf-8" />
+    <title>Order Detail - Admin</title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="description" content="Admin Order Details" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta property="og:title" content="Order Detail" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="order-detail.html" />
+    <meta property="og:image" content="" />
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/imgs/theme/favicon.svg" />
+    <link href="/assets/css/main.css?v=1.1" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+</head>
+
+<body>
+    <div class="screen-overlay"></div>
+    <!-- Sidebar -->
+    <aside class="navbar-aside" id="offcanvas_aside">
+        <div class="aside-top">
+            <a href="/" class="brand-wrap">
+                <img src="/assets/imgs/theme/logo.svg" class="logo" alt="Nest Dashboard" />
+            </a>
+            <div>
+                <button class="btn btn-icon btn-aside-minimize"><i
+                        class="text-muted material-icons md-menu_open"></i></button>
+            </div>
+        </div>
+        <nav>
+            <ul class="menu-aside">
+                <li class="menu-item">
+                    <a class="menu-link" href="/admin/dashboard">
+                        <i class="icon material-icons md-home"></i>
+                        <span class="text">Dashboard</span>
+                    </a>
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="/admin/users">
+                        <i class="icon material-icons md-person"></i>
+                        <span class="text">Users</span>
+                    </a>
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="/admin/products">
+                        <i class="icon material-icons md-add_box"></i>
+                        <span class="text">Products</span>
+                    </a>
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="/admin/category">
+                        <i class="icon material-icons md-store"></i>
+                        <span class="text">Category</span>
+                    </a>
+                </li>
+                <li class="menu-item active">
+                    <a class="menu-link" href="/admin/orders">
+                        <i class="icon material-icons md-add_box"></i>
+                        <span class="text">Orders</span>
+                    </a>
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="/admin/offer">
+                        <i class="icon material-icons md-monetization_on"></i>
+                        <span class="text">Offer</span>
+                    </a>
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="#">
+                        <i class="icon material-icons md-person"></i>
+                        <span class="text">Account</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" href="">
+                        <i class="icon material-icons md-comment"></i>
+                        <span class="text">Reviews</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" href=""> <i class="icon material-icons md-stars"></i> <span
+                            class="text">Brands</span> </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" disabled href="#">
+                        <i class="icon material-icons md-pie_chart"></i>
+                        <span class="text">Statistics</span>
+                    </a>
+                </li>
+            </ul>
+            <hr />
+            <ul class="menu-aside">
+                <li class="menu-item ">
+                    <a class="menu-link" href="#">
+                        <i class="icon material-icons md-settings"></i>
+                        <span class="text">Settings</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" href="page-blank.html">
+                        <i class="icon material-icons md-local_offer"></i>
+                        <span class="text"> Starter page </span>
+                    </a>
+                </li>
+            </ul>
+            <br />
+            <br />
+        </nav>
+    </aside>
+
+    <main class="main-wrap">
+        <header class="main-header navbar">
+            <div class="col-nav">
+                <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"><i
+                        class="material-icons md-apps"></i></button>
+                <ul class="nav">
+
+                    <li class="nav-item">
+                        <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="requestfullscreen nav-link btn-icon"><i
+                                class="material-icons md-cast"></i></a>
+                    </li>
+
+                </ul>
+            </div>
+        </header>
+
+        <section class="content-main">
+            <div class="content-header">
+                <div class="left">
+                    <h2 class="content-title">Order Detail - #<%= order._id %>
+                    </h2>
+                </div>
+                <div class="right">
+                    <a href="/admin/orders" class="btn btn-light">
+                        <i class="material-icons md-arrow_back"></i> Back to Orders
+                    </a>
                 </div>
             </div>
-            <nav>
-                <ul class="menu-aside">
-                    <li class="menu-item">
-                        <a class="menu-link" href="/admin/dashboard">
-                            <i class="icon material-icons md-home"></i>
-                            <span class="text">Dashboard</span>
-                        </a>
-                    </li>
-                    <li class="menu-item ">
-                        <a class="menu-link" href="/admin/users">
-                            <i class="icon material-icons md-person"></i>
-                            <span class="text">Users</span>
-                        </a>
-                    </li>
-                    <li class="menu-item ">
-                        <a class="menu-link" href="/admin/products">
-                            <i class="icon material-icons md-add_box"></i>
-                            <span class="text">Products</span>
-                            </a>
-                    </li>
-                    <li class="menu-item ">
-                        <a class="menu-link" href="/admin/category">
-                            <i class="icon material-icons md-store"></i>
-                            <span class="text">Category</span>
-                        </a>
-                    </li>
-                    <li class="menu-item active">
-                        <a class="menu-link" href="/admin/orders">
-                            <i class="icon material-icons md-add_box"></i>
-                            <span class="text">Orders</span>
-                        </a>
-                    </li>
-                    <li class="menu-item ">
-                        <a class="menu-link" href="/adm">
-                            <i class="icon material-icons md-monetization_on"></i>
-                            <span class="text">Transactions</span>
-                        </a>
-                    </li>
-                    <li class="menu-item ">
-                        <a class="menu-link" href="#">
-                            <i class="icon material-icons md-person"></i>
-                            <span class="text">Account</span>
-                        </a>
-                    </li>
-                    <li class="menu-item">
-                        <a class="menu-link" href="">
-                            <i class="icon material-icons md-comment"></i>
-                            <span class="text">Reviews</span>
-                        </a>
-                    </li>
-                    <li class="menu-item">
-                        <a class="menu-link" href=""> <i class="icon material-icons md-stars"></i> <span class="text">Brands</span> </a>
-                    </li>
-                    <li class="menu-item">
-                        <a class="menu-link" disabled href="#">
-                            <i class="icon material-icons md-pie_chart"></i>
-                            <span class="text">Statistics</span>
-                        </a>
-                    </li>
-                </ul>
-                <hr />
-                <ul class="menu-aside">
-                    <li class="menu-item ">
-                        <a class="menu-link" href="#">
-                            <i class="icon material-icons md-settings"></i>
-                            <span class="text">Settings</span>
-                        </a>
-                    </li>
-                    <li class="menu-item">
-                        <a class="menu-link" href="page-blank.html">
-                            <i class="icon material-icons md-local_offer"></i>
-                            <span class="text"> Starter page </span>
-                        </a>
-                    </li>
-                </ul>
-                <br />
-                <br />
-            </nav>
-        </aside>
 
-        <main class="main-wrap">
-            <header class="main-header navbar">
-                <div class="col-nav">
-                    <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"><i class="material-icons md-apps"></i></button>
-                    <ul class="nav">
-                       
-                        <li class="nav-item">
-                            <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i> </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="requestfullscreen nav-link btn-icon"><i class="material-icons md-cast"></i></a>
-                        </li>
-                        
-                    </ul>
-                </div>
-            </header>
-
-            <section class="content-main">
-                <div class="content-header">
-                    <div class="left">
-                        <h2 class="content-title">Order Detail - #<%= order._id %></h2>
-                    </div>
-                    <div class="right">
-                        <a href="/admin/orders" class="btn btn-light">
-                            <i class="material-icons md-arrow_back"></i> Back to Orders
-                        </a>
-                    </div>
-                </div>
-    
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-lg-8">
-                                <div class="card shadow-sm">
-                                    <div class="card-body">
-                                        <h5 class="card-title mb-3">Order #<%= order._id %> - Product Details</h5>
-                                        <div class="table-responsive">
-                                            <table class="table table-striped">
-                                                <thead>
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <div class="card shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title mb-3">Order #<%= order._id %> - Product Details</h5>
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Product</th>
+                                                    <th class="text-center">Qty</th>
+                                                    <th class="text-center">Price</th>
+                                                    <th class="text-center">Total</th>
+                                                    <th class="text-center">Delivery Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% order.products.forEach(productItem=> { %>
                                                     <tr>
-                                                        <th>Product</th>
-                                                        <th class="text-center">Qty</th>
-                                                        <th class="text-center">Price</th>
-                                                        <th class="text-center">Total</th>
-                                                        <th class="text-center">Delivery Status</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <% order.products.forEach(productItem => { %>
-                                                        <tr>
-                                                            <td class="align-middle">
-                                                                <div class="d-flex align-items-center">
-                                                                    <img src="<%= productItem.product.images && productItem.product.images.length > 0 ? productItem.product.images[0] : 'null' %>" style="height: 50px; "  alt="<%= productItem.product.name %>" class="product-thumbnail" />
-                                                                    <div class="ms-3">
-                                                                        <span class="text-dark"><%= productItem.product.name %></span>
-                                                                    </div>
+                                                        <td class="align-middle">
+                                                            <div class="d-flex align-items-center">
+                                                                <img src="<%= productItem.product.images && productItem.product.images.length > 0 ? productItem.product.images[0] : 'null' %>"
+                                                                    style="height: 50px; "
+                                                                    alt="<%= productItem.product.name %>"
+                                                                    class="product-thumbnail" />
+                                                                <div class="ms-3">
+                                                                    <span class="text-dark">
+                                                                        <%= productItem.product.name %>
+                                                                    </span>
                                                                 </div>
-                                                            </td>
-                                                            <td class="text-center align-middle"><%= productItem.quantity %></td>
-                                                            <td class="text-center align-middle"><%= productItem.price %></td>
-                                                            <td class="text-center align-middle"><%= (productItem.quantity * productItem.price).toFixed(2) %></td>
-                                                            <td class="text-center align-middle">
-                                                                <select class="form-select" aria-label="Delivery Status" onchange="updateStatus('<%= order._id %>', '<%= productItem.product._id %>', this.value)">
-                                                                    <option <%= productItem.status === 'Pending' ? 'selected' : '' %>>Pending</option>
-                                                                    <option <%= productItem.status === 'Shipped' ? 'selected' : '' %>>Shipped</option>
-                                                                    <option <%= productItem.status === 'Delivered' ? 'selected' : '' %>>Delivered</option>
-                                                                    <option <%= productItem.status === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>                                                                </select>
-                                                            </td>
-                                                        </tr>
+                                                            </div>
+                                                        </td>
+                                                        <td class="text-center align-middle">
+                                                            <%= productItem.quantity %>
+                                                        </td>
+                                                        <td class="text-center align-middle">
+                                                            <%= productItem.price %>
+                                                        </td>
+                                                        <td class="text-center align-middle">
+                                                            <%= (productItem.quantity * productItem.price).toFixed(2) %>
+                                                        </td>
+                                                        <td class="text-center align-middle">
+                                                            <select class="form-select" aria-label="Delivery Status"
+                                                                onchange="updateStatus('<%= order._id %>', '<%= productItem.product._id %>', this.value)">
+                                                                <option <%=productItem.status==='Pending' ? 'selected'
+                                                                    : '' %>>Pending</option>
+                                                                <option <%=productItem.status==='shipped' ? 'selected'
+                                                                    : '' %>>shipped</option>
+                                                                <option <%=productItem.status==='on delivery'
+                                                                    ? 'selected' : '' %>>on delivery</option>
+                                                                <option <%=productItem.status==='delivered' ? 'selected'
+                                                                    : '' %>>delivered</option>
+                                                                <option <%=productItem.status==='cancelled' ? 'selected'
+                                                                    : '' %>>cancelled</option>
+                                                            </select>
+
+                                                        </td>
+                                                    </tr>
                                                     <% }); %>
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
-    
-                            <div class="col-lg-4">
-                                <div class="card shadow-sm">
-                                    <div class="card-body">
-                                        <h5 class="card-title mb-3">Order Summary</h5>
-                                        <table class="table table-borderless">
-                                            <tbody>
-                                                <tr>
-                                                    <td><strong>Total</strong></td>
-                                                    <td class="text-end"><strong><%= order.totalPrice %></strong></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                        <h5 class="card-title mb-3">Delivery Address</h5>
-                                        <p><strong><%= order.addressId.name %></strong></p>
-                                        <p><%= order.addressId.addressLine %>, <%= order.addressId.city %></p>
-                                        <p><%= order.addressId.state %>, <%= order.addressId.pincode %></p>
-                                        <p><strong>Phone:</strong> <%= order.addressId.phone %></p>
-    
-                                        <h5 class="card-title mb-3">Payment Method</h5>
-                                        <p><strong><%= order.payment %></strong></p>
-                                    </div>
+                        </div>
+
+                        <div class="col-lg-4">
+                            <div class="card shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title mb-3">Order Summary</h5>
+                                    <table class="table table-borderless">
+                                        <tbody>
+                                            <tr>
+                                                <td><strong>Total</strong></td>
+                                                <td class="text-end"><strong>
+                                                        <%= order.totalPrice %>
+                                                    </strong></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <h5 class="card-title mb-3">Delivery Address</h5>
+                                    <p><strong>
+                                            <%= order.addressId.name %>
+                                        </strong></p>
+                                    <p>
+                                        <%= order.addressId.addressLine %>, <%= order.addressId.city %>
+                                    </p>
+                                    <p>
+                                        <%= order.addressId.state %>, <%= order.addressId.pincode %>
+                                    </p>
+                                    <p><strong>Phone:</strong>
+                                        <%= order.addressId.phone %>
+                                    </p>
+
+                                    <h5 class="card-title mb-3">Payment Method</h5>
+                                    <p><strong>
+                                            <%= order.payment %>
+                                        </strong></p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
+        </section>
 
-            <footer class="main-footer font-xs">
-                <div class="row pb-30 pt-15">
-                    <div class="col-sm-6">
-                        <script>document.write(new Date().getFullYear());</script> &copy; Nest - HTML Ecommerce Template.
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="text-sm-end">All rights reserved</div>
-                    </div>
+        <footer class="main-footer font-xs">
+            <div class="row pb-30 pt-15">
+                <div class="col-sm-6">
+                    <script>document.write(new Date().getFullYear());</script> &copy; Nest - HTML Ecommerce Template.
                 </div>
-            </footer>
-        </main>
+                <div class="col-sm-6">
+                    <div class="text-sm-end">All rights reserved</div>
+                </div>
+            </div>
+        </footer>
+    </main>
 
-        <script src="/assets/js/vendors/jquery-3.6.0.min.js"></script>
-        <script src="/assets/js/vendors/bootstrap.bundle.min.js"></script>
-        <script src="/assets/js/vendors/select2.min.js"></script>
-        <script src="/assets/js/vendors/perfect-scrollbar.js"></script>
-        <script src="/assets/js/vendors/jquery.fullscreen.min.js"></script>
-        <script src="/assets/js/main.js?v=1.1" type="text/javascript"></script>
-    </body>
+    <script src="/assets/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="/assets/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="/assets/js/vendors/select2.min.js"></script>
+    <script src="/assets/js/vendors/perfect-scrollbar.js"></script>
+    <script src="/assets/js/vendors/jquery.fullscreen.min.js"></script>
+    <script src="/assets/js/main.js?v=1.1" type="text/javascript"></script>
+</body>
+<script>
+ function updateStatus(orderId , productId , status){
+    fetch(`/admin/order/${orderId}/product/${productId}/status`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type' : 'application/json',
+        },
+        body: JSON.stringify({status:status})
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(data.success){
+                window.location.reload();
+        } else {
+            Swal.fire(`Failed to update status ${data.message}`)
+        }
+    }).catch((error)=>{
+        console.error("error occured while products status update :",error);
+        alert('An error occured while order status update')
+    })
+ }
+</script>
 </html>

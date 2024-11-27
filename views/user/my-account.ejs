@@ -68,9 +68,9 @@
                                     <tr>
                                       <th>ORDER ID</th>
                                       <th>DATE</th>
-                                      <th>STATUS</th>
+                                      <th>PAYMENT</th>
                                       <th>TOTAL</th>
-                                      <th></th>
+                                      <th>Detail</th>
                                     </tr>
                                   </thead>
                                   <tbody>
@@ -83,7 +83,7 @@
                                             </a>
                                           </td>
                                           <td><%= new Date(order.createdAt).toLocaleDateString() %></td>
-                                          <td><Strong><%= order.status %></Strong> </td>
+                                          <td><Strong><%= order.payment %></Strong> </td>
                                           <td>
                                             ₹<%= order.totalPrice %> for <%= order.products.reduce((sum, item) => sum + item.quantity, 0) %> items
                                           </td>

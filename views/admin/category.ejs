@@ -1,459 +1,491 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <title>Nest Dashboard</title>
-        <meta http-equiv="x-ua-compatible" content="ie=edge" />
-        <meta name="description" content="" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta property="og:title" content="" />
-        <meta property="og:type" content="" />
-        <meta property="og:url" content="" />
-        <meta property="og:image" content="" />
-        <!-- Favicon -->
-        <link rel="shortcut icon" type="image/x-icon" href="/assets/imgs/theme/favicon.svg" />
-        <!-- Template CSS -->
-        <link href="/assets/css/main.css?v=1.1" rel="stylesheet" type="text/css" />
-        <style>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Nest Dashboard</title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta property="og:title" content="" />
+    <meta property="og:type" content="" />
+    <meta property="og:url" content="" />
+    <meta property="og:image" content="" />
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/imgs/theme/favicon.svg" />
+    <!-- Template CSS -->
+    <link href="/assets/css/main.css?v=1.1" rel="stylesheet" type="text/css" />
+    <style>
+        .table-title {
+            font-size: 1.5em;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .category-table thead th {
+            background-color: #f8f9fa;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .category-table tbody td,
+        .category-table tbody th {
+            vertical-align: middle;
+        }
+
+        .badge-success {
+            background-color: #28a745;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .btn-success {
+            color: white;
+            background-color: #28a745;
+            border: none;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
             .table-title {
-                font-size: 1.5em;
-                font-weight: 600;
-                margin-bottom: 20px;
-            }
-        
-            .category-table thead th {
-                background-color: #f8f9fa;
-                text-align: left;
-                font-weight: 600;
-            }
-        
-            .category-table tbody td, .category-table tbody th {
-                vertical-align: middle;
-            }
-        
-            .badge-success {
-                background-color: #28a745;
-                color: white;
-                padding: 5px 10px;
-                border-radius: 5px;
-            }
-        
-            .btn-success {
-                color: white;
-                background-color: #28a745;
-                border: none;
-            }
-        
-            .table-responsive {
-                overflow-x: auto;
-            }
-        
-            /* Responsive adjustments */
-            @media (max-width: 768px) {
-                .table-title {
-                    font-size: 1.25em;
-                }
-                .category-table th, .category-table td {
-                    font-size: 0.9em;
-                }
-                .category-table .btn {
-                    font-size: 0.8em;
-                    padding: 5px 10px;
-                }
+                font-size: 1.25em;
             }
 
+            .category-table th,
+            .category-table td {
+                font-size: 0.9em;
+            }
+
+            .category-table .btn {
+                font-size: 0.8em;
+                padding: 5px 10px;
+            }
+        }
+
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        /* Align the entries control to the left */
+        .entries-control {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        /* Align the search bar to the right */
+        .search-control {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        /* Ensure the table is responsive */
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        /* Ensure the table looks good on small screens */
+        @media (max-width: 768px) {
+            .content-main {
+                padding: 15px;
+            }
 
             .table-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
+                flex-direction: column;
+                align-items: flex-start;
+            }
 
-/* Align the entries control to the left */
-.entries-control {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-}
+            .entries-control,
+            .search-control {
+                width: 100%;
+                margin-bottom: 10px;
+            }
 
-/* Align the search bar to the right */
-.search-control {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-}
-
-/* Ensure the table is responsive */
-.table-responsive {
-    overflow-x: auto;
-}
-
-/* Ensure the table looks good on small screens */
-@media (max-width: 768px) {
-    .content-main {
-        padding: 15px;
-    }
-
-    .table-header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .entries-control,
-    .search-control {
-        width: 100%;
-        margin-bottom: 10px;
-    }
-
-    .search-control input {
-        width: 100%;
-    }
-}
+            .search-control input {
+                width: 100%;
+            }
+        }
 
 
-/* Style the search bar */
-.search-control input {
-    width: 250px; /* Set a default width */
-    padding: 10px 15px; /* Add padding for better spacing */
-    font-size: 14px; /* Set a reasonable font size */
-    border: 2px solid #ccc; /* Light border color */
-    border-radius: 5px; /* Rounded corners */
-    outline: none; /* Remove default outline on focus */
-    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Add smooth transitions */
-}
+        /* Style the search bar */
+        .search-control input {
+            width: 250px;
+            /* Set a default width */
+            padding: 10px 15px;
+            /* Add padding for better spacing */
+            font-size: 14px;
+            /* Set a reasonable font size */
+            border: 2px solid #ccc;
+            /* Light border color */
+            border-radius: 5px;
+            /* Rounded corners */
+            outline: none;
+            /* Remove default outline on focus */
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            /* Add smooth transitions */
+        }
 
 
-/* Ensure responsiveness */
-@media (max-width: 768px) {
-    .search-control input {
-        width: 100%; /* Make the input full width on smaller screens */
-    }
-}
-        </style>
-    </head>
+        /* Ensure responsiveness */
+        @media (max-width: 768px) {
+            .search-control input {
+                width: 100%;
+                /* Make the input full width on smaller screens */
+            }
+        }
+    </style>
+</head>
 
-    <body>
-        <div class="screen-overlay"></div>
-        <aside class="navbar-aside" id="offcanvas_aside">
-            <div class="aside-top">
-                <a href="index.html" class="brand-wrap">
-                    <img src="/assets/imgs/theme/logo.svg" class="logo" alt="Nest Dashboard" />
-                </a>
-                <div>
-                    <button class="btn btn-icon btn-aside-minimize"><i class="text-muted material-icons md-menu_open"></i></button>
-                </div>
+<body>
+    <div class="screen-overlay"></div>
+    <aside class="navbar-aside" id="offcanvas_aside">
+        <div class="aside-top">
+            <a href="index.html" class="brand-wrap">
+                <img src="/assets/imgs/theme/logo.svg" class="logo" alt="Nest Dashboard" />
+            </a>
+            <div>
+                <button class="btn btn-icon btn-aside-minimize"><i
+                        class="text-muted material-icons md-menu_open"></i></button>
             </div>
-            <nav>
-                <ul class="menu-aside">
-                    <li class="menu-item">
-                        <a class="menu-link" href="/admin/dashboard">
-                            <i class="icon material-icons md-home"></i>
-                            <span class="text">Dashboard</span>
+        </div>
+        <nav>
+            <ul class="menu-aside">
+                <li class="menu-item">
+                    <a class="menu-link" href="/admin/dashboard">
+                        <i class="icon material-icons md-home"></i>
+                        <span class="text">Dashboard</span>
+                    </a>
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="/admin/users">
+                        <i class="icon material-icons md-person"></i>
+                        <span class="text">Users</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" href="/admin/products">
+                        <i class="icon material-icons md-shopping_cart"></i>
+                        <span class="text">Products</span>
+                    </a>
+                </li>
+                <li class="menu-item has-submenu active">
+                    <a class="menu-link" href="/admin/category">
+                        <i class="icon material-icons md-shopping_cart"></i>
+                        <span class="text">Category</span>
+                    </a>
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="#">
+                        <i class="icon material-icons md-add_box"></i>
+                        <span class="text">Orders</span>
+                    </a>
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="/admin/offer">
+                        <i class="icon material-icons md-monetization_on"></i>
+                        <span class="text">Offer</span>
+                    </a>
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="#">
+                        <i class="icon material-icons md-person"></i>
+                        <span class="text">Account</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" href="page-reviews.html">
+                        <i class="icon material-icons md-comment"></i>
+                        <span class="text">Reviews</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" href="page-brands.html"> <i class="icon material-icons md-stars"></i> <span
+                            class="text">Brands</span> </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" disabled href="#">
+                        <i class="icon material-icons md-pie_chart"></i>
+                        <span class="text">Statistics</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+    <main class="main-wrap">
+        <header class="main-header navbar">
+            <div class="col-nav">
+                <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"><i
+                        class="material-icons md-apps"></i></button>
+                <ul class="nav">
+
+                    <li class="nav-item">
+                        <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i>
                         </a>
                     </li>
-                    <li class="menu-item ">
-                        <a class="menu-link" href="/admin/users">
-                            <i class="icon material-icons md-person"></i>
-                            <span class="text">Users</span>
-                        </a>
-                    </li>
-                    <li class="menu-item">
-                        <a class="menu-link" href="/admin/products">
-                            <i class="icon material-icons md-shopping_cart"></i>
-                            <span class="text">Products</span>
-                        </a>
-                    </li>
-                    <li class="menu-item has-submenu active">
-                        <a class="menu-link" href="/admin/category">
-                            <i class="icon material-icons md-shopping_cart"></i>
-                            <span class="text">Category</span>
-                        </a>
-                    </li>
-                    <li class="menu-item ">
-                        <a class="menu-link" href="#">
-                            <i class="icon material-icons md-add_box"></i>
-                            <span class="text">Orders</span>
-                        </a>
-                    </li>
-                    <li class="menu-item ">
-                        <a class="menu-link" href="page-transactions-1.html">
-                            <i class="icon material-icons md-monetization_on"></i>
-                            <span class="text">Transactions</span>
-                        </a>
-                    </li>
-                    <li class="menu-item ">
-                        <a class="menu-link" href="#">
-                            <i class="icon material-icons md-person"></i>
-                            <span class="text">Account</span>
-                        </a>
-                    </li>
-                    <li class="menu-item">
-                        <a class="menu-link" href="page-reviews.html">
-                            <i class="icon material-icons md-comment"></i>
-                            <span class="text">Reviews</span>
-                        </a>
-                    </li>
-                    <li class="menu-item">
-                        <a class="menu-link" href="page-brands.html"> <i class="icon material-icons md-stars"></i> <span class="text">Brands</span> </a>
-                    </li>
-                    <li class="menu-item">
-                        <a class="menu-link" disabled href="#">
-                            <i class="icon material-icons md-pie_chart"></i>
-                            <span class="text">Statistics</span>
-                        </a>
+                    <li class="nav-item">
+                        <a href="#" class="requestfullscreen nav-link btn-icon"><i
+                                class="material-icons md-cast"></i></a>
                     </li>
                 </ul>
-            </nav>
-        </aside>
-        <main class="main-wrap">
-            <header class="main-header navbar">
-                <div class="col-nav">
-                    <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"><i class="material-icons md-apps"></i></button>
-                    <ul class="nav">
-                    
-                        <li class="nav-item">
-                            <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i> </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="requestfullscreen nav-link btn-icon"><i class="material-icons md-cast"></i></a>
-                        </li>
-                    </ul>
-                </div>
-            </header>
-            <section class="content-main">
-              
-                <div class="card mb-4">
-                    
-                    <!-- card-header end// -->
-                    <div class="card-body">
-                        <section class="content-main">
-                            <div class="content-header">
-                                <h2 class="content-title">Category List</h2>
-                                <a href="/admin/category/add" class="btn btn-primary"><i class="material-icons md-plus"></i> Add Category</a>
+            </div>
+        </header>
+        <section class="content-main">
+
+            <div class="card mb-4">
+
+                <!-- card-header end// -->
+                <div class="card-body">
+                    <section class="content-main">
+                        <div class="content-header">
+                            <h2 class="content-title">Category List</h2>
+                            <a href="/admin/category/add" class="btn btn-primary"><i class="material-icons md-plus"></i>
+                                Add Category</a>
+                        </div>
+
+                        <div class="table-header">
+                            <div class="entries-control">
+                                Show
+                                <select id="entries-select" onchange="changeEntriesLimit(this)">
+                                    <option value="10" <% if (limit==10) { %>selected<% } %>>10</option>
+                                    <option value="25" <% if (limit==25) { %>selected<% } %>>25</option>
+                                    <option value="50" <% if (limit==50) { %>selected<% } %>>50</option>
+                                    <option value="100" <% if (limit==100) { %>selected<% } %>>100</option>
+                                </select>
+                                entries
                             </div>
-                        
-                            <div class="table-header">
-                                <div class="entries-control">
-                                    Show
-                                    <select id="entries-select" onchange="changeEntriesLimit(this)">
-                                        <option value="10" <% if (limit == 10) { %>selected<% } %>>10</option>
-                                        <option value="25" <% if (limit == 25) { %>selected<% } %>>25</option>
-                                        <option value="50" <% if (limit == 50) { %>selected<% } %>>50</option>
-                                        <option value="100" <% if (limit == 100) { %>selected<% } %>>100</option>
-                                    </select>
-                                    entries
-                                </div>
-                                <div class="search-control">
-                                    Search:
-                                    <input type="text" id="search-input" placeholder="Type to search..." oninput="searchCategory()">
-                                </div>
+                            <div class="search-control">
+                                Search:
+                                <input type="text" id="search-input" placeholder="Type to search..."
+                                    oninput="searchCategory()">
                             </div>
-                                               
-                        
-                            <div class="card">
-                                <div class="table-responsive">
-                                    <table class="table category-table">
-                                        <thead>
-                                            <tr>
-                                                <th>No.</th>
-                                                <th>Category Name</th>
-                                                <th>Description</th>
-                                                <th>Status</th>
-                                                <th>Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="category-table-body">
-                                            <% if (typeof categories !== 'undefined' && categories.length > 0) { %>
-                                                <% categories.forEach((category, index) => { %>
-                                                    <tr class="table-row">
-                                                        <td><%= index + 1 %></td>
-                                                        <td><%= category.name %></td>
-                                                        <td><%= category.description %></td>
-                                                        <td>
-                                                            <button class="status-btn btn btn-success btn-sm" data-category-id="<%= category._id %>">
-                                                                <%= category.isActive ? 'Deactivate' : 'Activate' %>
-                                                            </button>
-                                                        </td>
-                                                        <td>
-                                                            <a href="/admin/category/edit/<%= category._id %>" class="btn btn-success btn-sm">Edit</a>
-                                                        </td>
-                                                    </tr>
-                                                <% }); %>
-                                            <% } else { %>
-                                                <tr>
-                                                    <td colspan="5" class="text-center">No categories found</td>
+                        </div>
+
+
+                        <div class="card">
+                            <div class="table-responsive">
+                                <table class="table category-table">
+                                    <thead>
+                                        <tr>
+                                            <th>No.</th>
+                                            <th>Category Name</th>
+                                            <th>Description</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="category-table-body">
+                                        <% if (typeof categories !=='undefined' && categories.length> 0) { %>
+                                            <% categories.forEach((category, index)=> { %>
+                                                <tr class="table-row">
+                                                    <td>
+                                                        <%= index + 1 %>
+                                                    </td>
+                                                    <td>
+                                                        <%= category.name %>
+                                                    </td>
+                                                    <td>
+                                                        <%= category.description %>
+                                                    </td>
+                                                    <td>
+                                                        <button class="status-btn btn btn-success btn-sm"
+                                                            data-category-id="<%= category._id %>">
+                                                            <%= category.isActive ? 'Deactivate' : 'Activate' %>
+                                                        </button>
+                                                    </td>
+                                                    <td>
+                                                        <a href="/admin/category/edit/<%= category._id %>"
+                                                            class="btn btn-success btn-sm">Edit</a>
+                                                    </td>
                                                 </tr>
-                                            <% } %>
-                                        </tbody>
-                                    </table>
-                                </div>
+                                                <% }); %>
+                                                    <% } else { %>
+                                                        <tr>
+                                                            <td colspan="5" class="text-center">No categories found</td>
+                                                        </tr>
+                                                        <% } %>
+                                    </tbody>
+                                </table>
                             </div>
-                        </section>
-                    </div>
-                    <!-- card-body end// -->
+                        </div>
+                    </section>
                 </div>
-                <!-- card end// -->
-                <div class="pagination-area mt-15 mb-50">
-                    <nav>
-                        <ul class="pagination">
-                            <% if (currentPage > 1) { %>
-                                <li class="page-item">
-                                    <a class="page-link" href="?page=<%= currentPage - 1 %>&limit=<%= limit %>">Previous</a>
-                                </li>
+                <!-- card-body end// -->
+            </div>
+            <!-- card end// -->
+            <div class="pagination-area mt-15 mb-50">
+                <nav>
+                    <ul class="pagination">
+                        <% if (currentPage> 1) { %>
+                            <li class="page-item">
+                                <a class="page-link" href="?page=<%= currentPage - 1 %>&limit=<%= limit %>">Previous</a>
+                            </li>
                             <% } %>
-                            <% for (let i = 1; i <= totalPages; i++) { %>
-                                <li class="page-item <% if (currentPage === i) { %>active<% } %>">
-                                    <a class="page-link" href="?page=<%= i %>&limit=<%= limit %>"><%= i %></a>
-                                </li>
-                            <% } %>
-                            <% if (currentPage < totalPages) { %>
-                                <li class="page-item">
-                                    <a class="page-link" href="?page=<%= currentPage + 1 %>&limit=<%= limit %>">Next</a>
-                                </li>
-                            <% } %>
-                        </ul>
-                    </nav>
+                                <% for (let i=1; i <=totalPages; i++) { %>
+                                    <li class="page-item <% if (currentPage === i) { %>active<% } %>">
+                                        <a class="page-link" href="?page=<%= i %>&limit=<%= limit %>">
+                                            <%= i %>
+                                        </a>
+                                    </li>
+                                    <% } %>
+                                        <% if (currentPage < totalPages) { %>
+                                            <li class="page-item">
+                                                <a class="page-link"
+                                                    href="?page=<%= currentPage + 1 %>&limit=<%= limit %>">Next</a>
+                                            </li>
+                                            <% } %>
+                    </ul>
+                </nav>
+            </div>
+        </section>
+        <!-- content-main end// -->
+        <footer class="main-footer font-xs">
+            <div class="row pb-30 pt-15">
+                <div class="col-sm-6">
+                    <script>
+                        document.write(new Date().getFullYear());
+                    </script>
+                    &copy; Nest - HTML Ecommerce Template .
                 </div>
-            </section>
-            <!-- content-main end// -->
-            <footer class="main-footer font-xs">
-                <div class="row pb-30 pt-15">
-                    <div class="col-sm-6">
-                        <script>
-                            document.write(new Date().getFullYear());
-                        </script>
-                        &copy; Nest - HTML Ecommerce Template .
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="text-sm-end">All rights reserved</div>
-                    </div>
+                <div class="col-sm-6">
+                    <div class="text-sm-end">All rights reserved</div>
                 </div>
-            </footer>
-        </main>
-        <script src="/assets/js/vendors/jquery-3.6.0.min.js"></script>
-        <script src="/assets/js/vendors/bootstrap.bundle.min.js"></script>
-        <script src="/assets/js/vendors/select2.min.js"></script>
-        <script src="/assets/js/vendors/perfect-scrollbar.js"></script>
-        <script src="/assets/js/vendors/jquery.fullscreen.min.js"></script>
-        <!-- Main Script -->
-        <script src="/assets/js/main.js?v=1.1" type="text/javascript"></script>
+            </div>
+        </footer>
+    </main>
+    <script src="/assets/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="/assets/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="/assets/js/vendors/select2.min.js"></script>
+    <script src="/assets/js/vendors/perfect-scrollbar.js"></script>
+    <script src="/assets/js/vendors/jquery.fullscreen.min.js"></script>
+    <!-- Main Script -->
+    <script src="/assets/js/main.js?v=1.1" type="text/javascript"></script>
 
-        <script>
-            const searchInput = document.getElementById("search-input");
-const rows = document.querySelectorAll(".table-row");
-const entriesSelect = document.getElementById("entries-select");
-let entriesPerPage = parseInt(entriesSelect.value);
+    <script>
+        const searchInput = document.getElementById("search-input");
+        const rows = document.querySelectorAll(".table-row");
+        const entriesSelect = document.getElementById("entries-select");
+        let entriesPerPage = parseInt(entriesSelect.value);
 
-// Add event listener for search input
-searchInput.addEventListener("input", filterTable);
+        // Add event listener for search input
+        searchInput.addEventListener("input", filterTable);
 
-// Add event listener for entries select dropdown
-entriesSelect.addEventListener("change", function() {
-    entriesPerPage = parseInt(entriesSelect.value);
-    displayRows();
-});
+        // Add event listener for entries select dropdown
+        entriesSelect.addEventListener("change", function () {
+            entriesPerPage = parseInt(entriesSelect.value);
+            displayRows();
+        });
 
-// Function to filter rows based on search input
-function filterTable() {
-    const searchText = searchInput.value.toLowerCase();
+        // Function to filter rows based on search input
+        function filterTable() {
+            const searchText = searchInput.value.toLowerCase();
 
-    rows.forEach(row => {
-        const cells = row.getElementsByTagName("td");
-        let match = false;
+            rows.forEach(row => {
+                const cells = row.getElementsByTagName("td");
+                let match = false;
 
-        for (let cell of cells) {
-            if (cell.textContent.toLowerCase().includes(searchText)) {
-                match = true;
-                break;
-            }
-        }
+                for (let cell of cells) {
+                    if (cell.textContent.toLowerCase().includes(searchText)) {
+                        match = true;
+                        break;
+                    }
+                }
 
-        row.style.display = match ? "" : "none";
-    });
-
-    displayRows();  // Reapply row display based on selected entries per page
-}
-
-// Function to paginate and display only the selected number of rows
-function displayRows() {
-    const visibleRows = Array.from(rows).filter(row => row.style.display !== "none");
-
-    const totalPages = Math.ceil(visibleRows.length / entriesPerPage);
-    let currentPage = 1;
-
-    visibleRows.forEach((row, index) => {
-        const startIndex = (currentPage - 1) * entriesPerPage;
-        const endIndex = currentPage * entriesPerPage;
-
-        // Show rows within the page range
-        row.style.display = (index >= startIndex && index < endIndex) ? "" : "none";
-    });
-}
-
-// Initialize the table by showing the first set of rows
-displayRows();
-
-
-   // Select all category status buttons
-   const statusButtons = document.querySelectorAll('.status-btn');
-
-statusButtons.forEach(button => {
-    button.addEventListener('click', async function() {
-        const categoryId = this.getAttribute('data-category-id');
-        const buttonText = this.textContent.trim();
-
-        try {
-            // Send an AJAX request to the backend to toggle the status
-            const response = await fetch(`/admin/category/${categoryId}/toggle-status`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                row.style.display = match ? "" : "none";
             });
 
-            if (response.ok) {
-                // Update the button text based on the response
-                const data = await response.json();
-                this.textContent = data.status === 'Active' ? 'Deactivate' : 'Activate';
-            } else {
-                const errorData = await response.text();
-                console.error('Error response:', errorData)
-                alert('Failed to update category status');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            alert('An error occurred');
+            displayRows();  // Reapply row display based on selected entries per page
         }
-    });
-});
 
-                // Change entries limit and reload the page
-                function changeEntriesLimit(select) {
-                    const limit = select.value;
-                    const currentPage = new URLSearchParams(window.location.search).get('page') || 1;
-                    window.location.href = `?page=${currentPage}&limit=${limit}`;
-                }
+        // Function to paginate and display only the selected number of rows
+        function displayRows() {
+            const visibleRows = Array.from(rows).filter(row => row.style.display !== "none");
 
-                // Search functionality
-                function searchCategory() {
-                    const searchValue = document.getElementById("search-input").value.toLowerCase();
+            const totalPages = Math.ceil(visibleRows.length / entriesPerPage);
+            let currentPage = 1;
 
-                    const rows = document.querySelectorAll(".table-row");
-                    rows.forEach((row) => {
-                        const cells = row.getElementsByTagName("td");
-                        let isMatch = Array.from(cells).some((cell) => 
-                            cell.textContent.toLowerCase().includes(searchValue)
-                        );
-                        row.style.display = isMatch ? "" : "none";
+            visibleRows.forEach((row, index) => {
+                const startIndex = (currentPage - 1) * entriesPerPage;
+                const endIndex = currentPage * entriesPerPage;
+
+                // Show rows within the page range
+                row.style.display = (index >= startIndex && index < endIndex) ? "" : "none";
+            });
+        }
+
+        // Initialize the table by showing the first set of rows
+        displayRows();
+
+
+        // Select all category status buttons
+        const statusButtons = document.querySelectorAll('.status-btn');
+
+        statusButtons.forEach(button => {
+            button.addEventListener('click', async function () {
+                const categoryId = this.getAttribute('data-category-id');
+                const buttonText = this.textContent.trim();
+
+                try {
+                    // Send an AJAX request to the backend to toggle the status
+                    const response = await fetch(`/admin/category/${categoryId}/toggle-status`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
                     });
+
+                    if (response.ok) {
+                        // Update the button text based on the response
+                        const data = await response.json();
+                        this.textContent = data.status === 'Active' ? 'Deactivate' : 'Activate';
+                    } else {
+                        const errorData = await response.text();
+                        console.error('Error response:', errorData)
+                        alert('Failed to update category status');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('An error occurred');
                 }
+            });
+        });
+
+        // Change entries limit and reload the page
+        function changeEntriesLimit(select) {
+            const limit = select.value;
+            const currentPage = new URLSearchParams(window.location.search).get('page') || 1;
+            window.location.href = `?page=${currentPage}&limit=${limit}`;
+        }
+
+        // Search functionality
+        function searchCategory() {
+            const searchValue = document.getElementById("search-input").value.toLowerCase();
+
+            const rows = document.querySelectorAll(".table-row");
+            rows.forEach((row) => {
+                const cells = row.getElementsByTagName("td");
+                let isMatch = Array.from(cells).some((cell) =>
+                    cell.textContent.toLowerCase().includes(searchValue)
+                );
+                row.style.display = isMatch ? "" : "none";
+            });
+        }
 
 
-        </script>
-        
+    </script>
 
-    </body>
+
+</body>
+
 </html>

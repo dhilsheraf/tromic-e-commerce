@@ -84,5 +84,6 @@ router.get('/checkout',session.checkUserSession,orderController.getCheckout)
 router.post('/checkout',orderController.checkout)
 router.get('/order-confirm/:orderId',orderController.orderConfirm)
 router.get('/order/:orderId',orderController.detailOrder)
+router.post('/cancel-order',orderController.cancelOrder)
 
 module.exports = router;

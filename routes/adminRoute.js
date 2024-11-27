@@ -41,7 +41,7 @@ router.post('/products/toggle/:id', productController.aiProduct)
 //orders
 router.get('/orders',orderController.showOrder)
 router.get('/orders/:orderId',orderController.orderAction)
-
+router.put('/order/:orderId/product/:productId/status',orderController.orderStatus)
 
 
 
