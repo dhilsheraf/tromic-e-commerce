@@ -188,21 +188,19 @@
                                                             <%= (productItem.quantity * productItem.price).toFixed(2) %>
                                                         </td>
                                                         <td class="text-center align-middle">
-                                                            <select class="form-select" aria-label="Delivery Status"
-                                                                onchange="updateStatus('<%= order._id %>', '<%= productItem.product._id %>', this.value)">
-                                                                <option <%=productItem.status==='Pending' ? 'selected'
-                                                                    : '' %>>Pending</option>
-                                                                <option <%=productItem.status==='shipped' ? 'selected'
-                                                                    : '' %>>shipped</option>
-                                                                <option <%=productItem.status==='on delivery'
-                                                                    ? 'selected' : '' %>>on delivery</option>
-                                                                <option <%=productItem.status==='delivered' ? 'selected'
-                                                                    : '' %>>delivered</option>
-                                                                <option <%=productItem.status==='cancelled' ? 'selected'
-                                                                    : '' %>>cancelled</option>
+                                                            <select
+                                                                class="form-select"
+                                                                aria-label="Delivery Status"
+                                                                onchange="updateStatus('<%= order._id %>', '<%= productItem.product._id %>', this.value)"
+                                                                <%= productItem.status === 'cancelled' ? 'disabled' : '' %>>
+                                                                <option <%= productItem.status === 'Pending' ? 'selected' : '' %>>Pending</option>
+                                                                <option <%= productItem.status === 'shipped' ? 'selected' : '' %>>shipped</option>
+                                                                <option <%= productItem.status === 'on delivery' ? 'selected' : '' %>>on delivery</option>
+                                                                <option <%= productItem.status === 'delivered' ? 'selected' : '' %>>delivered</option>
+                                                                <option <%= productItem.status === 'cancelled' ? 'selected' : '' %>>cancelled</option>
                                                             </select>
-
                                                         </td>
+                                                        
                                                     </tr>
                                                     <% }); %>
                                             </tbody>

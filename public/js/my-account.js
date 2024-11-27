@@ -21,12 +21,12 @@
                     if (data.message === 'Profile updated successfully') {
                         window.location.href = '/my-account'
                     } else {
-                        alert(data.message);  // Display an error message if the update fails
+                        Swal.fire(data.message);  // Display an error message if the update fails
                     }
                 })
                 .catch(error => {
                     console.error("Error:", error);
-                    alert("An error occurred while updating your profile.");
+                    Swal.fire("An error occurred while updating your profile.");
                 });
             });
 
@@ -60,15 +60,15 @@
                         $('#addAddressModal').modal('hide');
                         
                         // Optionally, reload the page or update the UI
-                        alert('Address added successfully!');
+                        Swal.fire('Address added successfully!');
                         window.location.reload();  // Reload the page to reflect changes
                     } else {
-                        alert('Failed to add address');
+                        Swal.fire('Failed to add address');
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('There was an error while adding the address');
+                    Swal.fire('There was an error while adding the address');
                 });
             });
 
@@ -131,16 +131,16 @@
                 .then(data => {
                     if (data.error) {
                         // Show error alert
-                        alert(`Error updating address: ${data.error}`);
+                        Swal.fire(`Error updating address: ${data.error}`);
                     } else if (data._id) {
                         // Successfully updated
-                        alert('Address updated successfully!');
+                        Swal.fire('Address updated successfully!');
                         location.reload(); // Optionally reload the page or update the UI
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('An unexpected error occurred while updating the address. Please try again.');
+                    Swal.fire('An unexpected error occurred while updating the address. Please try again.');
                 });
             });
             
@@ -165,19 +165,19 @@
                             .then(response => response.json())
                             .then(data => {
                                 if (data.success) {
-                                    alert('Address deleted successfully!');
+                                    Swal.fire('Address deleted successfully!');
                                     // Remove the address card from the DOM
                                     const addressCard = event.target.closest('.address-card');
                                     if (addressCard) {
                                         addressCard.remove();
                                     }
                                 } else {
-                                    alert(`Error deleting address: ${data.error}`);
+                                    Swal.fire(`Error deleting address: ${data.error}`);
                                 }
                             })
                             .catch(error => {
                                 console.error('Error:', error);
-                                alert('An error occurred while deleting the address. Please try again.');
+                                Swal.fire('An error occurred while deleting the address. Please try again.');
                             });
                         }
                     }
@@ -194,7 +194,7 @@
     const confirmPassword = document.getElementById('confirmPassword').value;
 
     if (newPassword !== confirmPassword) {
-        alert('Passwords do not match.');
+        Swal.fire('Passwords do not match.');
         return;
     }
 
@@ -210,13 +210,13 @@
         const result = await response.json();
 
         if (response.ok) {
-            alert(result.message || 'Password updated successfully.');
+            Swal.fire(result.message || 'Password updated successfully.');
             document.getElementById('changePasswordForm').reset();
         } else {
-            alert(result.error || 'An error occurred while changing the password.');
+            Swal.fire(result.error || 'An error occurred while changing the password.');
         }
     } catch (error) {
-        alert('Network error: ' + error.message);
+        Swal.fire('Network error: ' + error.message);
     }
 });
 

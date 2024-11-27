@@ -39,8 +39,8 @@ router.post('/products/edit/:id', upload.array("images", 4), productController.e
 router.post('/products/toggle/:id', productController.aiProduct)
 
 //orders
-router.get('/orders',orderController.showOrder)
-router.get('/orders/:orderId',orderController.orderAction)
+router.get('/orders',admin.checkAdminSession,orderController.showOrder)
+router.get('/orders/:orderId',admin.checkAdminSession,orderController.orderAction)
 router.put('/order/:orderId/product/:productId/status',orderController.orderStatus)
 
 

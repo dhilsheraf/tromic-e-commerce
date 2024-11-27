@@ -46,13 +46,12 @@ const loadAdminDashboard = async (req,res) =>{
 
 const loadUsers = async (req, res) => {
     try {
-        const { page = 1, limit = 10 } = req.query; // Default to page 1 and 10 entries per page
-
+        const { page = 1, limit = 10 } = req.query; 
         const totalUsers = await User.countDocuments();
 
         const users = await User.find({})
-            .skip((page - 1) * limit) // Skip entries for previous pages
-            .limit(parseInt(limit)); // Limit the number of users fetched
+            .skip((page - 1) * limit) 
+            .limit(parseInt(limit)); 
 
         // Render the EJS view and pass the user data
         res.render('admin/adminUser', {

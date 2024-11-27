@@ -187,7 +187,7 @@
                     </a>
                 </li>
                 <li class="menu-item ">
-                    <a class="menu-link" href="#">
+                    <a class="menu-link" href="/admin/orders">
                         <i class="icon material-icons md-add_box"></i>
                         <span class="text">Orders</span>
                     </a>
@@ -290,7 +290,7 @@
                                             <% categories.forEach((category, index)=> { %>
                                                 <tr class="table-row">
                                                     <td>
-                                                        <%= index + 1 %>
+                                                        <%= (currentPage-1)*limit+index + 1 %>
                                                     </td>
                                                     <td>
                                                         <%= category.name %>
@@ -329,7 +329,7 @@
                     <ul class="pagination">
                         <% if (currentPage> 1) { %>
                             <li class="page-item">
-                                <a class="page-link" href="?page=<%= currentPage - 1 %>&limit=<%= limit %>">Previous</a>
+                                <a class="page-link" href="?page=<%= currentPage - 1 %>&limit=<%= limit %>"><</a>
                             </li>
                             <% } %>
                                 <% for (let i=1; i <=totalPages; i++) { %>
@@ -342,7 +342,7 @@
                                         <% if (currentPage < totalPages) { %>
                                             <li class="page-item">
                                                 <a class="page-link"
-                                                    href="?page=<%= currentPage + 1 %>&limit=<%= limit %>">Next</a>
+                                                    href="?page=<%= currentPage + 1 %>&limit=<%= limit %>">></a>
                                             </li>
                                             <% } %>
                     </ul>

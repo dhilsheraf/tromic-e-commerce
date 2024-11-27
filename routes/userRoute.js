@@ -67,9 +67,9 @@ router.delete('/delete-address/:id', addressController.deleteAddress);
 
 
 //password
-router.get('/forgot-password', userController.forgotPasswordLoad)
+router.get('/forgot-password',session.checkUserSession, userController.forgotPasswordLoad)
 router.post('/forgot-password', userController.forgotPassword)
-router.get("/reset-password/:token", userController.resetPasswordLoad)
+router.get("/reset-password/:token",session.checkUserSession,userController.resetPasswordLoad)
 router.post("/reset-password/:token", userController.resetPassword)
 router.post('/change-password', userController.changePassword)
  
@@ -82,8 +82,9 @@ router.delete('/delete-cart',cartController.deleteCart)
 //checkout
 router.get('/checkout',session.checkUserSession,orderController.getCheckout)
 router.post('/checkout',orderController.checkout)
-router.get('/order-confirm/:orderId',orderController.orderConfirm)
-router.get('/order/:orderId',orderController.detailOrder)
+router.get('/order-confirm/:orderId',session.checkUserSession,orderController.orderConfirm)
+//order detail
+router.get('/order/:orderId',session.checkUserSession,orderController.detailOrder)
 router.post('/cancel-order',orderController.cancelOrder)
 
 module.exports = router;

@@ -126,16 +126,16 @@
                 </li>
                 <li class="menu-item ">
                     <a class="menu-link" href="/admin/orders">
-                      <i class="icon material-icons md-shopping_cart"></i>
-                      <span class="text">Orders</span>
+                        <i class="icon material-icons md-shopping_cart"></i>
+                        <span class="text">Orders</span>
                     </a>
                 </li>
                 <li class="menu-item ">
                     <a class="menu-link" href="/admin/offer">
-                      <i class="icon material-icons md-monetization_on"></i>
-                      <span class="text">Offer</span>
+                        <i class="icon material-icons md-monetization_on"></i>
+                        <span class="text">Offer</span>
                     </a>
-                  </li>
+                </li>
                 <li class="menu-item ">
                     <a class="menu-link" href="#">
                         <i class="icon material-icons md-person"></i>
@@ -216,16 +216,18 @@
                                             <tr>
                                                 <!-- Display first image if available, otherwise show a placeholder -->
                                                 <td>
-                                                    <%= 1+index %>
+                                                    <%= (currentPage-1)*5+1+index %>
                                                 </td>
-                                                <td><div class="text-center">
-                                                    <% if (product.images && product.images.length> 0) { %>
-                                                        <img src="<%= product.images[0] %>" alt="<%= product.name %>">
-                                                        <% } else { %>
-                                                            <img src="/assets/imgs/no-image.jpg"
-                                                                alt="No Image Available">
-                                                            <% } %>
-                                                        </div>
+                                                <td>
+                                                    <div class="text-center">
+                                                        <% if (product.images && product.images.length> 0) { %>
+                                                            <img src="<%= product.images[0] %>"
+                                                                alt="<%= product.name %>">
+                                                            <% } else { %>
+                                                                <img src="/assets/imgs/no-image.jpg"
+                                                                    alt="No Image Available">
+                                                                <% } %>
+                                                    </div>
                                                 </td>
                                                 <td>
                                                     <%= product.name %>

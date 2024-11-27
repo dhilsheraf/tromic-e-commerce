@@ -3,7 +3,7 @@ const Category = require('../models/categoryModel')
 
 const getProduct = async (req, res) => {
     try {
-        const page = parseInt(req.query.page) || 1; // Default to page 1 if no page is specified
+        const page = parseInt(req.query.page) || 1; 
         const limit = 10; 
         const skip = (page - 1) * limit;
 
@@ -12,10 +12,7 @@ const getProduct = async (req, res) => {
         const totalPages = Math.ceil(totalProducts / limit);
 
 
-        const products = await Product.find({})
-            .skip(skip)
-            .limit(limit)
-            .populate('category');
+        const products = await Product.find({}).skip(skip).limit(limit).populate('category');
 
 
             res.render('admin/product', {
@@ -88,7 +85,7 @@ const loadEditProduct = async (req, res) => {
 
         const categories = await Category.find(); // Fetch all categories
 
-        // Render the editProduct view, passing both product and categories
+        // Render the editProduct view
         res.render('admin/editProduct', { product, categories });
     } catch (error) {
         console.error("Error loading product for edit:", error);
@@ -102,10 +99,9 @@ const editProduct = async (req, res) => {
     try {
         const { name, description, price, stock, category, existingImages } = req.body;
 
-        // Initialize an array to store the updated image URLs
         const updatedImages = existingImages ? [...existingImages] : [];
 
-        // Check if there are new images uploaded and update them based on index
+
         if (req.files && req.files.length > 0) {
             req.files.forEach((file, index) => {
                 updatedImages[index] = file.path;
@@ -150,7 +146,7 @@ const aiProduct = async (req, res) => {
         }
          
         product.isActive = !product.isActive;
-        await product.save(); // Save the updated product
+        await product.save(); 
 
         res.redirect('/admin/products'); 
     } catch (error) {
@@ -215,7 +211,6 @@ const getProductDetails = async (req, res) => {
 
         
 
-        // Fetch related products by category or other criteria 
         const relatedProducts = await Product.find({
             _id: { $ne: productId }  // Exclude the main product
         }).limit(4).lean();
