@@ -1,133 +1,217 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Order Details</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f8f9fa;
-      margin: 0;
-      padding: 20px;
-    }
-    .order-container {
-      max-width: 800px;
-      margin: auto;
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-    .order-header {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .order-header h2 {
-      color: #4CAF50;
-    }
-    .order-details, .order-products, .order-address, .order-actions {
-      margin-bottom: 20px;
-    }
-    .order-products table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    .order-products th, .order-products td {
-      text-align: left;
-      padding: 10px;
-      border: 1px solid #ddd;
-    }
-    .order-total {
-      text-align: right;
-      font-size: 1.2em;
-      font-weight: bold;
-      color: #4CAF50;
-    }
-    .order-actions {
-      text-align: center;
-    }
-    .btn {
-      display: inline-block;
-      padding: 10px 20px;
-      font-size: 16px;
-      margin: 5px;
-      border-radius: 5px;
-      border: none;
-      cursor: pointer;
-    }
-    .btn-cancel {
-      background-color: #e74c3c;
-      color: white;
-    }
-    .btn:hover {
-      opacity: 0.9;
-    }
-  </style>
-</head>
-<body>
-  <div class="order-container">
-    <div class="order-header">
-      <h2>Order Details</h2>
-      <p>Order ID: <%= order._id %></p>
-      <p>Status: <strong><%= order.status %></strong></p>
-    </div>
-
-    <!-- Order Products -->
-    <div class="order-products">
-      <h3>Products</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Product Name</th>
-            <th>Price</th>
-            <th>Quantity</th>
-            <th>Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% order.products.forEach(item => { %>
-            <tr>
-              <td><%= item.product ? item.product.name : 'Product not found' %></td>
-              <td>₹<%= item.product ? item.price : 0 %></td>
-              <td><%= item.quantity %></td>
-              <td>₹<%= item.product ? item.price * item.quantity : 0 %></td>
-            </tr>
-          <% }); %>          
-        </tbody>
-      </table>
-      <div class="order-total">
-        Total Price: ₹<%= order.totalPrice %>
+<%- include("../partials/header.ejs") %>
+<div class="breadcrumb-area breadcrumb-height" data-bg-image="/images/breadcrumb/bg/1-1-1920x400.jpg">
+  <div class="container h-100">
+    <div class="row h-100">
+      <div class="col-lg-12">
+        <div class="breadcrumb-item text-night-rider">
+          <h2 class="breadcrumb-heading">Order Details</h2>
+          <ul>
+            <li>
+              <a href="/">Home/</a>
+            </li>
+            <li><a href="/my-account">Order/</a> </li>
+            <li>Order Detail</li>
+          </ul>
+        </div>
       </div>
     </div>
-
-    <!-- Address Details -->
-    <div class="order-address">
-      <h3>Delivery Address</h3>
-      <p>
-        <%= order.addressId.addressLine %><br>
-        <%= order.addressId.city %>, <%= order.addressId.state %> - <%= order.addressId.pincode %> <br>
-        <%= order.addressId.phone %>
-      </p>
-    </div>
-
-    <!-- User Details (Optional) -->
-    <div class="order-details">
-      <h3>User Details</h3>
-      <p>
-        Name: <%= order.userId.usename %><br>
-        Email: <%= order.userId.email %>
-      </p>
-    </div>
-
-    <!-- Cancel Order Button -->
-    <div class="order-actions">
-      <% if (order.status === 'Pending') { %>
-        <form method="POST" action="/profile/orders/cancel/<%= order._id %>">
-          <button type="submit" class="btn btn-cancel">Cancel Order</button>
-        </form>
-      <% } %>
-    </div>
   </div>
-</body>
-</html>
+</div>
+
+<main>
+  <div class="order-details">
+    <h2>ORDER DETAILS</h2>
+    <p>OrderId: <%= order._id %></p>
+    <p>Date: <%= new Date(order.createdAt).toLocaleDateString() %></p>
+    <p>Payment Method: <%= order.paymentMethod || 'Not specified' %></p>
+    <p>Address: <%= order.addressId.addressLine || 'N/A' %></p>
+    <p>Shipping: <%= order.addressId.postalCode %>, <%= order.addressId.city %></p>
+
+    <h2>Ordered Products</h2>
+    <% order.products.forEach(product => { %>
+      <div class="product-row">
+        <img src="<%= product.product.images[0] || '/images/default-product.jpg' %>" alt="<%= product.product.name %>">
+        <div class="product-info">
+          <h3><%= product.product.name %></h3>
+          <p>Price: ₹<%= product.product.price %></p>
+          <p>Quantity: <%= product.quantity %></p>
+          <p>Total: ₹<%= product.quantity * product.product.price %></p>
+          <p>Discounted: ₹<%= product.discount || 0 %></p>
+          <% if (order.status === 'Pending') { %>
+            <form action="/cancel-order/<%= order._id %>" method="POST">
+              <button type="submit">Cancel order</button>
+            </form>
+          <% } %>
+        </div>
+      </div>
+    <% }); %>
+
+    <div class="status-line">
+      <span class="status <%= order.status === 'Pending' ? 'completed' : 'pending' %>">Pending</span>
+      <span class="status <%= order.status === 'Ordered' ? 'completed' : 'pending' %>">Ordered</span>
+      <span class="status <%= order.status === 'Packed' ? 'completed' : 'pending' %>">Packed</span>
+      <span class="status <%= order.status === 'Shipped' ? 'in-progress' : 'pending' %>">Shipped</span>
+      <span class="status <%= order.status === 'Delivered' ? 'completed' : 'pending' %>">Delivered</span>
+    </div>    
+  </div>
+</main>
+
+    <style>
+      header {
+        color: #fff;
+        padding: 1rem;
+      }
+    
+      header .header-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+    
+      header h1 {
+        font-size: 1.5rem;
+      }
+    
+      /* Main content styles */
+      main {
+        flex-grow: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem;
+      }
+    
+      .order-details {
+        background-color: #f5f5f5;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        width: 80%;
+        max-width: 600px;
+      }
+    
+      .order-details h2 {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+      }
+    
+      .order-details p {
+        margin-bottom: 0.5rem;
+      }
+    
+    
+    
+    
+    
+      .order-details {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #fff;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+      }
+    
+      .product-row {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 20px;
+      }
+    
+      .product-row img {
+        width: 120px;
+        height: auto;
+        border-radius: 8px;
+      }
+    
+      .product-info {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+    
+      .product-info h3 {
+        margin: 0;
+        font-size: 18px;
+        color: #333;
+      }
+    
+      .product-info p {
+        margin: 0;
+        font-size: 14px;
+        color: #666;
+      }
+    
+      .product-info button {
+        padding: 8px 12px;
+        background-color: #d9534f;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+    
+      .product-info button:hover {
+        background-color: #c9302c;
+      }
+    
+      .status-line {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 20px;
+        border-top: 2px solid #ddd;
+        padding-top: 10px;
+      }
+    
+      .status-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    border-top: 2px solid #ddd;
+    padding-top: 5px;
+  }
+
+  .status {
+    flex: 1;
+    text-align: center;
+    font-size: 14px;
+    padding: 5px;
+    border-radius: 20px;
+    margin: 0 5px;
+  }
+
+  .status.completed {
+    background-color: #4caf50;
+    color: white;
+  }
+
+  .status.in-progress {
+    background-color: #ffc107;
+    color: white;
+  }
+
+  .status.pending {
+    background-color: #ddd;
+    color: #555;
+  }
+
+  .status.cancelled {
+    background-color: #d9534f;
+    color: white;
+  }
+
+  .status.returned {
+    background-color: #f0ad4e;
+    color: white;
+  }
+    </style>
+    <%- include("../partials/footer.ejs") %>
+
+    <!-- Begin Footer Area -->
+    

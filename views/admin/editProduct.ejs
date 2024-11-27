@@ -94,6 +94,8 @@
 
 
     </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>    
 </head>
 <body>
 
@@ -241,12 +243,13 @@
                                                         <% } %>
                                         
                                                         <!-- Input for uploading a new image -->
-                                                        <input type="file" class="form-control" name="images" data-index="<%= i %>" onchange="previewImage(event, <%= i %>)" />
+                                                        <input type="file" class="form-control" name="images" data-index="<%= i %>" onchange="openCropper(event, <%= i %>)" />
                                                         <div id="image-preview-container-<%= i %>" class="image-preview-container"></div>
+                                                        <input type="hidden" name="croppedImages[]" id="cropped-image-<%= i %>">
                                                     </div>
                                                 <% } %>
                                             </div>
-                                        </div>
+                                        </div>                                        
                                         
 
                                         <div class="text-center">
@@ -279,26 +282,50 @@
 </footer>
 
 <script>
-    // Preview for Primary Image
-    function previewPrimaryImage(event) {
-        const output = document.getElementById('primaryImagePreview');
-        output.src = URL.createObjectURL(event.target.files[0]);
-        output.style.display = 'block';
-    }
 
-    // Preview for Additional Images
-    function previewImage(event, index) {
-        const output = document.getElementById(`image-preview-container-${index}`);
-        const img = document.createElement('img');
-        img.src = URL.createObjectURL(event.target.files[0]);
-        img.classList.add('image-preview');
-        
-        // Clear previous image and append new preview
-        output.innerHTML = '';
-        output.appendChild(img);
-        output.style.display = 'block';
-    }
 
+    let cropperInstances = [];
+
+    // Function to open Cropper
+    function openCropper(event, index) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                // Create a temporary image element
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.id = `image-to-crop-${index}`;
+                img.style.maxWidth = '100%';
+
+
+                const previewContainer = document.getElementById(`image-preview-container-${index}`);
+                previewContainer.innerHTML = ''; 
+                previewContainer.appendChild(img);
+
+
+                const cropper = new Cropper(img, {
+                    aspectRatio: 1,
+                    viewMode: 2,
+                    minCropBoxWidth: 100,
+                    minCropBoxHeight: 100,
+                    crop(event) {
+
+                        const canvas = cropper.getCroppedCanvas();
+                        const base64image = canvas.toDataURL();
+
+                        const hiddenInput = document.getElementById(`cropped-image-${index}`);
+                        hiddenInput.value = base64image;
+                    }
+                });
+
+
+                cropperInstances[index] = cropper;
+            };
+            reader.readAsDataURL(file);
+        }
+    }
 
 </script>
 
