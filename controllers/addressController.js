@@ -3,8 +3,6 @@ const Address = require('../models/addressModel');
 const addAddress = async (req,res) => {
     try {
         const userId = req.session.user ;
-
-        console.log(req.body);
         
 
         const { name, phone, addressType, pincode, addressLine, city, state, country } = req.body;
@@ -32,13 +30,13 @@ const addAddress = async (req,res) => {
 const editAddress =  async (req, res) => {
     const { addressId, name, phone, addressLine, city, state, country, pincode, addressType } = req.body;
 
-    // Check if all necessary fields are present
+    
     if (!addressId || !name || !phone || !addressLine || !city || !state || !country || !pincode || !addressType) {
         return res.status(400).json({ error: 'All fields are required' });
     }
 
     try {
-        // Update the address in the database
+        
         const updatedAddress = await Address.findByIdAndUpdate(
             addressId,
             { name, phone, addressLine, city, state, country, pincode, addressType },

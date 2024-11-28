@@ -101,6 +101,12 @@
 
 <script>
   async function cancelOrder(orderId,productId) {
+
+    Swal.fire({
+      title:"Are you sure",
+      text:"The order cant be placed",
+      icon:"warning"
+    })
     try {
       const response = await fetch('/cancel-order',{
         method:'POST',

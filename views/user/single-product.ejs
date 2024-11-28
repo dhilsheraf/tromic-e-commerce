@@ -488,11 +488,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 const result = await response.json();
 
                 if (response.ok) {
-                   Swal.fire("Quantity must be at least one.")
+                   Swal.fire("Product Added to cart").then(()=>{
                     window.location.href = '/cart';
-                } else {
-                    Swal.fire(result.message || "Failed to add product to cart.");
-                    window.location.href =  '/login'
+                   })
+                }else {
+                    Swal.fire(result.message || "Failed to add product to cart.").then(()=>{
+                      window.location.href =  '/cart'
+                    })
+                    
                 }
             } catch (error) {
                 console.error("Error adding to cart:", error);

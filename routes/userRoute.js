@@ -27,8 +27,9 @@ router.get("/blog", userController.loadBlog);
 router.get("/contact", userController.loadContact);
 
 router.get("/my-account", session.checkUserSession, userController.loadMyAccount)
-
+//wishlist
 router.get("/wishlist", session.checkUserSession, userController.loadWishlist)
+router.post("/add-wishlist")
 
 // sign up
 router.get("/signup", session.existUser, userController.loadSignup)
@@ -41,6 +42,7 @@ router.post("/login", userController.login)
 //google authentication
 router.get("/auth/google" ,passport.authenticate('google', { scope: ['profile', 'email'] }))
 router.get("/auth/google/callback", passport.authenticate('google', { failureRedirect: '/signup' }), (req, res) => {
+    req.session.user = req.user._id
     res.redirect('/');
 })
 //otp

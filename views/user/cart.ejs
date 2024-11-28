@@ -137,8 +137,9 @@
             if(data.success) {
                 location.reload();
             }else{
-                Swal.fire(data.message)
-            }
+                Swal.fire(data.message).then(()=>{
+                    location.reload();
+                })            }
          })
          .catch(error => {
             console.error('Error while updating Cart : ',error)

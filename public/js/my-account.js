@@ -1,197 +1,347 @@
 
 
-            //edit profile
-            document.getElementById("editProfileForm").addEventListener("submit", function(event) {
-                event.preventDefault();  // Prevent the default form submission
-
-                // Prepare the form data
-                const username = document.getElementById("username").value;
-                const number = document.getElementById("number").value;
-
-                // Send the form data to the backend using fetch
-                fetch('/profile-update', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',  // Ensure the backend can read the data as JSON
-                    },
-                    body: JSON.stringify({ username, number }), // Send data as JSON
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.message === 'Profile updated successfully') {
-                        window.location.href = '/my-account'
-                    } else {
-                        Swal.fire(data.message);  // Display an error message if the update fails
-                    }
-                })
-                .catch(error => {
-                    console.error("Error:", error);
-                    Swal.fire("An error occurred while updating your profile.");
-                });
-            });
+//edit profile
+document.getElementById("editProfileForm").addEventListener("submit", function (event) {
+    event.preventDefault();
 
 
-            document.getElementById("addAddressForm").addEventListener("submit", function(event) {
-                event.preventDefault();  // Prevent form from submitting the default way
+    const username = document.getElementById("username").value;
+    const number = document.getElementById("number").value;
 
-                const formData = {
-                    name: document.getElementById("name").value,
-                    phone: document.getElementById("phone").value,
-                    addressType: document.getElementById("addressType").value,
-                    pincode: document.getElementById("pincode").value,
-                    addressLine: document.getElementById("addressLine").value,
-                    city: document.getElementById("city").value,
-                    state: document.getElementById("state").value,
-                    country: document.getElementById("country").value
-                };
+    const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
+    const phoneRegex = /^[6-9]\d{9}$/;
 
-                // Send data to the backend
-                fetch("/add-address", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(formData)
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.message === 'Address added successfully!') {
-                        // Close the modal
-                        $('#addAddressModal').modal('hide');
-                        
-                        // Optionally, reload the page or update the UI
-                        Swal.fire('Address added successfully!');
-                        window.location.reload();  // Reload the page to reflect changes
-                    } else {
-                        Swal.fire('Failed to add address');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    Swal.fire('There was an error while adding the address');
-                });
-            });
+    const isVald = true
+    let errorMessage = "";
 
+    if (!usernameRegex.test(username)) {
+        isVald = false;
+        errorMessage += "Username must be :\n";
+        errorMessage += "- 3-20 characters long\n";
+        errorMessage += "- Can contain letters, numbers, and underscore\n";
+    }
 
+    if (number && !phoneRegex.test(number)) {
+        isVald = false;
+        errorMessage += "Phone number must be:\n";
+        errorMessage += "- A valid 10-digit Indian mobile number\n";
+        errorMessage += "- Starting with 6, 7, 8, or 9\n";
+    }
 
-            document.addEventListener("DOMContentLoaded", function () {
-                const editAddressButtons = document.querySelectorAll("[data-bs-target='#editAddressModal']");
-            
-                editAddressButtons.forEach(button => {
-                    button.addEventListener('click', function() {
-                        const addressId = button.getAttribute("data-id");
-                        const name = button.getAttribute("data-name");
-                        const phone = button.getAttribute("data-phone");
-                        const addressLine = button.getAttribute("data-address-line");
-                        const city = button.getAttribute("data-city");
-                        const state = button.getAttribute("data-state");
-                        const country = button.getAttribute("data-country");
-                        const pincode = button.getAttribute("data-pincode");
-                        const addressType = button.getAttribute("data-address-type");
-            
-                        // Populate the modal form fields with the address data
-                        document.getElementById("editAddressId").value = addressId;
-                        document.getElementById("editName").value = name;
-                        document.getElementById("editPhone").value = phone;
-                        document.getElementById("editAddressLine").value = addressLine;
-                        document.getElementById("editCity").value = city;
-                        document.getElementById("editState").value = state;
-                        document.getElementById("editCountry").value = country;
-                        document.getElementById("editPincode").value = pincode;
-                        document.getElementById("editAddressType").value = addressType;
-                    });
-                });
-            });
-            
-            document.getElementById('editAddressForm').addEventListener('submit', function(event) {
-                event.preventDefault();  // Prevent the form from reloading the page
-            
-                const addressId = document.getElementById('editAddressId').value;
-                const formData = {
-                    addressId: addressId,
-                    name: document.getElementById('editName').value,
-                    phone: document.getElementById('editPhone').value,
-                    addressLine: document.getElementById('editAddressLine').value,
-                    city: document.getElementById('editCity').value,
-                    state: document.getElementById('editState').value,
-                    country: document.getElementById('editCountry').value,
-                    pincode: document.getElementById('editPincode').value,
-                    addressType: document.getElementById('editAddressType').value,
-                };
-            
-                // Send data to the server
-                fetch('/edit-address', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(formData)
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.error) {
-                        // Show error alert
-                        Swal.fire(`Error updating address: ${data.error}`);
-                    } else if (data._id) {
-                        // Successfully updated
-                        Swal.fire('Address updated successfully!');
-                        location.reload(); // Optionally reload the page or update the UI
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    Swal.fire('An unexpected error occurred while updating the address. Please try again.');
-                });
-            });
-            
-            // address delete
+    if (!isVald) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Validation Erro',
+            html: errorMessage.replace(/\n/g, '<br>'),
+            confirmButtonText: 'OK'
+        })
+        return;
+    }
+
+    fetch('/profile-update', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, number }),
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message === 'Profile updated successfully') {
+                window.location.href = '/my-account'
+            } else {
+                Swal.fire(data.message);
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            Swal.fire("An error occurred while updating your profile.");
+        });
+});
 
 
-            document.addEventListener('DOMContentLoaded', () => {
-                // Event delegation for dynamically loaded delete buttons
-                document.addEventListener('click', function (event) {
-                    if (event.target.classList.contains('delete-address-btn')) {
-                        const addressId = event.target.getAttribute('data-id');
-            
-                        // Confirm the deletion action with the user
-                        if (confirm('Are you sure you want to delete this address?')) {
-                            // Send the delete request to the server
-                            fetch(`/delete-address/${addressId}`, {
-                                method: 'DELETE',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                },
-                            })
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.success) {
-                                    Swal.fire('Address deleted successfully!');
-                                    // Remove the address card from the DOM
-                                    const addressCard = event.target.closest('.address-card');
-                                    if (addressCard) {
-                                        addressCard.remove();
-                                    }
-                                } else {
-                                    Swal.fire(`Error deleting address: ${data.error}`);
+// Add Address Form Validation
+document.getElementById("addAddressForm").addEventListener("submit", function (event) {
+    event.preventDefault();
+
+
+    const name = document.getElementById("name").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const pincode = document.getElementById("pincode").value.trim();
+    const addressLine = document.getElementById("addressLine").value.trim();
+    const city = document.getElementById("city").value.trim();
+    const state = document.getElementById("state").value.trim();
+    const country = document.getElementById("country").value.trim();
+
+    // Validation rules
+    const nameRegex = /^[A-Za-z\s]{2,50}$/;
+    const phoneRegex = /^[6-9]\d{9}$/;
+    const pincodeRegex = /^\d{6}$/;
+
+    // Validation checks
+    let isValid = true;
+    let errorMessage = "";
+
+    if (!nameRegex.test(name)) {
+        isValid = false;
+        errorMessage += "Name must be 2-50 characters and contain only letters.\n";
+    }
+
+    if (!phoneRegex.test(phone)) {
+        isValid = false;
+        errorMessage += "Phone number must be a valid 10-digit Indian mobile number.\n";
+    }
+
+    if (!pincodeRegex.test(pincode)) {
+        isValid = false;
+        errorMessage += "Pincode must be a 6-digit number.\n";
+    }
+
+    if (addressLine.length < 5 || addressLine.length > 100) {
+        isValid = false;
+        errorMessage += "Address line must be between 5 and 100 characters.\n";
+    }
+
+    if (city.length < 2 || city.length > 50) {
+        isValid = false;
+        errorMessage += "City name must be between 2 and 50 characters.\n";
+    }
+
+    if (state.length < 2 || state.length > 50) {
+        isValid = false;
+        errorMessage += "State name must be between 2 and 50 characters.\n";
+    }
+
+    if (country.length < 2 || country.length > 50) {
+        isValid = false;
+        errorMessage += "Country name must be between 2 and 50 characters.\n";
+    }
+
+    // If validation fails, show error message
+    if (!isValid) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Validation Error',
+            text: errorMessage,
+            confirmButtonText: 'OK'
+        });
+        return;
+    }
+
+    // If validation passes, proceed with form submission
+    const formData = {
+        name: name,
+        phone: phone,
+        addressType: document.getElementById("addressType").value,
+        pincode: pincode,
+        addressLine: addressLine,
+        city: city,
+        state: state,
+        country: country
+    };
+
+    fetch("/add-address", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(formData)
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message === 'Address added successfully!') {
+                $('#addAddressModal').modal('hide');
+                Swal.fire('Success', 'Address added successfully!', 'success');
+                window.location.reload();
+            } else {
+                Swal.fire('Error', data.message || 'Failed to add address', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            Swal.fire('Error', 'There was an error while adding the address', 'error');
+        });
+});
+
+
+document.getElementById('editAddressForm').addEventListener('submit', function (event) {
+    event.preventDefault();
+
+
+    const name = document.getElementById('editName').value.trim();
+    const phone = document.getElementById('editPhone').value.trim();
+    const pincode = document.getElementById('editPincode').value.trim();
+    const addressLine = document.getElementById('editAddressLine').value.trim();
+    const city = document.getElementById('editCity').value.trim();
+    const state = document.getElementById('editState').value.trim();
+    const country = document.getElementById('editCountry').value.trim();
+
+
+    const nameRegex = /^[A-Za-z\s]{2,50}$/;
+    const phoneRegex = /^[6-9]\d{9}$/;
+    const pincodeRegex = /^\d{6}$/;
+
+
+    let isValid = true;
+    let errorMessage = "";
+
+    if (!nameRegex.test(name)) {
+        isValid = false;
+        errorMessage += "Name must be 2-50 characters and contain only letters.\n";
+    }
+
+    if (!phoneRegex.test(phone)) {
+        isValid = false;
+        errorMessage += "Phone number must be a valid 10-digit.\n";
+    }
+
+    if (!pincodeRegex.test(pincode)) {
+        isValid = false;
+        errorMessage += "Pincode must be a 6-digit number.\n";
+    }
+
+    if (addressLine.length < 5 || addressLine.length > 100) {
+        isValid = false;
+        errorMessage += "Address line must be between 5 and 100 characters.\n";
+    }
+
+    if (city.length < 2 || city.length > 50) {
+        isValid = false;
+        errorMessage += "City name must be between 2 and 50 characters.\n";
+    }
+
+    if (state.length < 2 || state.length > 50) {
+        isValid = false;
+        errorMessage += "State name must be between 2 and 50 characters.\n";
+    }
+
+    if (country.length < 2 || country.length > 50) {
+        isValid = false;
+        errorMessage += "Country name must be between 2 and 50 characters.\n";
+    }
+
+
+    if (!isValid) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Validation Error',
+            text: errorMessage,
+            confirmButtonText: 'OK'
+        });
+        return;
+    }
+
+
+    const addressId = document.getElementById('editAddressId').value;
+    const formData = {
+        addressId: addressId,
+        name: name,
+        phone: phone,
+        addressLine: addressLine,
+        city: city,
+        state: state,
+        country: country,
+        pincode: pincode,
+        addressType: document.getElementById('editAddressType').value,
+    };
+
+    fetch('/edit-address', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                Swal.fire('Error', `Error updating address: ${data.error}`, 'error');
+            } else if (data._id) {
+                Swal.fire('Success', 'Address updated successfully!', 'success');
+                location.reload();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            Swal.fire('Error', 'An unexpected error occurred while updating the address. Please try again.', 'error');
+        });
+});
+// address delete
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('click', function (event) {
+        if (event.target.classList.contains('delete-address-btn')) {
+            const addressId = event.target.getAttribute('data-id');
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'Do you want to delete this address?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'No, cancel',
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    fetch(`/delete-address/${addressId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    })
+                        .then((response) => response.json())
+                        .then((data) => {
+                            if (data.success) {
+
+                                Swal.fire('Deleted!', 'Address deleted successfully.', 'success');
+
+
+                                const addressCard = event.target.closest('.address-card');
+                                if (addressCard) {
+                                    addressCard.remove();
                                 }
-                            })
-                            .catch(error => {
-                                console.error('Error:', error);
-                                Swal.fire('An error occurred while deleting the address. Please try again.');
-                            });
-                        }
-                    }
-                });
-            });
-            
+                            } else {
 
-            
-            document.getElementById('changePasswordForm').addEventListener('submit', async (e) => {
+                                Swal.fire('Error!', `Error deleting address: ${data.error}`, 'error');
+                            }
+                        })
+                        .catch((error) => {
+                            console.error('Error:', error);
+
+
+                            Swal.fire('Error!', 'An error occurred while deleting the address. Please try again.', 'error');
+                        });
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+
+                    Swal.fire('Cancelled', 'Your address is safe.', 'info');
+                }
+            });
+        }
+    });
+});
+
+
+
+
+document.getElementById('changePasswordForm').addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const currentPassword = document.getElementById('currentPassword').value;
     const newPassword = document.getElementById('newPassword').value;
     const confirmPassword = document.getElementById('confirmPassword').value;
+
+
+    const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%^&+=!]).{8,}$/;
+
+    if (!strongPasswordRegex.test(newPassword)) {
+        Swal.fire(
+            'Weak Password!',
+            'Password must be at least 8 characters long,\n contain an uppercase letter,\n a lowercase letter,\n a number, and a special character.',
+            'warning'
+        );
+        return;
+    }
 
     if (newPassword !== confirmPassword) {
         Swal.fire('Passwords do not match.');
@@ -204,7 +354,7 @@
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ currentPassword, newPassword, confirmPassword }),
+            body: JSON.stringify({ currentPassword, newPassword ,confirmPassword }),
         });
 
         const result = await response.json();
@@ -219,4 +369,3 @@
         Swal.fire('Network error: ' + error.message);
     }
 });
-

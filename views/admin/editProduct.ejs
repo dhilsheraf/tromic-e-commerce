@@ -145,14 +145,20 @@
                 <li class="menu-item"><a class="menu-link" href="/admin/category">
                         <i class="icon material-icons md-store"></i>
                         <span class="text">Category</span>
-                    </a></li>
-                
+                    </a>
+                </li>
+                <li class="menu-item has-submenu">
+                    <a class="menu-link" href="/admin/orders">
+                        <i class="icon material-icons md-shopping_cart"></i>
+                        <span class="text">Orders</span>
+                    </a>
+                </li>
                 <li class="menu-item ">
                     <a class="menu-link" href="/admin/offer">
-                      <i class="icon material-icons md-monetization_on"></i>
-                      <span class="text">Offer</span>
+                        <i class="icon material-icons md-monetization_on"></i>
+                        <span class="text">Offer</span>
                     </a>
-                  </li>
+                </li>
                 <li class="menu-item ">
                     <a class="menu-link" href="#">
                         <i class="icon material-icons md-person"></i>
@@ -234,7 +240,7 @@
                                                 <div class="product-form">
                                                     <label class="form-label">Stock Quantity</label>
                                                     <input type="number" class="form-control" name="stock" min="0"
-                                                         value="<%= product.stock %>" />
+                                                        value="<%= product.stock %>" />
                                                 </div>
                                             </div>
                                         </div>
@@ -418,7 +424,7 @@
                 Swal.fire({
                     icon: 'error',
                     title: 'Invalid Price',
-                    text: 'Please enter a valid price greater than or equal to 0!',
+                    text: 'Please enter a valid price',
                 });
                 priceInput.value = '';
                 priceInput.focus();
@@ -430,7 +436,7 @@
                 Swal.fire({
                     icon: 'error',
                     title: 'Invalid Stock',
-                    text: 'Please enter a valid stock quantity (0 or greater)!',
+                    text: 'Please enter a valid stock quantity',
                 });
                 stockInput.value = '';
                 stockInput.focus();

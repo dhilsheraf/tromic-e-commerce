@@ -1,9 +1,9 @@
-// Example of checkUserSession middleware
+
 const checkUserSession = (req, res, next) => {
     if (!req.session.user ) {
-        return res.redirect('/login');  // Redirect to login if user is not logged in
+        return res.redirect('/login');  
     }
-    next();  // Proceed if user is logged in
+    next();  
 };
 
 const existUser = (req,res,next) => {
@@ -17,7 +17,6 @@ const existUser = (req,res,next) => {
 function checkAdminSession(req, res, next) {
 
     if (req.session.adminId) {
-
 
         next();
     } else {

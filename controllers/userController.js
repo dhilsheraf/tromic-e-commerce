@@ -7,24 +7,25 @@ const Product = require("../models/productModel")
 const Address = require('../models/addressModel')
 const crypto = require('crypto')
 const Order = require('../models/orderModel')
+const Wishlist = require('../models/wishlistModel')
 
 //route to home 
 
 
-const loadHome = async (req,res) =>{
+const loadHome = async (req, res) => {
     try {
-    
+
         const products = await Product.find({}).limit(10).lean();
 
-        
-            res.render('home',{products})
+
+        res.render('home', { products })
     } catch (error) {
-        console.error("Home page not loading",error);
+        console.error("Home page not loading", error);
         res.status(500).redirect("/pageNotFound")
     }
-} 
+}
 
-const loadAbout = async (req,res) =>{
+const loadAbout = async (req, res) => {
     try {
         res.render("about")
     } catch (error) {
@@ -33,7 +34,7 @@ const loadAbout = async (req,res) =>{
     }
 }
 
-const loadContact = async (req,res) =>{
+const loadContact = async (req, res) => {
     try {
         res.render('contact');
     } catch (error) {
@@ -41,7 +42,7 @@ const loadContact = async (req,res) =>{
         res.status(500).redirect("/pageNotFound")
     }
 }
-const loadBlog = async (req,res)=>{
+const loadBlog = async (req, res) => {
     try {
         res.render('blog');
     } catch (error) {
@@ -64,22 +65,23 @@ const loadSignup = async (req, res) => {
 }
 
 
-const loadMyAccount = async (req,res) =>{
+const loadMyAccount = async (req, res) => {
     try {
         const userId = req.session.user
         const user = await User.findById(req.session.user)
-        const addresses = await Address.find({userId:req.session.user})
-        const orders = await Order.find({userId}).populate('products.product','name price')
-        .populate('addressId','addressLine city');
+        const addresses = await Address.find({ userId: req.session.user })
+        const orders = await Order.find({ userId }).populate('products.product', 'name price')
+            .populate('addressId', 'addressLine city');
 
-        res.render("my-account",{user,addresses,orders})
+        res.render("my-account", { user, addresses, orders })
     } catch (error) {
         console.log(error)
         res.status(500).redirect("/pageNotFound")
     }
 }
 
-const loadWishlist = async (req,res) =>{
+//wishlist
+const loadWishlist = async (req, res) => {
     try {
         res.render("wishlist")
     } catch (error) {
@@ -88,23 +90,42 @@ const loadWishlist = async (req,res) =>{
     }
 }
 
+const addToWishlist = async (req,res) => {
+    const {productId} = req.params;
+    try {
+        
+
+        const user = req.session.user
+
+
+        const wishlist =  await Wishlist.findOneAndUpdate({user},{ $addToSet: { items : {productId}}},{ upsert:true ,new:true });
+       
+        return res.status(404).json({ success:true ,message:"Product added to wishlist"})
+
+    } catch (error) {
+        
+    }
+}
+
+
+
 // function for creating otp
-function generateOTP(){
+function generateOTP() {
     return Math.floor(100000 + Math.random() * 900000).toString()
 }
 
 //email send function
-async function sendVerificationEmail(email,otp){
+async function sendVerificationEmail(email, otp) {
     try {
-        
+
         const transporter = nodemailer.createTransport({
             service: 'gmail',
             port: 587,
             secure: false,
             requireTLS: true,
-            auth:{
-                user: process.env.NODEMAILER_EMAIL ,
-                pass: process.env.NODEMAILER_PASSWORD 
+            auth: {
+                user: process.env.NODEMAILER_EMAIL,
+                pass: process.env.NODEMAILER_PASSWORD
             }
         })
 
@@ -119,160 +140,160 @@ async function sendVerificationEmail(email,otp){
         return info.accepted.length > 0
 
     } catch (error) {
-        console.error("Error sending email",error);
+        console.error("Error sending email", error);
         return false;
     }
 }
 
 const signUp = async (req, res) => {
     try {
-        const {email,password,cpassword,number,username} = req.body;
-        
-        if(password !== cpassword) return res.render('signup',{message:"Passwords doesn't match"})
+        const { email, password, cpassword, number, username } = req.body;
 
-        const findUser = await User.findOne({email});
+        if (password !== cpassword) return res.render('signup', { message: "Passwords doesn't match" })
 
-        if(findUser){
-            return res.render('signup',{message:"User already exist"})
+        const findUser = await User.findOne({ email });
+
+        if (findUser) {
+            return res.render('signup', { message: "User already exist" })
 
         }
         const otp = generateOTP()
-        const emailSent = await sendVerificationEmail(email,otp)
-        
-        console.log("Email sent Status",emailSent)
+        const emailSent = await sendVerificationEmail(email, otp)
 
-        if(!emailSent){
+        console.log("Email sent Status", emailSent)
+
+        if (!emailSent) {
             return res.json("email-error")
         }
-       
-         req.session.userOtp = otp ;
-         req.session.userData = {email,password,number,username};
 
-         res.render('verify-otp');
-         console.log("OTP Send",otp) 
+        req.session.userOtp = otp;
+        req.session.userData = { email, password, number, username };
+
+        res.render('verify-otp');
+        console.log("OTP Send", otp)
 
     } catch (error) {
-        console.error("signup error",error);
+        console.error("signup error", error);
         res.redirect("/pageNotFound")
     }
-    
+
 }
 
 const securePassword = async (password) => {
     try {
-        
-       const passwordHash = await bcrypt.hash(password,10)
 
-       return passwordHash;
+        const passwordHash = await bcrypt.hash(password, 10)
+
+        return passwordHash;
 
     } catch (error) {
-         console.error("error ocured while hasing password")
+        console.error("error ocured while hasing password")
 
     }
 }
 
-const verifyOTP = async (req,res)=>{
-       try {
-        const {otp}  = req.body
+const verifyOTP = async (req, res) => {
+    try {
+        const { otp } = req.body
         console.log(otp)
-        
-        if(otp === req.session.userOtp){
+
+        if (otp === req.session.userOtp) {
             const user = req.session.userData
             const passwordHash = await securePassword(user.password);
-           console.log("assigning the user data");
-           
+            console.log("assigning the user data");
+
             const saveUserData = new User({
-                username:user.username,
-                email:user.email,
-                number:user.number,
-                password:passwordHash,
+                username: user.username,
+                email: user.email,
+                number: user.number,
+                password: passwordHash,
             })
-           
+
             await saveUserData.save();
             console.log("user data is saved");
 
             req.session.user = saveUserData._id
 
-            return res.json({success:true, redirectUrl:"/"})
-        }else{
+            return res.json({ success: true, redirectUrl: "/" })
+        } else {
             //invalid otp
-            res.status(400).json({ success: false, message:"Invalid OTP, Please try again" })
-            
-        }
-       } catch (error) {
-        
-        console.error("Error while verifying the otp",error )
-        res.status(500).json({ success:false , message:"An error occured" })
+            res.status(400).json({ success: false, message: "Invalid OTP, Please try again" })
 
-       } 
+        }
+    } catch (error) {
+
+        console.error("Error while verifying the otp", error)
+        res.status(500).json({ success: false, message: "An error occured" })
+
+    }
 }
 
 //n otp resending
-const resendOTP = async (req,res)=>{
+const resendOTP = async (req, res) => {
     try {
-        const {email} = req.session.userData ;
-        if(!email){
-            return res.status(400).json({ success: false, message:"Email not found in session"})
+        const { email } = req.session.userData;
+        if (!email) {
+            return res.status(400).json({ success: false, message: "Email not found in session" })
         }
 
         const otp = generateOTP();
 
         req.session.userOtp = otp;
 
-        const emailSent = await sendVerificationEmail(email,otp);
+        const emailSent = await sendVerificationEmail(email, otp);
 
-        if(emailSent){
-            console.log("Resend OTP :",otp);
-            res.status(200).json({ success: true,message: "OTP resent susscessfully"})
-            
+        if (emailSent) {
+            console.log("Resend OTP :", otp);
+            res.status(200).json({ success: true, message: "OTP resent susscessfully" })
+
         }
-        else{
-            res.status(500).json({ success: false,message: "Failed to resend OTP . Please try again"});
+        else {
+            res.status(500).json({ success: false, message: "Failed to resend OTP . Please try again" });
         }
     } catch (error) {
-        console.error("error occured while resending otp",error);
-        res.status(500).json({success:false,message:"Internal Server error please try again later"})
+        console.error("error occured while resending otp", error);
+        res.status(500).json({ success: false, message: "Internal Server error please try again later" })
     }
 }
 
-const loadLogin = async (req,res)=>{
+const loadLogin = async (req, res) => {
     try {
-        res.render('login',{message:""})
+        res.render('login', { message: "" })
     } catch (error) {
         res.redirect("/pageNotFound")
     }
 }
 
-const pageNotFound = (req,res)=>{
+const pageNotFound = (req, res) => {
     res.render("error")
 }
 
-const login = async (req,res) => {
+const login = async (req, res) => {
     try {
-        const {email,password} = req.body;
-        
-        const findUser = await User.findOne({email:email})
-      
-        if(!findUser){
-            return res.render("login",{message:"User not found"})
+        const { email, password } = req.body;
+
+        const findUser = await User.findOne({ email: email })
+
+        if (!findUser) {
+            return res.render("login", { message: "User not found" })
         }
 
-        if(findUser.isBlocked){
-            return res.render("login",{message:"User is blocked by admin"})
+        if (findUser.isBlocked) {
+            return res.render("login", { message: "User is blocked by admin" })
         }
 
-        const passwordMatch = await bcrypt.compare(password,findUser.password)
+        const passwordMatch = await bcrypt.compare(password, findUser.password)
 
-        if(!passwordMatch) return res.render("login",{message:"Incorrect Password"})
-         
-        
+        if (!passwordMatch) return res.render("login", { message: "Incorrect Password" })
+
+
         req.session.user = findUser._id
-        
+
         res.redirect("/");
     } catch (error) {
-        
-        console.error("Login error ",error);
-        res.send("login",{message:"login failed please try again later"})
+
+        console.error("Login error ", error);
+        res.send("login", { message: "login failed please try again later" })
     }
 }
 
@@ -293,11 +314,11 @@ const logout = async (req, res) => {
 };
 
 
-const profileUpdate = async (req,res) => {
+const profileUpdate = async (req, res) => {
     try {
         const { username, number } = req.body;
-        const userId = req.session.user; 
-    
+        const userId = req.session.user;
+
 
         if (!userId) {
             return res.status(401).send({ message: 'Unauthorized' });
@@ -320,7 +341,7 @@ const profileUpdate = async (req,res) => {
     }
 }
 
-const forgotPasswordLoad = async (req,res) => {
+const forgotPasswordLoad = async (req, res) => {
     try {
         res.render('forgotPassword')
     } catch (error) {
@@ -329,35 +350,35 @@ const forgotPasswordLoad = async (req,res) => {
     }
 }
 
-const forgotPassword = async (req,res) => {
-        const { email } = req.body;
-      
-        try {
-          const user = await User.findOne({ email });
-          if (!user) {
+const forgotPassword = async (req, res) => {
+    const { email } = req.body;
+
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
             return res.send("If this email exists, a reset link has been sent.");
-          }
-      
-          // Generate Reset Token
-          const resetToken = crypto.randomBytes(32).toString("hex");
-          user.resetToken = resetToken;
-          user.resetTokenExpires = Date.now() + 3600000; // 1 hour
-          await user.save();
-      
-          // Send Email
-          const transporter = nodemailer.createTransport({
+        }
+
+
+        const resetToken = crypto.randomBytes(32).toString("hex");
+        user.resetToken = resetToken;
+        user.resetTokenExpires = Date.now() + 3600000; // 1 hour
+        await user.save();
+
+
+        const transporter = nodemailer.createTransport({
             service: "gmail",
             auth: {
-              user: process.env.NODEMAILER_EMAIL,
-              pass: process.env.NODEMAILER_PASSWORD,
+                user: process.env.NODEMAILER_EMAIL,
+                pass: process.env.NODEMAILER_PASSWORD,
             },
-          });
-      
-          const resetUrl = `http://localhost:${process.env.PORT}/reset-password/${resetToken}`;
-          const mailOptions = {
+        });
+
+        const resetUrl = `http://localhost:${process.env.PORT}/reset-password/${resetToken}`;
+        const mailOptions = {
             to: user.email,
             subject: "Password Reset",
-            html:  `
+            html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #f7f7f7; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
               <h2 style="text-align: center; color: #333;">Password Reset Request</h2>
               <p style="font-size: 16px; line-height: 1.5; color: #555;">
@@ -377,58 +398,58 @@ const forgotPassword = async (req,res) => {
               </p>
             </div>
           `,
-          };
-      
-          await transporter.sendMail(mailOptions);
-          res.redirect('/forgot-password?status=sent')
-        } catch (err) {
-          console.error(err);
-          res.status(500).send("Something went wrong.");
-        }
-      }
+        };
 
- const resetPasswordLoad = async (req, res) => {
+        await transporter.sendMail(mailOptions);
+        res.redirect('/forgot-password?status=sent')
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Something went wrong.");
+    }
+}
+
+const resetPasswordLoad = async (req, res) => {
     try {
         const { token } = req.params;
-  
-    const user = await User.findOne({ resetToken: token, resetTokenExpires: { $gt: Date.now() } });
-    if (!user) {
-      return res.send("Expired the time");
-    }
-  
-    res.render("resetPassword", { token });
+
+        const user = await User.findOne({ resetToken: token, resetTokenExpires: { $gt: Date.now() } });
+        if (!user) {
+            return res.send("Expired the time");
+        }
+
+        res.render("resetPassword", { token });
     } catch (error) {
         console.error(error);
         res.status(500).send("Something went wrong.");
     }
-  }
+}
 
 
 const resetPassword = async (req, res) => {
-try {
-    const { token } = req.params;
-    const { password } = req.body;
-  
-    const user = await User.findOne({ resetToken: token, resetTokenExpires: { $gt: Date.now() } });
-    if (!user) {
-      return res.send("Invalid or expired reset token.");
-    }
-  
-    // Hash the new password
-    const hashedPassword = await bcrypt.hash(password, 10);
-    user.password = hashedPassword;
-    user.resetToken = null;
-    user.resetTokenExpires = null;
-    await user.save();
-  
-    res.render('passchange-effect');
-} catch (error) {
-    console.error(error);
+    try {
+        const { token } = req.params;
+        const { password } = req.body;
+
+        const user = await User.findOne({ resetToken: token, resetTokenExpires: { $gt: Date.now() } });
+        if (!user) {
+            return res.send("Invalid or expired reset token.");
+        }
+
+        // Hash the new password
+        const hashedPassword = await bcrypt.hash(password, 10);
+        user.password = hashedPassword;
+        user.resetToken = null;
+        user.resetTokenExpires = null;
+        await user.save();
+
+        res.render('passchange-effect');
+    } catch (error) {
+        console.error(error);
         res.status(500).send("Something went wrong.");
+    }
 }
-  }
- 
-  const changePassword = async (req, res) => {
+
+const changePassword = async (req, res) => {
     const { currentPassword, newPassword, confirmPassword } = req.body;
 
     if (!currentPassword || !newPassword || !confirmPassword) {
@@ -481,5 +502,6 @@ module.exports = {
     forgotPassword,
     resetPasswordLoad,
     resetPassword,
-    changePassword
+    changePassword,
+    addToWishlist
 } 

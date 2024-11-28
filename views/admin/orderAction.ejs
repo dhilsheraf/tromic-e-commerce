@@ -192,7 +192,7 @@
                                                                 class="form-select"
                                                                 aria-label="Delivery Status"
                                                                 onchange="updateStatus('<%= order._id %>', '<%= productItem.product._id %>', this.value)"
-                                                                <%= productItem.status === 'cancelled' ? 'disabled' : '' %>>
+                                                                <%=  productItem.status === 'delivered' || productItem.status === 'cancelled' ? 'disabled' : '' %>>
                                                                 <option <%= productItem.status === 'Pending' ? 'selected' : '' %>>Pending</option>
                                                                 <option <%= productItem.status === 'shipped' ? 'selected' : '' %>>shipped</option>
                                                                 <option <%= productItem.status === 'on delivery' ? 'selected' : '' %>>on delivery</option>

@@ -1,13 +1,14 @@
 <%- include("../partials/header.ejs") %>
     <style>
         .product-grid-view .col-xl-4.col-sm-6 {
-  margin-bottom: 30px;
-}
-.price-box-holder {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+            margin-bottom: 30px;
+        }
+
+        .price-box-holder {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
     </style>
     <main class="main-content">
         <div class="breadcrumb-area breadcrumb-height" data-bg-image="/images/breadcrumb/bg/1-1-1920x400.jpg">
@@ -41,20 +42,22 @@
                                         <h2 class="widgets-title mb-5">Shop By Categories</h2>
                                         <div class="widgets-item">
                                             <ul class="widgets-category">
-                                                <% category.forEach(item=>{ %>
+                                                <% category.forEach(item => { %>
                                                     <li>
                                                         <a href="#">
                                                             <%= item.name %>
-                                                                <input type="checkbox" name="" id="">
+                                                            <input type="checkbox" name="categories" value="<%= item._id %>" class="category-checkbox">
                                                         </a>
                                                     </li>
-                                                    <% }) %>
-                                                        <div class="text-center">
-                                                            <button class="btn btn-danger">Apply</button>
-                                                        </div>
-                                            </ul>
+                                                <% }) %>
+                                            </ul>                                            
+                                            <div class="text-center">
+                                                <button class="btn btn-danger"
+                                                    onclick="applyCategoryFilters()">Apply</button>
+                                            </div>
                                         </div>
                                     </div>
+
 
                         </div>
                     </div>
@@ -139,7 +142,10 @@
                                                                 </button>
                                                             </li>
                                                             <li>
-                                                                <button class="add-to-wishlist-btn" > <i class="pe-7s-like" data-tippy="Add to wishlist"></i></button>
+                                                                <button class="add-to-wishlist-btn"> <i
+                                                                        class="pe-7s-like"
+                                                                        data-tippy="Add to wishlist"
+                                                                        data-id="<%=product._id %>"></i></button>
                                                             </li>
                                                         </ul>
                                                     </div>
@@ -204,14 +210,19 @@
                         } else {
                             if (response.status === 401) {
                                 window.location.href = '/login'
+                            } else if (response.status === 429) {
+                                swal.fire("Already 10 quantity in the cart").then(() => {
+                                    window.location.href = '/cart'
+                                })
                             }
-
                             else {
                                 Swal.fire({
                                     icon: "error",
                                     title: "Oops...",
                                     text: result.message || "Failed to add product to cart",
-                                });
+                                }).then(() => {
+                                    window.location.href = '/cart'
+                                })
                             }
                         }
                     } catch (error) {
@@ -249,6 +260,7 @@
             function sortProducts() {
                 fetchProducts()
             }
+
 
         </script>
 

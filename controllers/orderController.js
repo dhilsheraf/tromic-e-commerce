@@ -64,15 +64,23 @@ const checkout = async (req, res) => {
         console.log(cartItems)
 
         for (const item of cartItems) {
-            const product = await Product.findById(item.productId);
+            const product = await Product.findById(item.productId).populate('category');
 
             if (!product) {
                 return res.status(404).json({ success: false, message: `Product with invalid Id ${item.productId} not found` })
             }
 
+            if ( !product.isActive || product.category.isActive === false) {
+                return res.status(400).json({ 
+                    success: false, 
+                    message: `Product "${product?.name || 'Unknown'}" is inactive or unavailable.\n Please remove it from cart` 
+                });
+            }
+
             if (product.stock < item.quantity) {
-                return res.status(400).json({ success: false, message: `Insuffiecient stock for ${product.name}` })
                 console.log(`Product: ${product.name}, Stock: ${product.stock}, Quantity: ${item.quantity}`);
+                return res.status(400).json({ success: false, message: `Insuffiecient stock for ${product.name}
+                    available stock ${product.stock}` })
 
             }
 
@@ -132,12 +140,12 @@ const detailOrder = async (req, res) => {
             .populate('userId')
             .populate('addressId');
 
-        // If order is not found, show an error message
+        
         if (!order) {
             return res.status(404).render('error', { message: 'Order not found' });
         }
 
-        // Render the order details page with the order data
+        
         res.render('orderDetail', { order });
     } catch (err) {
         console.error(err);

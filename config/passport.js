@@ -27,18 +27,18 @@ async (accessToken,refreshToken,profile,done) => {
 
             user = await User.findOne({ email: email });
             if (user) {
-                // If user with this email already exists, return that user
+                
                 return done(null, user);
             }
 
-            // Creating a new user instance properly
+            
             user = new User({
                 username: profile.displayName,
                 email: email,
                 googleId: profile.id
             });
 
-            // Save the new user to the database
+            
             await user.save();
             return done(null, user);
         }

@@ -173,24 +173,83 @@ const loadProduct = async (req, res) => {
           else if(sort === 'new-arrivals' ) sortOption.createdAt = 1 ;
           else if(sort === 'a-z' ) sortOption.name = 1 ;
           else if(sort === 'z-a' ) sortOption.name = -1 ;
-
+          else sortOption = { createdAt: -1 }
 
           
         const category = await Category.find({isActive:true});
         
 
-        const products = await Product.find({ isActive: true , ...searchFilter}) 
-        .sort(sortOption)
-        .skip(skip)
-        .limit(Number(limit));
+        const products = await Product.aggregate([
+            {
+                $match: {
+                    isActive: true,
+                    ...searchFilter
+                }
+            },
+            {
+                $lookup: {
+                    from:"categories",
+                    localField:"category",
+                    foreignField:"_id",
+                    as:"categoryDetails"
+
+                }
+            },{
+                $match:{
+                    "categoryDetails.isActive":true
+                }
+            },
+            { $sort:sortOption },
+            {
+                $skip:skip
+            },
+            {
+                $limit:Number(limit)
+            },
+            {
+                $project:{
+                    name:1,
+                    price:1,
+                    description:1,
+                    images:1,
+                    stock:1,
+                    isActive:1,
+                    category:{$arrayElemAt: ["$categoryDetails",0]}
+                }
+            }
+        ])
+
+        const totalProducts = await Product.aggregate([{
+            $match:{
+                isActive:true,
+                ...searchFilter
+            }
+        },{
+            $lookup:{
+                from:"categories",
+                localField:"category",
+                foreignField:"_id",
+                as:"categoryDetails"
+            }
+        },
+        {
+            $match:{ "categoryDetails.isActive":true}
+        },
+        {
+            $count:"total"
+        }
+    ])
+
+    const totalCount = totalProducts[0]?.total || 0
         
-        const totalProducts = await Product.countDocuments({ isActive:true,...searchFilter})
+    // console.log(products)
+
       
         res.render('shop', { 
             products,
             currentPage: Number(page),
-            totalPages: Math.ceil(totalProducts/ limit),
-            totalProducts,
+            totalPages: Math.ceil(totalCount/ limit),
+            totalProducts:totalCount,
             search,
             sort,
             category

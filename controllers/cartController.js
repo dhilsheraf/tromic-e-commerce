@@ -16,20 +16,26 @@ const addToCart = async (req, res) => {
             return res.status(400).json({ message: "Invalid Product ID" });
         }
 
-        const product = await Product.findById(productId);
+        const product = await Product.findById(productId).populate('category');
         if (!product) return res.status(404).json({ message: "Product not found" });
-
+          
+        if (!product || !product.isActive || product.category.isActive === false) {
+            return res.status(400).json({ success: false, message: 'Product is inactive or unavailable.\nIf it is on cart please remove it.' });
+        }
         
         if (quantity > product.stock) {
             return res.status(400).json({ message: `Only ${product.stock} items left in stock.` });
         }
 
         let cart = await Cart.findOne({ userId });
+
         if (!cart) {
             cart = new Cart({ userId, items: [] });
         }
 
         const productIndex = cart.items.findIndex(item => item.productId.toString() === productId);
+        
+        
 
         if (productIndex > -1) {
             const existingItem = cart.items[productIndex];
@@ -40,6 +46,8 @@ const addToCart = async (req, res) => {
                 return res.status(400).json({ message: `Quantity exceeds stock. Available stock: ${product.stock}` });
             }
 
+            
+
             cart.items[productIndex].quantity = newQuantity;
             cart.items[productIndex].total = newQuantity * product.price;
         } else {
@@ -49,6 +57,12 @@ const addToCart = async (req, res) => {
                 total: product.price * quantity,
             });
         }
+
+        const productIncart = cart.items.find(item => item.productId.toString() === productId);
+        if(productIncart && productIncart.quantity >= 10 ){
+            return res.status(429).json({ message:"Product Quantity limit exceeded"});
+        }
+
 
         await cart.save();
         res.status(200).json({ message: "Product added to cart", cart });
@@ -88,7 +102,11 @@ const updateCartQuantity = async (req, res) => {
     try {
         const { productId, quantity } = req.body;
 
-        const product = await Product.findById(productId);
+        const product = await Product.findById(productId).populate('category');
+
+        if ( !product.isActive || product.category.isActive === false) {
+            return res.status(400).json({ success: false, message: 'Product is inactive or unavailable.\nIf it is on cart please remove it.' });
+        }
 
         const cart = await Cart.findOne({ userId: req.session.user });
 
@@ -97,13 +115,16 @@ const updateCartQuantity = async (req, res) => {
         const item = cart.items.find(item => item.productId.toString() === productId);
 
         if (!item) return res.status(404).json({ success: false, message: "Product not in cart " });
-
+        if(quantity === 1){
+        if(item.quantity === 10) return res.status(429).json({ success:false , message:"Product quantity limit exceed"})
+        }
         item.quantity += quantity;
 
         if (item.quantity < 1) {
             cart.items = cart.items.filter(item => item.productId.toString() !== productId);
 
         }
+        if(item.quantity > product.stock) return res.status(409).json({success:false, message:`Stock exceed available stock${product.stock}`})
 
         cart.totalPrice = cart.items.reduce((sum, item) => sum + item.quantity * product.price, 0);
 
