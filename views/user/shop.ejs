@@ -135,8 +135,8 @@
                                             </button>
                                           </li>
                                           <li>
-                                            <button class="add-to-wishlist-btn">
-                                              <i class="pe-7s-like" data-tippy="Add to wishlist" data-id="<%= product._id %>"></i>
+                                            <button class="add-to-wishlist-btn" data-id="<%= product._id %>" data-tippy="Add to wishlist">
+                                              <i class="pe-7s-like"  ></i>
                                             </button>
                                           </li>
                                         </ul>
@@ -183,7 +183,9 @@
         </div>
     </main>
     <%- include("../partials/footer.ejs") %>
+
         <script>
+            // add to cart
             document.querySelectorAll('.add-to-cart-btn').forEach(button => {
                 button.addEventListener('click', async function () {
                     const productId = this.getAttribute('data-id');
@@ -224,6 +226,42 @@
                 });
             });
 
+        </script>
+        <script>
+            //add to Wishlist
+            document.querySelectorAll('.add-to-wishlist-btn').forEach( button => {
+                button.addEventListener('click',async function (params){
+                    const productId = this.getAttribute('data-id');
+                    try {
+                        console.log("Fetching of the started")
+                        const response =  await fetch('/add-to-wishlist',{
+                            
+                            method: 'POST',
+                            headers: {
+                                'Content-type':'application/json',  
+                            },
+                            body: JSON.stringify({productId}),
+                        })
+                        const result = await response.json();
+
+                        if(response.ok){
+                            Swal.fire("Product added to Wishlist",result.message,'success');
+                        }else{
+                            if(response.status === 401 ){
+                                window.location.href = '/login'
+                            }else{
+                                swal.fire('Error',result.message || "Failed to add the product to wishlist").then(()=>{
+                                    window.location.href = '/wishlist'
+                                })
+                                
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Error porduct add wishlist',error);
+                        Swal.fire('An error occured','while product adding the wishlist')
+                    }
+                })
+            })
         </script>
         <script>
             async function fetchProducts() {

@@ -49,7 +49,7 @@ const addCategory = async (req, res) => {
         const { name, description } = req.body;
 
         // Validate the data
-        if (!name || !description) {
+        if (!name.trim() === "" ||!name || !description) {
             return res.render("admin/addcategory",{ message: 'Both name and description are required.' });
         }
 

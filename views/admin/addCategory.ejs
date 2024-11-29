@@ -1,258 +1,255 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <title>Nest Dashboard</title>
-        <meta http-equiv="x-ua-compatible" content="ie=edge" />
-        <meta name="description" content="" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta property="og:title" content="" />
-        <meta property="og:type" content="" />
-        <meta property="og:url" content="" />
-        <meta property="og:image" content="" />
-        <!-- Favicon -->
-        <link rel="shortcut icon" type="image/x-icon" href="/assets/imgs/theme/favicon.svg" />
-        <!-- Template CSS -->
-        <link href="/assets/css/main.css?v=1.1" rel="stylesheet" type="text/css" />
-        <style>
-            .form-group {
-                margin-bottom: 20px;
-            }
 
+<head>
+    <meta charset="utf-8" />
+    <title>Nest Dashboard</title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/imgs/theme/favicon.svg" />
+    <!-- Template CSS -->
+    <link href="/assets/css/main.css?v=1.1" rel="stylesheet" type="text/css" />
+    <style>
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            font-size: 1em;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+        }
+
+        .form-control:focus {
+            border-color: #28a745;
+            box-shadow: 0 0 5px rgba(40, 167, 69, 0.5);
+        }
+
+        .btn-submit {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 1em;
+            cursor: pointer;
+            width: 30%;
+        }
+
+        .btn-submit:hover {
+            background-color: #218838;
+        }
+
+        .card-body {
+            padding: 30px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
             .form-label {
-                font-weight: 600;
-                margin-bottom: 8px;
-                display: block;
+                font-size: 0.9em;
             }
 
             .form-control {
-                width: 100%;
-                padding: 10px;
-                font-size: 1em;
-                border: 1px solid #ced4da;
-                border-radius: 4px;
-            }
-
-            .form-control:focus {
-                border-color: #28a745;
-                box-shadow: 0 0 5px rgba(40, 167, 69, 0.5);
+                font-size: 0.9em;
+                padding: 8px;
             }
 
             .btn-submit {
-                background-color: #28a745;
-                color: white;
-                padding: 10px 20px;
-                border: none;
-                border-radius: 4px;
-                font-size: 1em;
-                cursor: pointer;
-                width: 30%;
+                font-size: 0.9em;
+                padding: 8px 16px;
             }
+        }
 
-            .btn-submit:hover {
-                background-color: #218838;
-            }
+        .btn-back {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 1em;
+            cursor: pointer;
+            margin-bottom: 20px;
+            width: 20%;
+        }
 
-            .card-body {
-                padding: 30px;
-            }
+        .btn-back:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
 
-            /* Responsive adjustments */
-            @media (max-width: 768px) {
-                .form-label {
-                    font-size: 0.9em;
-                }
-                .form-control {
-                    font-size: 0.9em;
-                    padding: 8px;
-                }
-                .btn-submit {
-                    font-size: 0.9em;
-                    padding: 8px 16px;
-                }
-            }
-            .btn-back {
-    background-color: #28a745;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    font-size: 1em;
-    cursor: pointer;
-    margin-bottom: 20px;
-    width: 20%;
-}
+<body>
+    <div class="screen-overlay"></div>
+    <aside class="navbar-aside" id="offcanvas_aside">
+        <div class="aside-top">
+            <a href="index.html" class="brand-wrap">
+                <img src="/assets/imgs/theme/logo.svg" class="logo" alt="Nest Dashboard" />
+            </a>
+            <div>
+                <button class="btn btn-icon btn-aside-minimize"><i
+                        class="text-muted material-icons md-menu_open"></i></button>
+            </div>
+        </div>
+        <nav>
+            <ul class="menu-aside">
+                <li class="menu-item">
+                    <a class="menu-link" href="/admin/dashboard">
+                        <i class="icon material-icons md-home"></i>
+                        <span class="text">Dashboard</span>
+                    </a>
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="/admin/users">
+                        <i class="icon material-icons md-person"></i>
+                        <span class="text">Users</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" href="/admin/products">
+                        <i class="icon material-icons md-shopping_cart"></i>
+                        <span class="text">Products</span>
+                    </a>
+                </li>
+                <li class="menu-item has-submenu active">
+                    <a class="menu-link" href="/admin/category">
+                        <i class="icon material-icons md-shopping_cart"></i>
+                        <span class="text">Category</span>
+                    </a>
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="/admin/orders">
+                        <i class="icon material-icons md-add_box"></i>
+                        <span class="text">Orders</span>
+                    </a>
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="/admin/offer">
+                        <i class="icon material-icons md-monetization_on"></i>
+                        <span class="text">Offer</span>
+                    </a>
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="#">
+                        <i class="icon material-icons md-person"></i>
+                        <span class="text">Account</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" href="page-reviews.html">
+                        <i class="icon material-icons md-comment"></i>
+                        <span class="text">Reviews</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" href="page-brands.html"> <i class="icon material-icons md-stars"></i> <span
+                            class="text">Brands</span> </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" disabled href="#">
+                        <i class="icon material-icons md-pie_chart"></i>
+                        <span class="text">Statistics</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
 
-.btn-back:hover {
-    background-color: #218838;
-}
-        </style>
-    </head>
+    <main class="main-wrap">
+        <section class="content-main">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2>Add category</h2>
+                    <br>
+                    <!-- Add Category Form -->
+                    <form id="add-category-form" action="/admin/category/add" method="POST"
+                        onsubmit="return validateForm()">
+                        <div class="form-group">
+                            <% if (typeof message !=='undefined' ) { %>
+                                <p id="message" style="color: red;">
+                                    <%= message %>
+                                </p>
 
-    <body>
-        <div class="screen-overlay"></div>
-        <aside class="navbar-aside" id="offcanvas_aside">
-            <div class="aside-top">
-                <a href="index.html" class="brand-wrap">
-                    <img src="/assets/imgs/theme/logo.svg" class="logo" alt="Nest Dashboard" />
-                </a>
-                <div>
-                    <button class="btn btn-icon btn-aside-minimize"><i class="text-muted material-icons md-menu_open"></i></button>
+                                <script>
+                                    setTimeout(() => {
+                                        var messagehide = document.getElementById("message");
+                                        if (messagehide) {
+                                            messagehide.style.display = 'none';
+                                        }
+                                    }, 5000);
+                                </script>
+                                <% } %>
+                                    <label for="category-name" class="form-label">Category Name</label>
+                                    <input type="text" id="category-name" name="name" class="form-control"
+                                        placeholder="Enter category name" required />
+                                    <span id="name-error" style="color: red; display: none;">Category name is required
+                                        and should be between 3-50 characters.</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="category-description" class="form-label">Description</label>
+                            <textarea id="category-description" name="description" class="form-control" rows="4"
+                                placeholder="Enter category description" required></textarea>
+                            <span id="description-error" style="color: red; display: none;">Description is required and
+                                should be greater than 10 words.</span>
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" class="btn-submit">Add Category</button>
+                            <!-- Back Button -->
+                            <a href="/admin/category"><button type="button" class="btn-back">Back</button></a>
+                        </div>
+                    </form>
                 </div>
             </div>
-            <nav>
-                <ul class="menu-aside">
-                    <li class="menu-item">
-                        <a class="menu-link" href="/admin/dashboard">
-                            <i class="icon material-icons md-home"></i>
-                            <span class="text">Dashboard</span>
-                        </a>
-                    </li>
-                    <li class="menu-item ">
-                        <a class="menu-link" href="/admin/users">
-                            <i class="icon material-icons md-person"></i>
-                            <span class="text">Users</span>
-                        </a>
-                    </li>
-                    <li class="menu-item ">
-                        <a class="menu-link" href="/admin/products">
-                            <i class="icon material-icons md-add_box"></i>
-                            <span class="text">Products</span>
-                        </a>
-                    </li>
-                    <li class="menu-item  active">
-                        <a class="menu-link" href="/admin/category">
-                            <i class="icon material-icons md-store"></i>
-                            <span class="text">Category</span>
-                        </a>
-                    </li>
-                    <li class="menu-item ">
-                        <a class="menu-link" href="/admin/orders">
-                            <i class="icon material-icons md-shopping_cart"></i>
-                            <span class="text">Orders</span>
-                        </a>
-                    </li>
-                    <li class="menu-item has-submenu">
-                        <a class="menu-link" href="/admin/offer">
-                            <i class="icon material-icons md-monetization_on"></i>
-                            <span class="text">Offer</span>
-                        </a>
-                    </li>
-                    <li class="menu-item has-submenu">
-                        <a class="menu-link" href="#">
-                            <i class="icon material-icons md-person"></i>
-                            <span class="text">Account</span>
-                        </a>
-                    </li>
-                    <li class="menu-item">
-                        <a class="menu-link" href="#">
-                            <i class="icon material-icons md-comment"></i>
-                            <span class="text">Reviews</span>
-                        </a>
-                    </li>
-                    <li class="menu-item">
-                        <a class="menu-link" href="#"> <i class="icon material-icons md-stars"></i> <span class="text">Brands</span> </a>
-                    </li>
-                    <li class="menu-item">
-                        <a class="menu-link" disabled href="#">
-                            <i class="icon material-icons md-pie_chart"></i>
-                            <span class="text">Statistics</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </aside>
-        <main class="main-wrap">
-            <header class="main-header navbar">
-                <div class="col-nav">
-                    <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"><i class="material-icons md-apps"></i></button>
-                    <ul class="nav">
-                        <li class="nav-item">
-                            <a class="nav-link btn-icon" href="#">
-                                <i class="material-icons md-notifications animation-shake"></i>
-                                <span class="badge rounded-pill">3</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i> </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="requestfullscreen nav-link btn-icon"><i class="material-icons md-cast"></i></a>
-                        </li>               
-                    </ul>
-                </div>
-            </header>
-            <section class="content-main">
-                <div class="card mb-4">
-                
-                    <div class="card-body">
-                        <h2>Add category</h2>
-                       <br>
-                        <!-- Add Category Form -->
-                        <form id="" action="/admin/category/add" method="POST">
-                            <div class="form-group">
-                                <% if (typeof message !== 'undefined' ) { %>
-                                        <p id="message" style="color: red;">
-                                            <%= message %>
-                                        </p>
-  
-                                        <script>
-                                            setTimeout(()=>{
-                                                var messagehide = document.getElementById("message")
-                                            if(messagehide){
-                                                  messagehide.style.display = 'none' ;
-                                            }
-                                            },5000);
-                                            
-                                        </script>
+        </section>
+    </main>
 
-                               <% } %>
-                                <label for="category-name" class="form-label">Category Name</label>
-                                <input type="text" id="category-name" name="name" class="form-control" placeholder="Enter category name" required />
-                            </div>
-                
-                            <div class="form-group">
-                                <label for="category-description" class="form-label">Description</label>
-                                <textarea id="category-description" name="description" class="form-control" rows="4" placeholder="Enter category description" required></textarea>
-                            </div>
-                
-                            <div class="form-group">
-                                <button type="submit" class="btn-submit">Add Category</button>
-                                 <!-- Back Button -->
-                        <a href="/admin/category"><button type="button" class="btn-back" >Back</button></a>
-                        
-                            </div>
-                        </form>
-                    </div>
-                    <!-- card-body end// -->
-                </div>
-            </section>
-            <!-- content-main end// -->
-            <footer class="main-footer font-xs">
-                <div class="row pb-30 pt-15">
-                    <div class="col-sm-6">
-                        <script>
-                            document.write(new Date().getFullYear());
-                        </script>
-                        &copy; Nest - HTML Ecommerce Template .
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="text-sm-end">All rights reserved</div>
-                    </div>
-                </div>
-            </footer>
-        </main>
-        <script src="/assets/js/vendors/jquery-3.6.0.min.js"></script>
-        <script src="/assets/js/vendors/bootstrap.bundle.min.js"></script>
-        <script src="/assets/js/vendors/select2.min.js"></script>
-        <script src="/assets/js/vendors/perfect-scrollbar.js"></script>
-        <script src="/assets/js/vendors/jquery.fullscreen.min.js"></script>
-        <!-- Main Script -->
-        <script src="/assets/js/main.js?v=1.1" type="text/javascript"></script>
+    <script src="/assets/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="/assets/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="/assets/js/vendors/select2.min.js"></script>
+    <script src="/assets/js/vendors/perfect-scrollbar.js"></script>
+    <script src="/assets/js/vendors/jquery.fullscreen.min.js"></script>
+    <!-- Main Script -->
+    <script src="/assets/js/main.js?v=1.1" type="text/javascript"></script>
 
-         <script>
+    <script>
+        function validateForm() {
+            let isValid = true;
+            const name = document.getElementById('category-name').value;
+            const description = document.getElementById('category-description').value;
 
-         </script>
+            // Validate Category Name
+            const nameError = document.getElementById('name-error');
+            if (name.trim() === "" || name.length < 3 || name.length > 50) {
+                nameError.style.display = "inline";
+                isValid = false;
+            } else {
+                nameError.style.display = "none";
+            }
 
-    </body>
+            // Validate Description
+            const descriptionError = document.getElementById('description-error');
+            if (description.trim() === "" || description.split(" ").length < 10) {
+                descriptionError.style.display = "inline";
+                isValid = false;
+            } else {
+                descriptionError.style.display = "none";
+            }
+
+            return isValid;  // Return false to prevent form submission if validation fails
+        }
+    </script>
+</body>
+
 </html>

@@ -83,30 +83,58 @@ const loadMyAccount = async (req, res) => {
 //wishlist
 const loadWishlist = async (req, res) => {
     try {
-        res.render("wishlist")
+        const userId = req.session.user ;
+        const wishlist = await Wishlist.findOne({ userId }).populate('items.productId')
+        res.render("wishlist",{wishlist:wishlist ? wishlist.items : []})
     } catch (error) {
-        console.log(error)
+        console.log("Error while rendering wishlist",error)
         res.status(500).render('error');
     }
 }
 
 const addToWishlist = async (req,res) => {
-    const {productId} = req.params;
+    const {productId} = req.body;
+    const userId = req.session.user
+
+    if(!userId) return res.status(401).json({message:"Please log in to add wishlist "})
     try {
         
+        let wishlist = await Wishlist.findOne({userId});
+        
+        if(!wishlist) { 
+            wishlist = new Wishlist( { userId , items: []} )
+        }
 
-        const user = req.session.user
+        const alreadyWishlist = wishlist.items.some( item => item.productId.toString() === productId)
 
+        if(alreadyWishlist) return res.status(400).json({ message: "Product already in Wishlist"})
 
-        const wishlist =  await Wishlist.findOneAndUpdate({user},{ $addToSet: { items : {productId}}},{ upsert:true ,new:true });
+        wishlist.items.push({productId});
+        await wishlist.save()
        
-        return res.status(404).json({ success:true ,message:"Product added to wishlist"})
+        return res.status(200).json({ success:true ,message:"Product added to wishlist"})
 
     } catch (error) {
-        
+        console.error("Error while aadding wishlist : ",error);
+        res.status(500).json({ success:false ,message:"An error occured while adding wishlist"})
     }
 }
 
+const  removeWishlist = async (req,res) => {
+    const userId = req.session.user ;
+    const { productId } = req.params; 
+    try {
+        const wishlist = await Wishlist.findOne({ userId });
+        if(wishlist) {
+            wishlist.items = wishlist.items.filter(item => item.productId.toString() !== productId );
+            await wishlist.save();
+            return res.redirect('/wishlist')
+        }
+    } catch (error) {
+        console.error("Error removing item from wishlist:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+}
 
 
 // function for creating otp
@@ -299,15 +327,9 @@ const login = async (req, res) => {
 
 const logout = async (req, res) => {
     try {
-        req.session.destroy((err) => {
-            if (err) {
-                console.log("Session destruction error", err.message);
-                return res.redirect("/pageNotFound");
-            } else {
-                return res.redirect("/login");
-            }
-        });
-    } catch (error) {
+        delete req.session.user ;
+        res.redirect('/my-account')
+    }catch (error) {
         console.log("Logout error", error);
         res.redirect("/pageNotFound");
     }
@@ -503,5 +525,6 @@ module.exports = {
     resetPasswordLoad,
     resetPassword,
     changePassword,
-    addToWishlist
+    addToWishlist,
+    removeWishlist
 } 

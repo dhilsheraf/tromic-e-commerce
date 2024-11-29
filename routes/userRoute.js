@@ -29,7 +29,8 @@ router.get("/contact", userController.loadContact);
 router.get("/my-account", session.checkUserSession, userController.loadMyAccount)
 //wishlist
 router.get("/wishlist", session.checkUserSession, userController.loadWishlist)
-router.post("/add-wishlist")
+router.post("/add-to-wishlist",userController.addToWishlist)
+router.get("/wishlist-remove/:productId",session.checkUserSession,userController.removeWishlist)
 
 // sign up
 router.get("/signup", session.existUser, userController.loadSignup)
@@ -69,9 +70,9 @@ router.delete('/delete-address/:id', addressController.deleteAddress);
 
 
 //password
-router.get('/forgot-password',session.checkUserSession, userController.forgotPasswordLoad)
+router.get('/forgot-password', userController.forgotPasswordLoad)
 router.post('/forgot-password', userController.forgotPassword)
-router.get("/reset-password/:token",session.checkUserSession,userController.resetPasswordLoad)
+router.get("/reset-password/:token",userController.resetPasswordLoad)
 router.post("/reset-password/:token", userController.resetPassword)
 router.post('/change-password', userController.changePassword)
  

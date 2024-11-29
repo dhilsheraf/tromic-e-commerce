@@ -105,9 +105,16 @@
     Swal.fire({
       title:"Are you sure",
       text:"The order cant be placed",
-      icon:"warning"
-    })
-    try {
+      icon:"confirm",
+     
+      confirmButtonText:"Confirm",
+      showCancelButton:true,
+      cancelButtonText:"No keep it",
+      cancelButtonColor:"green",
+      confirmButtonColor:"red"
+    }).then( async (result)=>{
+      if(result.isConfirmed){
+        try {
       const response = await fetch('/cancel-order',{
         method:'POST',
         headers:{
@@ -129,6 +136,9 @@
       console.error('Error:', error);
       Swal.fire('An error occurred while cancelling the order');
     }
+      }
+    })
+    
   }
 </script>
 

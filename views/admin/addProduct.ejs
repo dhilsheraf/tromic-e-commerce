@@ -78,6 +78,11 @@
             border-radius: 5px;
             object-fit: cover;
         }
+        .error-message {
+            color: red;
+            font-size: 14px;
+            display: none;
+        }
     </style>
 </head>
 
@@ -185,6 +190,7 @@
                                         <label for="product_name" class="form-label">Product Title</label>
                                         <input type="text" placeholder="Type here" class="form-control"
                                             id="product_name" name="name" required />
+                                            <div id="product-name-error" class="error-message">Product title is required</div>
                                     </div>
 
                                     <!-- Description -->
@@ -192,6 +198,7 @@
                                         <label class="form-label">Description</label>
                                         <textarea placeholder="Type here" class="form-control" rows="4"
                                             name="description" required></textarea>
+                                            <div id="description-error" class="error-message">Description is required</div>
                                     </div>
 
                                     <!-- Price and Stock Quantity -->
@@ -201,6 +208,7 @@
                                                 <label class="form-label">Regular Price</label>
                                                 <input type="text" id="price" placeholder="" class="form-control"
                                                     name="price" required />
+                                                    <div id="price-error" class="error-message">Price must be positive number</div>
                                             </div>
                                         </div>
                                         <div class="col-lg-6">
@@ -208,6 +216,7 @@
                                                 <label class="form-label">Stock Quantity</label>
                                                 <input type="number" class="form-control" name="stock" min="0"
                                                     required />
+                                                    <div id="stock-error" class="error-message">Stock quantity must be positive integer</div>
                                             </div>
                                         </div>
                                     </div>
@@ -222,6 +231,7 @@
                                                 </option>
                                                 <% }); %>
                                         </select>
+                                        <div id="category-error" class="error-message" >Please select a category</div>
                                     </div>
 
                                     <!-- Product Images -->
@@ -276,7 +286,7 @@
 
                                     <!-- Submit Buttons -->
                                     <div class="text-center">
-                                        <button type="submit" class="btn btn-submit rounded font-sm hover-up">Save
+                                        <button type="submit" id="submitButton" class="btn btn-submit rounded font-sm hover-up">Save
                                             Product</button>
                                         <a href="/admin/products"
                                             class="btn btn-submit rounded font-sm hover-up">Back</a>
@@ -423,6 +433,9 @@
 
             const form = event.target;
             const formData = new FormData(form);
+            const submitButton = document.getElementById('submitButton')
+
+            submitButton.disabled = true
 
             // Validate input fields
             const price = formData.get("price");
@@ -430,11 +443,13 @@
 
             if (isNaN(price) || price <= 0) {
                 Swal.fire("Please enter a valid price.");
+                submitButton.disabled = false
                 return;
             }
 
             if (selectedFiles.length < 4) {
                 Swal.fire("Please upload 4  images.");
+                submitButton.disabled = false
                 return;
             }
 
@@ -467,6 +482,8 @@
 
                 responseContainer.style.color = "red";
                 responseContainer.innerHTML = "An unexpected error occurred. Please try again.";
+            } finally{
+                submitButton.disabled = false
             }
         });
 

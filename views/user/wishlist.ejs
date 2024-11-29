@@ -1,7 +1,7 @@
-<%- include("../partials/header.ejs")  %>
+<%- include("../partials/header.ejs") %>
 
- <!-- Begin Main Content Area -->
- <main class="main-content">
+<!-- Begin Main Content Area -->
+<main class="main-content">
     <div class="breadcrumb-area breadcrumb-height" data-bg-image="/images/breadcrumb/bg/1-1-1920x400.jpg">
         <div class="container h-100">
             <div class="row h-100">
@@ -9,9 +9,7 @@
                     <div class="breadcrumb-item text-night-rider">
                         <h2 class="breadcrumb-heading">Wishlist Page</h2>
                         <ul>
-                            <li>
-                                <a href="index.html">Home/</a>
-                            </li>
+                            <li><a href="/">Home</a> / </li>
                             <li>Wishlist</li>
                         </ul>
                     </div>
@@ -28,63 +26,53 @@
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th class="product_remove">remove</th>
-                                        <th class="product-thumbnail">images</th>
+                                        <th class="product_remove">Remove</th>
+                                        <th class="product-thumbnail">Image</th>
                                         <th class="cart-product-name">Product</th>
                                         <th class="product-price">Unit Price</th>
                                         <th class="product-stock-status">Stock Status</th>
-                                        <th class="cart_btn">add to cart</th>
+                                        <th class="cart_btn">Add to Cart</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td class="product_remove">
-                                            <a href="#">
-                                                <i class="pe-7s-trash" data-tippy="Remove" data-tippy-inertia="true" data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-theme="sharpborder"></i>
-                                            </a>
-                                        </td>
-                                        <td class="product-thumbnail">
-                                            <a href="#">
-                                                <img src="/images/product/small-size/2-1-112x112.png" alt="Wishlist Thumbnail">
-                                            </a>
-                                        </td>
-                                        <td class="product-name"><a href="#">Tail Light</a></td>
-                                        <td class="product-price"><span class="amount">$80.00</span></td>
-                                        <td class="product-stock-status"><span class="in-stock">in stock</span></td>
-                                        <td class="cart_btn"><a href="#">add to cart</a></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="product_remove">
-                                            <a href="#">
-                                                <i class="pe-7s-trash" data-tippy="Remove" data-tippy-inertia="true" data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-theme="sharpborder"></i>
-                                            </a>
-                                        </td>
-                                        <td class="product-thumbnail">
-                                            <a href="#">
-                                                <img src="/images/product/small-size/2-2-112x112.png" alt="Wishlist Thumbnail">
-                                            </a>
-                                        </td>
-                                        <td class="product-name"><a href="#">Wiper Blades</a></td>
-                                        <td class="product-price"><span class="amount">$80.00</span></td>
-                                        <td class="product-stock-status"><span class="in-stock text-danger">out stock</span></td>
-                                        <td class="cart_btn"><a href="#">add to cart</a></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="product_remove">
-                                            <a href="#">
-                                                <i class="pe-7s-trash" data-tippy="Remove" data-tippy-inertia="true" data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-theme="sharpborder"></i>
-                                            </a>
-                                        </td>
-                                        <td class="product-thumbnail">
-                                            <a href="#">
-                                                <img src="/images/product/small-size/2-3-112x112.png" alt="Wishlist Thumbnail">
-                                            </a>
-                                        </td>
-                                        <td class="product-name"><a href="#">Suspension</a></td>
-                                        <td class="product-price"><span class="amount">$80.00</span></td>
-                                        <td class="product-stock-status"><span class="in-stock">in stock</span></td>
-                                        <td class="cart_btn"><a href="#">add to cart</a></td>
-                                    </tr>
+                                    <% if (wishlist.length > 0) { %>
+                                        <% wishlist.forEach(item => { %>
+                                            <tr>
+                                                <td class="product_remove">
+                                                    <a href="/wishlist-remove/<%= item.productId._id %>">
+                                                        <i class="pe-7s-trash" data-tippy="Remove" data-tippy-inertia="true" data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-theme="sharpborder"></i>
+                                                    </a>
+                                                </td>
+                                                <td class="product-thumbnail">
+                                                    <a href="/product/<%= item.productId._id %>">
+                                                        <img src="<%= item.productId.images[0] %>" style="height: 50px;" alt="<%= item.productId.name %> Thumbnail">
+                                                    </a>
+                                                </td>
+                                                <td class="product-name">
+                                                    <a href="/product/<%= item.productId._id %>"><%= item.productId.name %></a>
+                                                </td>
+                                                <td class="product-price">
+                                                    <span class="amount">$<%= item.productId.price %></span>
+                                                </td>
+                                                <td class="product-stock-status">
+                                                    <span class="<%= item.productId.stock ? 'in-stock' : 'text-danger' %>">
+                                                        <%= item.productId.stock ? 'In Stock' : 'Out of Stock' %>
+                                                    </span>
+                                                </td>
+                                                <td class="cart_btn">
+                                                    <% if (item.productId.stock) { %>
+                                                        <a href="/cart/add/<%= item.productId._id %>">Add to Cart</a>
+                                                    <% } else { %>
+                                                        <span class="text-muted">Unavailable</span>
+                                                    <% } %>
+                                                </td>
+                                            </tr>
+                                        <% }); %>
+                                    <% } else { %>
+                                        <tr>
+                                            <td colspan="6" class="text-center">Your wishlist is empty.</td>
+                                        </tr>
+                                    <% } %>
                                 </tbody>
                             </table>
                         </div>
@@ -96,5 +84,4 @@
 </main>
 <!-- Main Content Area End Here -->
 
-
-<%- include("../partials/footer.ejs")  %>
+<%- include("../partials/footer.ejs") %>
