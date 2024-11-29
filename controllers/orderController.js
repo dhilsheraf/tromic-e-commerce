@@ -154,36 +154,37 @@ const detailOrder = async (req, res) => {
 }
 
 //Admin Side 
-
 const showOrder = async (req, res) => {
     try {
+        const { page = 1, limit = 10 } = req.query;
 
-        const { page = 1, limit = 10, search = '', status } = req.query;
-
-        const query = {};
-
-        if (status && status != 'all') query.status = status;
-        if (search) query['$or'] = [
-            { 'userId.username': { $regex: search, $options: ' i' } },
-            { 'userId.number': { $regex: search, $options: 'i' } },
-            { 'products.product.name': { $regex: search, $options: 'i' } }
-        ];
 
 
         const skip = (page - 1) * limit;
 
-        const orders = await Order.find(query).populate('userId').populate('products.product').populate('addressId').lean();
+        
+        const orders = await Order.find()
+            .populate('userId').populate('products.product').populate('addressId')
+            .skip(skip)
+            .limit(Number(limit))
+            .lean();
 
-        const totalOrders = await Order.countDocuments(query);
+        
+        const totalOrders = await Order.countDocuments();
         const totalPages = Math.ceil(totalOrders / limit);
-
-        res.render('admin/orders', { orders, totalPages, currenPage: Number(page), search, status });
-
+          
+        res.render('admin/orders', {
+            orders,
+            totalPages,
+            currentPage: Number(page),
+            limit:Number(limit)
+        });
     } catch (error) {
-        console.log("Error occured while ", error)
-        res.render('admin/404')
+        console.error('Error occurred:', error);
+        res.render('admin/404');
     }
-}
+};
+
 
 
 const orderAction = async (req, res) => {

@@ -205,15 +205,10 @@ const loadProduct = async (req, res) => {
             },
             {
                 $limit:Number(limit)
-            },
-            {
+            },{
                 $project:{
-                    name:1,
-                    price:1,
-                    description:1,
-                    images:1,
-                    stock:1,
-                    isActive:1,
+                    name:1, price:1,description:1,
+                    images:1,stock:1,isActive:1,
                     category:{$arrayElemAt: ["$categoryDetails",0]}
                 }
             }
@@ -271,7 +266,7 @@ const getProductDetails = async (req, res) => {
         
 
         const relatedProducts = await Product.find({
-            _id: { $ne: productId }  // Exclude the main product
+            _id: { $ne: productId }  
         }).limit(4).lean();
 
         res.render("single-product", { product, relatedProducts });

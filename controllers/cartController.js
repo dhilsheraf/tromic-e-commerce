@@ -10,7 +10,6 @@ const addToCart = async (req, res) => {
         const { productId, quantity } = req.body;
         const userId = req.session.user;
 
-
         
         if (!mongoose.Types.ObjectId.isValid(productId)) {
             return res.status(400).json({ message: "Invalid Product ID" });
@@ -24,7 +23,7 @@ const addToCart = async (req, res) => {
         }
         
         if (quantity > product.stock) {
-            return res.status(400).json({ message: `Only ${product.stock} items left in stock.` });
+            return res.status(400).json({ message: `Only ${product.stock} items left in stock.`});
         }
 
         let cart = await Cart.findOne({ userId });
@@ -87,9 +86,7 @@ const listCart = async (req, res) => {
             return total += item.quantity * item.productId.price;
         }, 0)
 
-        res.render('cart', {
-            cart: cart
-        })
+        res.render('cart', {cart: cart})
 
     } catch (error) {
         console.error(error);

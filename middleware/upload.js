@@ -12,7 +12,7 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
     folder: 'products',
-    allowedFormats: ['jpg', 'jpeg', 'png', 'webp'],
+    allowedFormats: ['jpg', 'jpeg', 'png', 'webp','avif'],
     transformation: [{ width: 300, height: 360, crop: 'fill' }] // Force to 300x360 exactly
 });
 

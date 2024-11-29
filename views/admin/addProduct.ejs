@@ -179,7 +179,7 @@
                             <div class=" card mb-4">
                             <div class="card-body">
                                 <form id="product-form" action="" method="POST" enctype="multipart/form-data">
-                                    <div id="server-response" style="display: none; color: red;"></div>
+                                    <!-- <div id="server-response" style="display: none; color: red;"></div> -->
                                     <!-- Product Title -->
                                     <div class="product-form">
                                         <label for="product_name" class="form-label">Product Title</label>
@@ -268,7 +268,7 @@
                                                     onclick="cropImage(4)">Crop</button>
                                             </div>
 
-
+                                            <div id="server-response" style="display: none; color: red;"></div>
                                             <!-- Add more inputs as needed -->
                                         </div>
                                     </div>
@@ -328,7 +328,7 @@
                 reader.readAsDataURL(imageFile);
             }
 
-            // Check if four images are selected
+
             const fileInputs = document.querySelectorAll('input[type="file"]');
             const selectedFiles = Array.from(fileInputs).filter(input => input.files.length > 0);
 
@@ -336,7 +336,7 @@
         }
 
 
-        // Form validation on submit
+        
         document.getElementById("product-form").addEventListener("submit", function (event) {
             const fileInputs = document.querySelectorAll('input[type="file"]');
             const selectedFiles = Array.from(fileInputs).filter(input => input.files.length > 0);
@@ -374,7 +374,7 @@
                     imgElement.id = `crop-image-${index}`;
                     previewContainer.appendChild(imgElement);
 
-                    // Initialize Cropper.js
+                    //  cropper ratio things
                     croppers[index] = new Cropper(imgElement, {
                         aspectRatio: 1, // Set aspect ratio
                         viewMode: 1, // Restrict the crop box to stay within the container
@@ -393,7 +393,7 @@
             }
 
             const canvas = cropper.getCroppedCanvas({
-                width: 300, // Specify cropped image dimensions
+                width: 300, // specified dimension
                 height: 300,
             });
 
@@ -409,7 +409,7 @@
                 dataTransfer.items.add(croppedFile);
                 fileInput.files = dataTransfer.files;
 
-                // Display cropped image in the preview container
+
                 const previewContainer = document.getElementById(`image-preview-container-${index}`);
                 previewContainer.innerHTML = `<img src="${URL.createObjectURL(croppedFile)}" class="image-preview" />`;
             }, "image/png");
@@ -417,8 +417,9 @@
 
     </script>
     <script>
+        //validations
         document.getElementById("product-form").addEventListener("submit", async function (event) {
-            event.preventDefault(); // Prevent the default form submission
+            event.preventDefault(); 
 
             const form = event.target;
             const formData = new FormData(form);
@@ -433,17 +434,16 @@
             }
 
             if (selectedFiles.length < 4) {
-                Swal.fire("Please upload at least 3 images.");
+                Swal.fire("Please upload 4  images.");
                 return;
             }
 
-            // Display a loader or feedback (optional)
             const responseContainer = document.getElementById("server-response");
             responseContainer.style.display = "block";
             responseContainer.innerHTML = "Submitting...";
 
             try {
-                // Send the data using fetch
+
                 const response = await fetch("/admin/products/add", {
                     method: "POST",
                     body: formData,
@@ -452,19 +452,19 @@
                 const result = await response.json();
 
                 if (response.ok) {
-                    // Success: Handle the success scenario
+
                     responseContainer.style.color = "green";
                     responseContainer.innerHTML = "Product added successfully!";
                     setTimeout(() => {
-                        window.location.href = "/admin/products"; // Redirect after success
-                    }, 2000);
+                        window.location.href = "/admin/products"; 
+                    }, 1000);
                 } else {
-                    // Failure: Display the server error message
+
                     responseContainer.style.color = "red";
                     responseContainer.innerHTML = result.message || "An error occurred.";
                 }
             } catch (error) {
-                // Network error
+
                 responseContainer.style.color = "red";
                 responseContainer.innerHTML = "An unexpected error occurred. Please try again.";
             }
