@@ -29,7 +29,7 @@ const addAddress = async (req,res) => {
 
 const editAddress =  async (req, res) => {
     const { addressId, name, phone, addressLine, city, state, country, pincode, addressType } = req.body;
-
+          
     
     if (!addressId || !name || !phone || !addressLine || !city || !state || !country || !pincode || !addressType) {
         return res.status(400).json({ error: 'All fields are required' });

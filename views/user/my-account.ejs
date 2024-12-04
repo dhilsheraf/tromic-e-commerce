@@ -28,6 +28,9 @@
                             <a class="nav-link active" id="account-dashboard-tab" data-bs-toggle="tab" href="#account-dashboard" role="tab" aria-controls="account-dashboard" aria-selected="true">Dashboard</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" id="account-orders-tab" data-bs-toggle="tab" href="#account-wallet" role="tab" aria-controls="account-wallet" aria-selected="false">Wallet</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" id="account-orders-tab" data-bs-toggle="tab" href="#account-orders" role="tab" aria-controls="account-orders" aria-selected="false">Orders</a>
                         </li>
                         <li class="nav-item">
@@ -56,6 +59,16 @@
                                     <br>
                                     <a href="#" id="editProfileButton" class="btn btn-custom-size lg-size btn-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal">Edit Profile</a>
                                 </p>
+                            </div>
+                        </div>      
+                        <div class="tab-pane fade " id="account-wallet" role="tabpanel" aria-labelledby="account-wallet-tab">
+                            <div class="myaccount-waller text-center">
+                                <p style="color: black;">Your Waller details:</p>
+                                <ul>
+                                    <li style="color: black;">Username: <%= user.username %></li>
+                                 
+                                    <li style="color: black;">Wallet Balance: 99999 </li>
+                                </ul>
                             </div>
                         </div>                        
                         
@@ -274,7 +287,7 @@
             <div class="modal-body">
                 <form id="editAddressForm">
                     <!-- Hidden field to store the addressId -->
-                    <input type="hidden" id="editAddressId">
+                    <input type="hidden" id="editAddressId" value="">
 
                     <div class="mb-3">
                         <label for="editName" class="form-label">Full Name</label>

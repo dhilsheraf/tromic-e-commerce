@@ -3,6 +3,7 @@ const Product = require('../models/productModel');
 const Address = require('../models/addressModel');
 const User = require('../models/userModel')
 const Cart = require('../models/cartModel')
+const razorpay = require('razorpay')
 
 const getCheckout = async (req, res) => {
     try {
@@ -41,6 +42,8 @@ const getCheckout = async (req, res) => {
         res.status(500).render('error')
     }
 }
+
+
 
 const checkout = async (req, res) => {
     try {
@@ -104,6 +107,7 @@ const checkout = async (req, res) => {
             payment: paymentMethod,
             products: orderProducts,
             totalPrice,
+            paymentStatus:'Pending',
             status: 'Pending'
         })
 
@@ -240,9 +244,11 @@ const orderStatus = async (req, res) => {
                 return res.status(404).json({message:"Product not found"})
             }
             product.stock += productItem.quantity;
+           
             await product.save();
         }
-
+        if(productItem.status === 'delivered')
+        order.paymentStatus = 'completed';
         await order.save();
 
         res.json({ success: true, message: 'Product status update successfull', order })

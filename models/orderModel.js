@@ -35,14 +35,20 @@ const orderSchema = new mongoose.Schema(
             type: Number,
             required: true,
         },
+        paymentStatus: {
+            type: String,
+            enum : ['Pending','failed','completed',],
+            default:'Pending'
+        }
+        ,
         status: {
             type: String,
-            enum: ['Pending', 'cancelled','completed' ],
+            enum: ['Pending', 'cancelled','delivered' ],
             default: 'Pending',
         },
         payment: {
             type: String,
-            enum: ['wallet', 'COD', 'online'], 
+            enum: ['wallet', 'COD', 'razorpay'], 
             required: true,
         },
         addressId: {
@@ -50,6 +56,8 @@ const orderSchema = new mongoose.Schema(
             ref: 'Address', 
             required: true,
         },
+        razorpayOrderId: { type: String },  
+        razorpayPaymentId: { type: String }, 
     },
     {
         timestamps: true, 

@@ -224,7 +224,7 @@ document.getElementById('editAddressForm').addEventListener('submit', function (
     if (!isValid) {
         Swal.fire({
             icon: 'error',
-            title: 'Validation Error',
+            title: 'Wrong address',
             text: errorMessage,
             confirmButtonText: 'OK'
         });
@@ -368,4 +368,29 @@ document.getElementById('changePasswordForm').addEventListener('submit', async (
     } catch (error) {
         Swal.fire('Network error: ' + error.message);
     }
+});
+
+
+$(document).on('click', '.edit-address-btn', function () {
+    // Retrieve address details from the button's data attributes
+    const addressId = $(this).data('id');
+    const name = $(this).data('name');
+    const phone = $(this).data('phone');
+    const addressLine = $(this).data('address-line');
+    const city = $(this).data('city');
+    const state = $(this).data('state');
+    const country = $(this).data('country');
+    const pincode = $(this).data('pincode');
+    const addressType = $(this).data('address-type');
+
+    // Populate the modal fields with the address details
+    $('#editAddressId').val(addressId);
+    $('#editName').val(name);
+    $('#editPhone').val(phone);
+    $('#editAddressLine').val(addressLine);
+    $('#editCity').val(city);
+    $('#editState').val(state);
+    $('#editCountry').val(country);
+    $('#editPincode').val(pincode);
+    $('#editAddressType').val(addressType);
 });

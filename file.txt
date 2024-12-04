@@ -45,3 +45,23 @@ function updateStatus(orderId, productId, status) {
         alert('An error occurred while updating the status');
     });
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -10,10 +10,12 @@ const bodyParser = require('body-parser');
 const passport = require("./config/passport")
 const cloudinary = require('cloudinary').v2;
 const nocache = require('nocache');
+const morgan = require('morgan')
 
 
 const  PORT = process.env.PORT || 8080; 
- 
+
+// app.use(morgan('common'))
 app.use(nocache()); 
 app.use(express.json())
 app.use(session({
