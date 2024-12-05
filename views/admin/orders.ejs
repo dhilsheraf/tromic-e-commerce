@@ -251,43 +251,14 @@
                           <span class="text">Offer</span>
                         </a>
                       </li>
-                    <li class="menu-item ">
-                        <a class="menu-link" href="#">
-                            <i class="icon material-icons md-person"></i>
-                            <span class="text">Account</span>
-                        </a>
-                    </li>
                     <li class="menu-item">
-                        <a class="menu-link" href="">
-                            <i class="icon material-icons md-comment"></i>
-                            <span class="text">Reviews</span>
-                        </a>
-                    </li>
-                    <li class="menu-item">
-                        <a class="menu-link" href=""> <i class="icon material-icons md-stars"></i> <span class="text">Brands</span> </a>
-                    </li>
-                    <li class="menu-item">
-                        <a class="menu-link" disabled href="#">
-                            <i class="icon material-icons md-pie_chart"></i>
-                            <span class="text">Statistics</span>
-                        </a>
+                        <a class="menu-link" href="/admin/coupon"> 
+                            <i class="icon material-icons md-stars">
+                        </i> <span class="text">Coupons</span> </a>
                     </li>
                 </ul>
                 <hr />
-                <ul class="menu-aside">
-                    <li class="menu-item ">
-                        <a class="menu-link" href="#">
-                            <i class="icon material-icons md-settings"></i>
-                            <span class="text">Settings</span>
-                        </a>
-                    </li>
-                    <li class="menu-item">
-                        <a class="menu-link" href="page-blank.html">
-                            <i class="icon material-icons md-local_offer"></i>
-                            <span class="text"> Starter page </span>
-                        </a>
-                    </li>
-                </ul>
+                
                 <br />
                 <br />
             </nav>
@@ -354,7 +325,8 @@
                                         <th>Order Id</th>
                                         <th>Email</th>
                                         <th>Total</th>
-                                        <th>Payment</th>
+                                        <th>Payment status</th>
+                                        <th>Payment </th>
                                         <th>Date</th>
                                         <th>Action</th>
                                     </tr>
@@ -374,7 +346,9 @@
                                                 <td><%= order._id %></td>
                                                 <td><%= order.userId.email %></td>
                                                 <td>₹<%= order.totalPrice %></td>
+                                                <td><%= order.paymentStatus %></td>
                                                 <td><%= order.payment %></td>
+                                                
                                                 <td><%= new Date(order.createdAt).toLocaleDateString() %></td>
                                                 <td>
                                                     <a href="/admin/orders/<%= order._id %>" class="btn btn-md btn-detail">Action</a>

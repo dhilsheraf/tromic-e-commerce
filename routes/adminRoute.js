@@ -7,7 +7,8 @@ const productController = require("../controllers/productController")
 const upload = require('../middleware/upload')
 const admin = require('../middleware/authMiddleware')
 const orderController = require('../controllers/orderController')
-
+const couponController = require('../controllers/couponController')
+const offerController = require('../controllers/offerController')
 
 router.get("/",admin.existAdmin, adminController.loadAdminLogin)
 router.post("/", adminController.adminLogin)
@@ -43,6 +44,11 @@ router.get('/orders',admin.checkAdminSession,orderController.showOrder)
 router.get('/orders/:orderId',admin.checkAdminSession,orderController.orderAction)
 router.put('/order/:orderId/product/:productId/status',orderController.orderStatus)
 
+//offer
+router.get('/offer',offerController.getOffer)
+
+//coupon
+router.get('/coupon',couponController.getCoupon);
 
 
 module.exports = router

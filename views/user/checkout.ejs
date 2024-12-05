@@ -340,19 +340,56 @@ window.placeOrder = function() {
         body: JSON.stringify(orderData),
     })
     .then((response) => response.json())
-    .then((data) => {
+    .then(data => {
         if(data.success) {
-            window.location.href = '/order-confirm/' + data.orderId;
-        }else{
-            Swal.fire(data.message || "An error occured while placing the order.");
+            if(paymentMethod === 'razorpay') {
+                const options = {
+                    key: 'rzp_test_eBs0auPt7YNKUD',
+                    amount: data.totalPrice * 100 ,
+                    currency: 'INR',
+                    name:'Tromic',
+                    description:'Order payment',
+                    order_id:data.razorpayOrderId,
+                    handler: function (response) {
+                        fetch('/verify-payment',{
+                            method:'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                razorpay_payment_id: response.razorpay_payment_id,
+                                razorpay_order_id: response.razorpay_order_id,
+                                razorpay_signature: response.razorpay_signature
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(verificationData => {
+                            if(verificationData.success) {
+                                window.location.href = 'order-confirm/' + verificationData.orderId
+                            }else{
+                                Swal.fire(verificationData.message || "Payment verification failed")
+                            }
+                        });
+                    },
+                    theme: {
+                        color: '#F37254'
+                    }
+                };
+                const rzp1 = new Razorpay(options);
+                rzp1.open();
+            }else {
+                window.location.href = '/order-confirm/'+ data.orderId
+            }
+        } else{
+            Swal.fire(data.message || "An error occured while placing the order .")
         }
-    }).catch((error) => {
+    })
+    .catch( error => {
         console.error('Error',error);
         Swal.fire("An error occured while placing the order")
     })
 }
 
-
 </script>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <%- include("../partials/footer.ejs") %>
