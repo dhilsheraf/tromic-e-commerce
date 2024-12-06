@@ -1,364 +1,558 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <title>Nest Dashboard</title>
-        <meta http-equiv="x-ua-compatible" content="ie=edge" />
-        <meta name="description" content="" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta property="og:title" content="" />
-        <meta property="og:type" content="" />
-        <meta property="og:url" content="" />
-        <meta property="og:image" content="" />
-        <!-- Favicon -->
-        <link rel="shortcut icon" type="image/x-icon" href="/assets/imgs/theme/favicon.svg" />
-        <!-- Template CSS -->
-        <link href="/assets/css/main.css?v=1.1" rel="stylesheet" type="text/css" />
-    </head>
-    <style>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Nest Dashboard</title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta property="og:title" content="" />
+    <meta property="og:type" content="" />
+    <meta property="og:url" content="" />
+    <meta property="og:image" content="" />
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/imgs/theme/favicon.svg" />
+    <!-- Template CSS -->
+    <link href="/assets/css/main.css?v=1.1" rel="stylesheet" type="text/css" />
+</head>
+<style>
+    .coupon-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    .coupon-table th,
+    .coupon-table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+
+    .coupon-table th {
+        background-color: #f2f2f2;
+    }
+
+    .btn-delete {
+        color: red;
+        cursor: pointer;
+    }
+
+    .btn-delete:hover {
+        text-decoration: underline;
+    }
+
+    :root {
+        --primary-color: #38a964;
+        --secondary-color: #2ecc71;
+        --text-color: #333;
+        --background-light: #f4f6f7;
+        --border-color: #e0e0e0;
+    }
+
+    .content-main {
+        background-color: var(--background-light);
+        padding: 20px;
+    }
+
+    .card {
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .card:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .coupon-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin-top: 20px;
+        overflow: hidden;
+    }
+
+    .coupon-table th {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 12px 15px;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        letter-spacing: 0.5px;
+    }
+
+    .coupon-table td {
+        padding: 12px 15px;
+        border-bottom: 1px solid var(--border-color);
+        transition: background-color 0.2s ease;
+    }
+
+    .coupon-table tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .coupon-table tr:hover {
+        background-color: #f0f0f0;
+    }
+
+    .btn-delete {
+        color: #e74c3c;
+        cursor: pointer;
+        font-weight: 600;
+        transition: color 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .btn-delete:hover {
+        color: #c0392b;
+        text-decoration: none;
+    }
+
+    .btn-delete i {
+        font-size: 18px;
+    }
+
+    .btn-primary {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: #29b960;
+        transform: translateY(-2px);
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
         .coupon-table {
+            font-size: 0.9rem;
+        }
+
+        .coupon-table th,
+        .coupon-table td {
+            padding: 8px 10px;
+        }
+
+        .content-header {
+            flex-direction: column;
+            align-items: flex-start !important;
+        }
+
+        .content-header .btn-primary {
+            margin-top: 10px;
             width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
+            justify-content: center;
         }
-        .coupon-table th, .coupon-table td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-        .coupon-table th {
-            background-color: #f2f2f2;
-        }
-        .btn-delete {
-            color: red;
-            cursor: pointer;
-        }
-        .btn-delete:hover {
-            text-decoration: underline;
-        }
-        :root {
-                --primary-color: #38a964;
-                --secondary-color: #2ecc71;
-                --text-color: #333;
-                --background-light: #f4f6f7;
-                --border-color: #e0e0e0;
-            }
+    }
 
-            .content-main {
-                background-color: var(--background-light);
-                padding: 20px;
-            }
+    .modal-content {
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
 
-            .card {
-                background-color: white;
-                border-radius: 10px;
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-                transition: all 0.3s ease;
-            }
+    .modal-header {
+        background-color: var(--background-light);
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
 
-            .card:hover {
-                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-            }
+    .form-label {
+        font-weight: 600;
+        color: var(--text-color);
+    }
 
-            .coupon-table {
-                width: 100%;
-                border-collapse: separate;
-                border-spacing: 0;
-                margin-top: 20px;
-                overflow: hidden;
-            }
+    .form-control,
+    .form-select {
+        border-color: var(--border-color);
+        transition: all 0.3s ease;
+    }
 
-            .coupon-table th {
-                background-color: var(--primary-color);
-                color: white;
-                padding: 12px 15px;
-                text-transform: uppercase;
-                font-size: 0.9rem;
-                letter-spacing: 0.5px;
-            }
+    .form-control:focus,
+    .form-select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+    }
+    @media (max-width: 768px) {
+    .modal-dialog {
+        margin: 10px;
+        width: auto;
+    }
+}
+</style>
 
-            .coupon-table td {
-                padding: 12px 15px;
-                border-bottom: 1px solid var(--border-color);
-                transition: background-color 0.2s ease;
-            }
-
-            .coupon-table tr:nth-child(even) {
-                background-color: #f9f9f9;
-            }
-
-            .coupon-table tr:hover {
-                background-color: #f0f0f0;
-            }
-
-            .btn-delete {
-                color: #e74c3c;
-                cursor: pointer;
-                font-weight: 600;
-                transition: color 0.2s ease;
-                display: inline-flex;
-                align-items: center;
-                gap: 5px;
-            }
-
-            .btn-delete:hover {
-                color: #c0392b;
-                text-decoration: none;
-            }
-
-            .btn-delete i {
-                font-size: 18px;
-            }
-
-            .btn-primary {
-                background-color: var(--primary-color);
-                border-color: var(--primary-color);
-                display: inline-flex;
-                align-items: center;
-                gap: 8px;
-                transition: all 0.3s ease;
-            }
-
-            .btn-primary:hover {
-                background-color: #29b960;
-                transform: translateY(-2px);
-            }
-
-            /* Responsive Adjustments */
-            @media (max-width: 768px) {
-                .coupon-table {
-                    font-size: 0.9rem;
-                }
-
-                .coupon-table th, .coupon-table td {
-                    padding: 8px 10px;
-                }
-
-                .content-header {
-                    flex-direction: column;
-                    align-items: flex-start !important;
-                }
-
-                .content-header .btn-primary {
-                    margin-top: 10px;
-                    width: 100%;
-                    justify-content: center;
-                }
-            }
-
-            .modal-content {
-                border-radius: 10px;
-                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            }
-
-            .modal-header {
-                background-color: var(--background-light);
-                border-top-left-radius: 10px;
-                border-top-right-radius: 10px;
-            }
-
-            .form-label {
-                font-weight: 600;
-                color: var(--text-color);
-            }
-
-            .form-control, .form-select {
-                border-color: var(--border-color);
-                transition: all 0.3s ease;
-            }
-
-            .form-control:focus, .form-select:focus {
-                border-color: var(--primary-color);
-                box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
-            }
-    </style>
-    <body>
-        <div class="screen-overlay"></div>
-        <aside class="navbar-aside" id="offcanvas_aside">
-            <div class="aside-top">
-                <a href="index.html" class="brand-wrap">
-                    <img src="/assets/imgs/theme/logo.svg" class="logo" alt="Nest Dashboard" />
-                </a>
-                <div>
-                    <button class="btn btn-icon btn-aside-minimize"><i class="text-muted material-icons md-menu_open"></i></button>
-                </div>
+<body>
+    <div class="screen-overlay"></div>
+    <aside class="navbar-aside" id="offcanvas_aside">
+        <div class="aside-top">
+            <a href="index.html" class="brand-wrap">
+                <img src="/assets/imgs/theme/logo.svg" class="logo" alt="Nest Dashboard" />
+            </a>
+            <div>
+                <button class="btn btn-icon btn-aside-minimize"><i
+                        class="text-muted material-icons md-menu_open"></i></button>
             </div>
-            <nav>
-                <ul class="menu-aside">
-                    <li class="menu-item ">
-                        <a class="menu-link" href="/admin/dashboard">
-                            <i class="icon material-icons md-home"></i>
-                            <span class="text">Dashboard</span>
-                        </a>
-                    </li>
-                    <li class="menu-item ">
-                        <a class="menu-link" href="/admin/users">
-                            <i class="icon material-icons md-person"></i>
-                            <span class="text">Users</span>
-                        </a>
-                    </li>
-                    <li class="menu-item ">
-                        <a class="menu-link" href="/admin/products">
-                            <i class="icon material-icons md-add_box"></i>
-                            <span class="text">Products</span>
-                        </a>
-                    </li>
-                    <li class="menu-item ">
-                        <a class="menu-link" href="/admin/category">
-                            <i class="icon material-icons md-store"></i>
-                            <span class="text">Category</span>
-                        </a>
-                    </li>
-                    <li class="menu-item ">
-                        <a class="menu-link" href="/admin/orders">
-                          <i class="icon material-icons md-shopping_cart"></i>
-                          <span class="text">Orders</span>
-                        </a>
-                    </li>
-                    <li class="menu-item ">
-                        <a class="menu-link" href="/admin/offer">
-                          <i class="icon material-icons md-monetization_on"></i>
-                          <span class="text">Offer</span>
-                        </a>
-                      </li>
-                    <li class="menu-item active">
-                        <a class="menu-link" href="/admin/coupon"> 
-                            <i class="icon material-icons md-stars">
+        </div>
+        <nav>
+            <ul class="menu-aside">
+                <li class="menu-item ">
+                    <a class="menu-link" href="/admin/dashboard">
+                        <i class="icon material-icons md-home"></i>
+                        <span class="text">Dashboard</span>
+                    </a>
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="/admin/users">
+                        <i class="icon material-icons md-person"></i>
+                        <span class="text">Users</span>
+                    </a>
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="/admin/products">
+                        <i class="icon material-icons md-add_box"></i>
+                        <span class="text">Products</span>
+                    </a>
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="/admin/category">
+                        <i class="icon material-icons md-store"></i>
+                        <span class="text">Category</span>
+                    </a>
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="/admin/orders">
+                        <i class="icon material-icons md-shopping_cart"></i>
+                        <span class="text">Orders</span>
+                    </a>
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="/admin/offer">
+                        <i class="icon material-icons md-monetization_on"></i>
+                        <span class="text">Offer</span>
+                    </a>
+                </li>
+                <li class="menu-item active">
+                    <a class="menu-link" href="/admin/coupon">
+                        <i class="icon material-icons md-stars">
                         </i> <span class="text">Coupons</span> </a>
-                    </li>      
-                </ul>
-                <hr />
-                
-                <br />
-                <br />
-            </nav>
-        </aside>
-        <main class="main-wrap">
-            <header class="main-header navbar">
-                <div class="col-search">
-                    <form class="searchform">
-                        <div class="input-group">
-                            <input list="search_terms" type="text" class="form-control" placeholder="Search term" />
-                            <button class="btn btn-light bg" type="button"><i class="material-icons md-search"></i></button>
-                        </div>
-                        <datalist id="search_terms">
-                            <option value="Products"></option>
-                            <option value="New orders"></option>
-                            <option value="Apple iphone"></option>
-                            <option value="Ahmed Hassan"></option>
-                        </datalist>
-                    </form>
-                </div>
-                <div class="col-nav">
-                    <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"><i class="material-icons md-apps"></i></button>
-                    <ul class="nav">
-                        
-                        <li class="nav-item">
-                            <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i> </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="requestfullscreen nav-link btn-icon"><i class="material-icons md-cast"></i></a>
-                        </li>
-                        
-                    </ul>
-                </div>
-            </header>
-            <section class="content-main">
-                <div class="content-header d-flex justify-content-between align-items-center">
-                    <h2 class="content-title">Coupon Management</h2>
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCouponModal">
-                        <i class="material-icons md-plus"></i> Add Coupon
-                    </button>
-                </div>
-                
-                <div class="card">
-                    <div class="card-body">
-                        <table class="coupon-table">
-                            <thead>
-                                <tr>
-                                    <th>Coupon Code</th>
-                                    <th>Discount Value</th>
-                                    <th>Min Amount</th>
-                                    <th>Expiration Date</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="couponTableBody">
-                                <tr>
-                                    <td>SUMMER2024</td>
-                                    <td>50</td>
-                                    <td>10000</td>
-                                    <td>2024-08-31</td>
-                                    <td>
-                                        <span class="btn-delete">
-                                            <i class="material-icons md-delete"></i> Delete
-                                        </span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>    
+                </li>
+            </ul>
+            <hr />
 
-             <!-- Add Coupon Modal -->
-             <div class="modal fade" id="addCouponModal" tabindex="-1" aria-labelledby="addCouponModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="addCouponModalLabel">Create New Coupon</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="addCouponForm">
-                                <div class="mb-3">
-                                    <label for="couponCode" class="form-label">Coupon Code</label>
-                                    <input type="text" class="form-control" id="couponCode" required>
+            <br />
+            <br />
+        </nav>
+    </aside>
+    <main class="main-wrap">
+        <header class="main-header navbar">
+            <div class="col-search">
+                <form class="searchform">
+                    <div class="input-group">
+                        <input list="search_terms" type="text" class="form-control" placeholder="Search term" />
+                        <button class="btn btn-light bg" type="button"><i class="material-icons md-search"></i></button>
+                    </div>
+                    <datalist id="search_terms">
+                        <option value="Products"></option>
+                        <option value="New orders"></option>
+                        <option value="Apple iphone"></option>
+                        <option value="Ahmed Hassan"></option>
+                    </datalist>
+                </form>
+            </div>
+            <div class="col-nav">
+                <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"><i
+                        class="material-icons md-apps"></i></button>
+                <ul class="nav">
+
+                    <li class="nav-item">
+                        <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="requestfullscreen nav-link btn-icon"><i
+                                class="material-icons md-cast"></i></a>
+                    </li>
+
+                </ul>
+            </div>
+        </header>
+        <section class="content-main">
+            <div class="content-header d-flex justify-content-between align-items-center">
+                <h2 class="content-title">Coupon Management</h2>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCouponModal">
+                    <i class="material-icons md-plus"></i> Add Coupon
+                </button>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <table class="coupon-table">
+                        <thead>
+                            <tr>
+                                <th>Coupon Code</th>
+                                <th>Discount Value</th>
+                                <th>Min Amount</th>
+                                <th>Activation Date</th>
+                                <th>Expiration Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="couponTableBody">
+                            <% if (coupons && coupons.length > 0) { %>
+                                <% coupons.forEach(coupon => { %>
+                                    <tr id="<%= coupon._id %>">
+                                        <td><%= coupon.code %></td>
+                                        <td><%= coupon.discount %></td>
+                                        <td><%= coupon.minAmount %></td>
+                                        <td><%= new Date(coupon.createdAt).toLocaleDateString('en-US', {
+                                            day: '2-digit',
+                                            month: 'short',
+                                            year: 'numeric'
+                                        }).toUpperCase() %></td>
+                                        <td><%= new Date(coupon.expiresAt).toLocaleDateString('en-US', {
+                                            day: '2-digit',
+                                            month: 'short',
+                                            year: 'numeric'
+                                        }).toUpperCase() %></td>
+                                        <td>
+                                            <span class="btn-delete" onclick="deleteCoupon('<%= coupon._id %>')">
+                                                <i class="material-icons md-delete"></i> Delete
+                                            </span>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            <% } else { %>
+                                <tr>
+                                    <td colspan="6" class="text-center">No coupons found</td>
+                                </tr>
+                            <% } %>
+                        </tbody>                        
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Add Coupon Modal -->
+        <div class="modal fade" id="addCouponModal" tabindex="-1" aria-labelledby="addCouponModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addCouponModalLabel">Create New Coupon</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addCouponForm">
+                            <div class="mb-3">
+                                <label for="couponCode" class="form-label">Coupon Code</label>
+                                <input type="text" class="form-control" id="couponCode" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="discountValue" class="form-label">Discount Min Amount</label>
+                                <input type="number" class="form-control" id="discountMinAmount" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="discountValue" class="form-label">Discount Value</label>
+                                <input type="number" class="form-control" id="discountValue" required>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Activation Date</label>
+                                    <input type="date" class="form-control" name="startDate" id="startDate" required>
                                 </div>
-                                <div class="mb-3">
-                                    <label for="discountValue" class="form-label">Discount Min Amount</label>
-                                    <input type="number" class="form-control" id="discountAmount" required>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Expiry Date</label>
+                                    <input type="date" class="form-control" name="expiryDate" id="expiryDate" required>
                                 </div>
-                                <div class="mb-3">
-                                    <label for="discountValue" class="form-label">Discount Value</label>
-                                    <input type="number" class="form-control" id="discountValue" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="expirationDate" class="form-label">Expiration Date</label>
-                                    <input type="date" class="form-control" id="expirationDate" required>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button type="button" class="btn btn-primary" onclick="addCoupon()">Create Coupon</button>
-                        </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" onclick="addCoupon()">Create Coupon</button>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- content-main end// -->
-            <footer class="main-footer font-xs">
-                <div class="row pb-30 pt-15">
-                    <div class="col-sm-6">
-                        <script>
-                            document.write(new Date().getFullYear());
-                        </script>
-                        &copy; Nest - HTML Ecommerce Template .
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="text-sm-end">All rights reserved</div>
-                    </div>
+        <!-- content-main end// -->
+        <footer class="main-footer font-xs">
+            <div class="row pb-30 pt-15">
+                <div class="col-sm-6">
+                    <script>
+                        document.write(new Date().getFullYear());
+                    </script>
+                    &copy; Nest - HTML Ecommerce Template .
                 </div>
-            </footer>
-        </main>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script src="/assets/js/vendors/jquery-3.6.0.min.js"></script>
-        <script src="/assets/js/vendors/bootstrap.bundle.min.js"></script>
-        <script src="/assets/js/vendors/select2.min.js"></script>
-        <script src="/assets/js/vendors/perfect-scrollbar.js"></script>
-        <script src="/assets/js/vendors/jquery.fullscreen.min.js"></script>
-        <!-- Main Script -->
-        <script src="/assets/js/main.js?v=1.1" type="text/javascript"></script>
-    </body>
+                <div class="col-sm-6">
+                    <div class="text-sm-end">All rights reserved</div>
+                </div>
+            </div>
+        </footer>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/assets/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="/assets/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="/assets/js/vendors/select2.min.js"></script>
+    <script src="/assets/js/vendors/perfect-scrollbar.js"></script>
+    <script src="/assets/js/vendors/jquery.fullscreen.min.js"></script>
+    <!-- Main Script -->
+    <script src="/assets/js/main.js?v=1.1" type="text/javascript"></script>
+
+    <script>
+        // Add Coupon
+        function addCoupon() {
+    const couponCode = document.getElementById('couponCode').value.trim();
+    const minAmount = document.getElementById('discountMinAmount').value.trim();
+    const discount = document.getElementById('discountValue').value.trim();
+    const activationDate = document.getElementById('startDate').value.trim();
+    const expirationDate = document.getElementById('expiryDate').value.trim();
+
+    // Validation Rules
+    const errors = [];
+    const today = new Date().toISOString().split('T')[0];
+
+    // Check if all fields are filled
+    if (!couponCode || !minAmount || !discount || !activationDate || !expirationDate) {
+        errors.push('All fields are required.');
+    }
+
+    // Validate Coupon Code
+    if (!/^[a-zA-Z0-9]{5,20}$/.test(couponCode)) {
+        errors.push('Coupon Code must be alphanumeric and 5-20 characters long.');
+    }
+
+    // Validate Minimum Amount
+    if (isNaN(minAmount) || minAmount <= 0) {
+        errors.push('Minimum Amount must be a positive number.');
+    }
+
+    // Validate Discount Value
+    if (isNaN(discount) || discount <= 0) {
+        errors.push('Discount Value must be a positive number.');
+    }
+
+    // Validate Activation Date
+    if (activationDate < today) {
+        errors.push('Activation Date cannot be in the past.');
+    }
+
+    // Validate Expiration Date
+    if (expirationDate <= activationDate) {
+        errors.push('Expiration Date must be after the Activation Date.');
+    }
+
+    // If there are errors, show them and stop further execution
+    if (errors.length > 0) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Validation Error',
+            html: errors.join('<br>'),
+        });
+        return;
+    }
+
+    // Proceed with adding coupon
+    fetch('/admin/add-coupon', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            code: couponCode,
+            discountValue: discount,
+            minAmount: minAmount,
+            activationDate,
+            expirationDate,
+        }),
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: data.message,
+                });
+
+                const newRow = `
+                <tr id="${data.coupon._id}">
+                    <td>${data.coupon.code}</td>
+                    <td>${data.coupon.discount}</td>
+                    <td>${data.coupon.minAmount}</td>
+                    <td>${new Date(data.coupon.activeAt).toLocaleDateString()}</td>
+                    <td>${new Date(data.coupon.expiresAt).toLocaleDateString()}</td>
+                    <td>
+                        <span class="btn-delete" onclick="deleteCoupon('${data.coupon._id}')">
+                            <i class="material-icons md-delete"></i> Delete
+                        </span>
+                    </td>
+                </tr>`;
+                document.getElementById('couponTableBody').insertAdjacentHTML('beforeend', newRow);
+                document.getElementById('addCouponForm').reset();
+                $('#addCouponModal').modal('hide');
+            }
+        })
+        .catch(error => {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Failed to add the coupon. Please try again.',
+            });
+            console.error(error);
+        });
+}
+    
+        // Delete Coupon
+        function deleteCoupon(couponId) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'This action cannot be undone',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it',
+                cancelButtonText: 'Cancel',
+            }).then(result => {
+                if (result.isConfirmed) {
+                    fetch(`/admin/delete-coupon/${couponId}`, {
+                        method: 'DELETE',
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    text: 'The coupon has been deleted',
+                                });
+                                document.getElementById(couponId).remove();
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: data.message || 'Failed to delete the coupon.',
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            console.error(error);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'An unexpected error occurred.',
+                            });
+                        });
+                }
+            });
+        }
+    </script>
+    
+
+</body>
+
 </html>

@@ -1,5 +1,5 @@
 const Category = require('../models/categoryModel');
-
+const Offer = require('../models/offerModel')
 
 const loadCategory = async (req,res)=> {
 
@@ -15,6 +15,8 @@ const loadCategory = async (req,res)=> {
        
         const totalCount = await Category.countDocuments(query);
 
+        const offer = await Offer.find()
+
         const totalPages = Math.ceil(totalCount / limit );
 
         if(!categories || categories.length === 0){
@@ -26,6 +28,7 @@ const loadCategory = async (req,res)=> {
             totalPages,
             limit : parseInt(limit),
             totalCount,
+            offers: offer
 
         })
     } catch (error) {

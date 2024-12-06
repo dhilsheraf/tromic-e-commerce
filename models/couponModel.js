@@ -11,13 +11,14 @@ const couponSchema = new mongoose.Schema({
         type:Number,
         required:true
     },
+    activeAt:{
+        type:Date,
+        required:true
+    },
     expiresAt:{
         type:Date,
         required:true
     }
-
-},{
-    timestamps:true
 }
 )
 

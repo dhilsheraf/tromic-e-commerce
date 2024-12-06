@@ -14,10 +14,11 @@ const offerSchema = new mongoose.Schema({
     expiresAt:{
         type:Date,
         required:true
+    },
+    activeAt:{
+        type:Date,
+        required:true
     }
-},
-{
-    timestamps:true
 })
 
 const Offer = mongoose.model('Offer',offerSchema);

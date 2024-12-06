@@ -45,10 +45,15 @@ router.get('/orders/:orderId',admin.checkAdminSession,orderController.orderActio
 router.put('/order/:orderId/product/:productId/status',orderController.orderStatus)
 
 //offer
-router.get('/offer',offerController.getOffer)
-
+router.get('/offer',offerController.getOffer);
+router.post('/add-offer',offerController.addOffer)
+router.delete('/delete-offer/:offerId',offerController.deleteOffer)
+router.post('/category/apply-offer',offerController.addCategoryOffer)
+router.post('/category/remove-offer',offerController.removeCategoryOffer)
 //coupon
 router.get('/coupon',couponController.getCoupon);
+router.post('/add-coupon',couponController.addCoupon)
+router.delete('/delete-coupon/:id',couponController.deleteCoupon)
 
 
 module.exports = router

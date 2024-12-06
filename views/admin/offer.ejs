@@ -1,222 +1,342 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <title>Nest Dashboard</title>
-        <meta http-equiv="x-ua-compatible" content="ie=edge" />
-        <meta name="description" content="" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta property="og:title" content="" />
-        <meta property="og:type" content="" />
-        <meta property="og:url" content="" />
-        <meta property="og:image" content="" />
-        <!-- Favicon -->
-        <link rel="shortcut icon" type="image/x-icon" href="/assets/imgs/theme/favicon.svg" />
-        <!-- Template CSS -->
-        <link href="/assets/css/main.css?v=1.1" rel="stylesheet" type="text/css" />
-    </head>
 
-    <body>
-        <div class="screen-overlay"></div>
-        <aside class="navbar-aside" id="offcanvas_aside">
-            <div class="aside-top">
-                <a href="index.html" class="brand-wrap">
-                    <img src="/assets/imgs/theme/logo.svg" class="logo" alt="Nest Dashboard" />
-                </a>
-                <div>
-                    <button class="btn btn-icon btn-aside-minimize"><i class="text-muted material-icons md-menu_open"></i></button>
-                </div>
+<head>
+    <meta charset="utf-8" />
+    <title>Nest Dashboard</title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta property="og:title" content="" />
+    <meta property="og:type" content="" />
+    <meta property="og:url" content="" />
+    <meta property="og:image" content="" />
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/imgs/theme/favicon.svg" />
+    <!-- Template CSS -->
+    <link href="/assets/css/main.css?v=1.1" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+    <div class="screen-overlay"></div>
+    <aside class="navbar-aside" id="offcanvas_aside">
+        <div class="aside-top">
+            <a href="index.html" class="brand-wrap">
+                <img src="/assets/imgs/theme/logo.svg" class="logo" alt="Nest Dashboard" />
+            </a>
+            <div>
+                <button class="btn btn-icon btn-aside-minimize"><i
+                        class="text-muted material-icons md-menu_open"></i></button>
             </div>
-            <nav>
-                <ul class="menu-aside">
-                    <li class="menu-item ">
-                        <a class="menu-link" href="/admin/dashboard">
-                            <i class="icon material-icons md-home"></i>
-                            <span class="text">Dashboard</span>
-                        </a>
-                    </li>
-                    <li class="menu-item ">
-                        <a class="menu-link" href="/admin/users">
-                            <i class="icon material-icons md-person"></i>
-                            <span class="text">Users</span>
-                        </a>
-                    </li>
-                    <li class="menu-item ">
-                        <a class="menu-link" href="/admin/products">
-                            <i class="icon material-icons md-add_box"></i>
-                            <span class="text">Products</span>
-                        </a>
-                    </li>
-                    <li class="menu-item ">
-                        <a class="menu-link" href="/admin/category">
-                            <i class="icon material-icons md-store"></i>
-                            <span class="text">Category</span>
-                        </a>
-                    </li>
-                    <li class="menu-item ">
-                        <a class="menu-link" href="/admin/orders">
-                          <i class="icon material-icons md-shopping_cart"></i>
-                          <span class="text">Orders</span>
-                        </a>
-                    </li>
-                    <li class="menu-item active">
-                        <a class="menu-link" href="/admin/offer">
-                          <i class="icon material-icons md-monetization_on"></i>
-                          <span class="text">Offer</span>
-                        </a>
-                      </li>
-                    <li class="menu-item">
-                        <a class="menu-link" href="/admin/coupon"> 
-                            <i class="icon material-icons md-stars">
+        </div>
+        <nav>
+            <ul class="menu-aside">
+                <li class="menu-item ">
+                    <a class="menu-link" href="/admin/dashboard">
+                        <i class="icon material-icons md-home"></i>
+                        <span class="text">Dashboard</span>
+                    </a>
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="/admin/users">
+                        <i class="icon material-icons md-person"></i>
+                        <span class="text">Users</span>
+                    </a>
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="/admin/products">
+                        <i class="icon material-icons md-add_box"></i>
+                        <span class="text">Products</span>
+                    </a>
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="/admin/category">
+                        <i class="icon material-icons md-store"></i>
+                        <span class="text">Category</span>
+                    </a>
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="/admin/orders">
+                        <i class="icon material-icons md-shopping_cart"></i>
+                        <span class="text">Orders</span>
+                    </a>
+                </li>
+                <li class="menu-item active">
+                    <a class="menu-link" href="/admin/offer">
+                        <i class="icon material-icons md-monetization_on"></i>
+                        <span class="text">Offer</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" href="/admin/coupon">
+                        <i class="icon material-icons md-stars">
                         </i> <span class="text">Coupons</span> </a>
-                    </li>      
+                </li>
+            </ul>
+            <hr />
+
+            <br />
+            <br />
+        </nav>
+    </aside>
+    <main class="main-wrap">
+        <header class="main-header navbar">
+            <div class="col-search">
+                <form class="searchform">
+                    <div class="input-group">
+                        <input list="search_terms" type="text" class="form-control" placeholder="Search term" />
+                        <button class="btn btn-light bg" type="button"><i class="material-icons md-search"></i></button>
+                    </div>
+                    <datalist id="search_terms">
+                        <option value="Products"></option>
+                        <option value="New orders"></option>
+                        <option value="Apple iphone"></option>
+                        <option value="Ahmed Hassan"></option>
+                    </datalist>
+                </form>
+            </div>
+            <div class="col-nav">
+                <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"><i
+                        class="material-icons md-apps"></i></button>
+                <ul class="nav">
+
+                    <li class="nav-item">
+                        <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="requestfullscreen nav-link btn-icon"><i
+                                class="material-icons md-cast"></i></a>
+                    </li>
+
                 </ul>
-                <hr />
-                
-                <br />
-                <br />
-            </nav>
-        </aside>
-        <main class="main-wrap">
-            <header class="main-header navbar">
-                <div class="col-search">
-                    <form class="searchform">
-                        <div class="input-group">
-                            <input list="search_terms" type="text" class="form-control" placeholder="Search term" />
-                            <button class="btn btn-light bg" type="button"><i class="material-icons md-search"></i></button>
-                        </div>
-                        <datalist id="search_terms">
-                            <option value="Products"></option>
-                            <option value="New orders"></option>
-                            <option value="Apple iphone"></option>
-                            <option value="Ahmed Hassan"></option>
-                        </datalist>
-                    </form>
-                </div>
-                <div class="col-nav">
-                    <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"><i class="material-icons md-apps"></i></button>
-                    <ul class="nav">
-                        
-                        <li class="nav-item">
-                            <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i> </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="requestfullscreen nav-link btn-icon"><i class="material-icons md-cast"></i></a>
-                        </li>
-                        
-                    </ul>
-                </div>
-            </header>
-            <section class="content-main">
-                <div class="content-header">
-                    <div class="row align-items-center">
-                        <div class="col-md-6">
-                            <h2 class="content-title">Offers Management</h2>
-                        </div>
-                        <div class="col-md-6 text-end">
-                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addOfferModal">
-                                <i class="material-icons md-plus"></i> Create Offer
-                            </button>
-                        </div>
+            </div>
+        </header>
+        <section class="content-main">
+            <div class="content-header">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <h2 class="content-title">Offers Management</h2>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addOfferModal">
+                            <i class="material-icons md-plus"></i> Create Offer
+                        </button>
                     </div>
                 </div>
-            
-                <div class="card">
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>No.</th>
+                                    <th>Name</th>
+                                    <th>Discount %</th>
+                                    <th>Start Date</th>
+                                    <th>Expiry Date</th>
+                                    <th>Action</th> <!-- Updated header -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% offer.forEach((offerItem ,index)=> { %>
                                     <tr>
-                                        <th>ID</th>
-                                        <th>Name</th>
-                                        <th>Discount %</th>
-                                        <th>Start Date</th>
-                                        <th>Expiry Date</th>
-                                        <th>Action</th> <!-- Updated header -->
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>offer.id</td>
-                                        <td>offer.name</td>
-                                        <td>offer.discountPercentage</td>
-                                        <td>offer.startDate</td>
-                                        <td>offer.expiryDate</td>
                                         <td>
-                                            <!-- Action buttons -->
-                                            <button class="btn btn-sm btn-danger" onclick="deleteOffer('offer.id')">
+                                            <%= index+1 %>
+                                        </td>
+                                        <td>
+                                            <%= offerItem.name %>
+                                        </td>
+                                        <td>
+                                            <%= offerItem.discount %>
+                                        </td>
+                                        <td>
+                                            <%= new Date(offerItem.activeAt).toLocaleDateString('en-US', {
+                                                day: '2-digit' , month: 'short' , year: 'numeric' }).toUpperCase()%>
+                                        </td>
+                                        <td>
+                                            <%= new Date(offerItem.expiresAt).toLocaleDateString('en-US', {
+                                                day: '2-digit' , month: 'short' , year: 'numeric' }).toUpperCase()%>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-sm btn-danger"
+                                                onclick="deleteOffer('<%= offerItem.id %>')">
                                                 <i class="material-icons md-delete"></i> Delete
                                             </button>
                                         </td>
                                     </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </section>            
-
-
-            <div class="modal fade" id="addOfferModal" tabindex="-1">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Create New Offer</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-                        <form id="createOfferForm">
-                            <div class="modal-body">
-                                <div class="mb-3">
-                                    <label class="form-label">Offer Name</label>
-                                    <input type="text" class="form-control" name="name" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Discount Percentage</label>
-                                    <input type="number" class="form-control" name="discountPercentage" 
-                                           min="1" max="100" required>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label">Start Date</label>
-                                        <input type="date" class="form-control" name="startDate" required>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label">Expiry Date</label>
-                                        <input type="date" class="form-control" name="expiryDate" required>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                <button type="submit" class="btn btn-primary">Create Offer</button>
-                            </div>
-                        </form>
+                                    <% }) %>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
+        </section>
 
 
-            <!-- content-main end// -->
-            <footer class="main-footer font-xs">
-                <div class="row pb-30 pt-15">
-                    <div class="col-sm-6">
-                        <script>
-                            document.write(new Date().getFullYear());
-                        </script>
-                        &copy; Nest - HTML Ecommerce Template .
+        <div class="modal fade" id="addOfferModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Create New Offer</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
-                    <div class="col-sm-6">
-                        <div class="text-sm-end">All rights reserved</div>
-                    </div>
+                    <form id="createOfferForm">
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label class="form-label">Offer Name</label>
+                                <input type="text" class="form-control" name="name" required minlength="3"
+                                    maxlength="50">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Discount Percentage</label>
+                                <input type="number" class="form-control" name="discountPercentage" min="1" max="100"
+                                    required>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Activation Date</label>
+                                    <input type="date" class="form-control" name="activeDate" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Expiry Date</label>
+                                    <input type="date" class="form-control" name="expiryDate" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Create Offer</button>
+                        </div>
+                    </form>
                 </div>
-            </footer>
-        </main>
-        <script src="/assets/js/vendors/jquery-3.6.0.min.js"></script>
-        <script src="/assets/js/vendors/bootstrap.bundle.min.js"></script>
-        <script src="/assets/js/vendors/select2.min.js"></script>
-        <script src="/assets/js/vendors/perfect-scrollbar.js"></script>
-        <script src="/assets/js/vendors/jquery.fullscreen.min.js"></script>
-        <!-- Main Script -->
-        <script src="/assets/js/main.js?v=1.1" type="text/javascript"></script>
-    </body>
+            </div>
+        </div>
+
+
+        <!-- content-main end// -->
+        <footer class="main-footer font-xs">
+            <div class="row pb-30 pt-15">
+                <div class="col-sm-6">
+                    <script>
+                        document.write(new Date().getFullYear());
+                    </script>
+                    &copy; Nest - HTML Ecommerce Template .
+                </div>
+                <div class="col-sm-6">
+                    <div class="text-sm-end">All rights reserved</div>
+                </div>
+            </div>
+        </footer>
+    </main>
+    <script src="/assets/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="/assets/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="/assets/js/vendors/select2.min.js"></script>
+    <script src="/assets/js/vendors/perfect-scrollbar.js"></script>
+    <script src="/assets/js/vendors/jquery.fullscreen.min.js"></script>
+    <!-- Main Script -->
+    <script src="/assets/js/main.js?v=1.1" type="text/javascript"></script>
+    <script>
+        document.getElementById('createOfferForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const formData = new FormData(this);
+            const name = formData.get('name');
+            const discountPercentage = parseFloat(formData.get('discountPercentage'));
+            const activationDate = new Date(formData.get('activeDate'));
+            const expiryDate = new Date(formData.get('expiryDate'));
+
+            // Validate name
+            if (name.length < 3 || name.length > 50) {
+                Swal.fire('Offer name must be between 3 and 50 characters.');
+                return;
+            }
+
+            // Validate discount percentage
+            if (isNaN(discountPercentage) || discountPercentage < 1 || discountPercentage > 100) {
+                Swal.fire('Discount percentage must be between 1 and 100.');
+                return;
+            }
+
+            // Validate dates
+            if (activationDate >= expiryDate) {
+                Swal.fire('Expiry date must be after the activation date.');
+                return;
+            }
+
+            // Prepare data for server
+            const offerData = { name, discountPercentage, activationDate, expiryDate };
+
+            try {
+                const response = await fetch('/admin/add-offer', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(offerData),
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    $('#addOfferModal').modal('hide');
+                    Swal.fire('Offer created successfully').then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    Swal.fire(data.message || 'Failed to create the offer.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                Swal.fire('An error occurred while creating the offer.');
+            }
+        });
+
+    </script>
+    <script>
+        async function deleteOffer(offerId) {
+            const confirmDelete = await Swal.fire({
+                title: `Are you sure ?`,
+                text: `To delete the offer ?`,
+                icon: `warning`,
+                showCancelButton: true,
+                cancelButtonText: 'Cancel',
+                confirmButtonText: 'Yes, delete it!'
+            });
+
+            if (confirmDelete.isConfirmed) {
+                try {
+
+                    const response = await fetch(`/admin/delete-offer/${offerId}`, {
+                        method: 'DELETE',
+                        headers: { 'Content-Type': 'application/json' },
+                    });
+
+
+                    if (response.ok) {
+                        const data = await response.json();
+
+                        if (data.success) {
+                            Swal.fire('Deleted', 'The offer has been deleted successfully').then(() => {
+                                window.location.reload();
+                            });
+                        } else {
+                            Swal.fire(data.message || 'Failed to delete the offer.');
+                        }
+                    } else {
+                        Swal.fire('Error', 'Failed to delete the offer. Please try again later.', 'error');
+                    }
+
+                } catch (error) {
+                    console.error('Error', error);
+                    Swal.fire('An error occurred while deleting the offer');
+                }
+            }
+        }
+    </script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.6.5/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.6.5/dist/sweetalert2.all.min.js"></script>
+
+</body>
+
 </html>
