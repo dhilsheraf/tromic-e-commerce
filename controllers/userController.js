@@ -8,6 +8,7 @@ const Address = require('../models/addressModel')
 const crypto = require('crypto')
 const Order = require('../models/orderModel')
 const Wishlist = require('../models/wishlistModel')
+const Coupon = require('../models/couponModel')
 
 //route to home 
 
@@ -16,9 +17,9 @@ const loadHome = async (req, res) => {
     try {
 
         const products = await Product.find({}).limit(10).lean();
+        const coupons = Coupon.find()
 
-
-        res.render('home', { products })
+        res.render('home', { products ,coupons })
     } catch (error) {
         console.error("Home page not loading", error);
         res.status(500).redirect("/pageNotFound")

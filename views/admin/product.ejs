@@ -430,9 +430,23 @@
                             <div style="margin-bottom: 20px;">
                                 <a href="/admin/products/add" class="btn-add">Add New Product</a>
                             </div>
+                            <div class="col-lg-2 col-6">
+                                <form action="/admin/products" method="get">
+                                    <select id="stockFilter" class="form-select" name="stock">
+                                        <option value="">All Stocks</option>
+                                        <option value="out-of-stock" <%= stockStatus === 'out-of-stock' ? 'selected' : '' %>>Out of stock</option>
+                                        <option value="low-stock" <%= stockStatus === 'low-stock' ? 'selected' : '' %>>Low stock</option>
+                                        <option value="in-stock" <%= stockStatus === 'in-stock' ? 'selected' : '' %>>In stock</option>
+                                    </select>
+                                    <button type="submit" class="btn btn-filter" style="background-color: #4CAF50;">Filter</button>
+                                </form>
+                            </div>                            
                             <div class="col-lg-4 col-md-6 me-auto">
-                                <input type="text" placeholder="Search..." class="form-control" />
-                            </div>
+                                <form action="/admin/products" method="get">
+                                    <input type="text" name="search" placeholder="Search..." class="form-control" value="<%= searchQuery %>"/>
+                                    <button type="submit" class="btn btn-search">Search</button>
+                                </form>
+                            </div>                            
                             <table class="product-table">
                                 <thead>
                                     <tr>
@@ -681,6 +695,25 @@
                     Swal.close();
                     closeOfferModal();
                 });
+
+                document.getElementById('stockFilter').addEventListener('change', function() {
+    const searchQuery = document.querySelector('input[name="search"]').value; // Get the current search query if any
+    const stock = this.value; // Get the selected stock option
+
+    // Create the query string with stock and search (if applicable)
+    let queryString = '';
+    if (searchQuery) {
+        queryString += `search=${encodeURIComponent(searchQuery)}&`;
+    }
+    if (stock) {
+        queryString += `stock=${encodeURIComponent(stock)}`;
+    }
+
+    // Redirect to the updated URL
+    window.location.href = `/admin/products?${queryString}`;
+});
+
+
         }
     </script>
     </script>

@@ -8,21 +8,40 @@ const getProduct = async (req, res) => {
         const limit = 10; 
         const skip = (page - 1) * limit;
 
+        const searchQuery = req.query.search || '';
+        const stockStatus = req.query.stock || '';
 
-        const totalProducts = await Product.countDocuments();
-        const totalPages = Math.ceil(totalProducts / limit);
+        const queryConditions = {}
+
+        if(searchQuery){
+            queryConditions.$or = [
+                { name: {$regex: searchQuery ,$options:'i'}}
+            ];
+        }
+
+        if(stockStatus){
+            if(stockStatus === 'out-of-stock') {
+                queryConditions.stock = 0
+            } else if ( stockStatus === 'low-stock') queryConditions.stock = { $lt: 10 ,$gt:0 }
+            else if(stockStatus === 'in-stock') queryConditions.stock = { $gte: 50 }
+        }
+
+        const totalProducts = await Product.countDocuments(queryConditions)
+
+
         const offers = await Offer.find()
 
-        const products = await Product.find({}).skip(skip).limit(limit).populate({path:'category',populate:{path:'offer',model:'Offer'}}).populate('offer');
+        const products = await Product.find(queryConditions).skip(skip).limit(limit).populate({path:'category',populate:{path:'offer',model:'Offer'}}).populate('offer');
 
+        const totalPages = Math.ceil(totalProducts/limit)
 
-            res.render('admin/product', {
-            products,
+            res.render('admin/product', { products,
             currentPage: page,
-            totalPages,
-            offers
+            totalPages,offers,
+            stockStatus,
+            searchQuery
         });
-    } catch (error) {
+    }catch (error) {
         console.error('Error fetching products:', error);
         res.status(500).render('admin/404');
     }
