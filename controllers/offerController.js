@@ -19,18 +19,19 @@ const addOffer = async (req, res) => {
 
 
         if (!name || !discountPercentage || !activationDate || !expiryDate) {
-            return res.status(400).json({ success: false, message: 'All fields are required.' });
+            return res.status(400).json({ success: false,message: 'All fields are required.' });
         }
 
 
         if (discountPercentage < 1 || discountPercentage > 100) {
-            return res.status(400).json({ success: false, message: 'Discount percentage must be between 1 and 100.' });
+            return res.status(400).json({ success: false,message: 'Discount percentage must be between 1 and 100.' });
         }
+
+
+
 
         const activation = new Date(activationDate);
         const expiry = new Date(expiryDate);
-
-        
         if (isNaN(activation.getTime()) || isNaN(expiry.getTime())) {
             return res.status(400).json({ success: false, message: 'Invalid date format.' });
         }
@@ -55,6 +56,8 @@ const addOffer = async (req, res) => {
     }
 };
 
+
+
 const deleteOffer = async (req,res) => {
     try {
         const { offerId } = req.params;
@@ -71,26 +74,107 @@ const deleteOffer = async (req,res) => {
     }
 }
 
-const addCategoryOffer = async (req,res) => {
+
+//add and remove category offer
+const addCategoryOffer = async (req, res) => {
     try {
-        const {categoryId, offerId, discount } = req.body;
+        const { categoryId, offerId, discount } = req.body;
 
-        const offer = await Offer.findById(offerId)
-        if(!offer) return res.status(400).json({success:false , message :"Offer not found"})
+        const offer = await Offer.findById(offerId);
+        if (!offer) {
+            return res.status(400).json({ success: false, message: "Offer not found" });
+        }
+
+        const products = await Product.find({ category: categoryId });
+
+          
+        for (const product of products) {
+            const newPrice = product.originalPrice * (1 - discount / 100);
+            if (product.originalPrice === undefined) {
+                product.originalPrice = product.price;  // Save the original price
+            }
+            product.price = Math.floor(newPrice);
+            product.offer = offerId;
+            await product.save();
+        }
+        await Category.findByIdAndUpdate(categoryId, { offer: offerId });
+
+        res.json({ success: true, message: "Offer applied successfully" });
     } catch (error) {
-        
+        console.error(error);
+        res.status(500).json({ success: false, message: "An error occurred while applying the offer" });
     }
-}
+};
 
-const removeCategoryOffer = async (req,res) => {
+const removeCategoryOffer = async (req, res) => {
     try {
-       
+        const { categoryId } = req.body;
+
+        const products = await Product.find({ category: categoryId });
+        for (const product of products) {
+            product.offer = null;
+            
+                product.price = product.originalPrice;
+
+            await product.save();
+        }
+
+        await Category.findByIdAndUpdate(categoryId, { offer: null });
+
+        return res.status(200).json({ success: true, message: "Offer removed successfully" });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ success: false, message: "Failed to remove offer", error });
+    }
+};
+
+//product offer
+const addProductOffer = async (req, res) => {
+    try {
+        const {offerId , productId } = req.body
+        console.log(req.body)
+        const offer = await Offer.findById(offerId);
+        if(!offer) return res.status(400).json({ success:false , message : 'offer not found'});
+
+        const product = await Product.findById(productId);
+      
+        if(!product) return res.status(400).json({ success: false , message : 'Product not found'})
+
+        const discountFactor = 1 - offer.discount / 100;
+        const newPrice = product.originalPrice * discountFactor;    
+        
+        product.offer = offerId
+        product.price = Math.floor(newPrice);
+        await product.save();
+
+        res.status(200).json({ success: true , message : "Offer applied successfull"})
 
     } catch (error) {
-        
+        console.error(error);
+        res.status(500).json({success:false , message :"Error occured while adding product offer"})
     }
-}
+};
 
+const removeProductOffer = async (req,res) => {
+   try {
+
+    const {productId} = req.params ;
+    const product = await Product.findById(productId);
+
+    if(!product) return res.status(404).send('not found product')
+
+    product.offer = null ;
+    product.price = product.originalPrice;
+
+    await product.save()
+
+    return res.redirect('/admin/products')
+
+   } catch (error) {
+    console.error(error);
+    return res.status(500).send('erro while remove the offer')
+   }
+}
 
 module.exports = {
     getOffer,
@@ -98,4 +182,6 @@ module.exports = {
     deleteOffer,
     addCategoryOffer,
     removeCategoryOffer,
+    addProductOffer,
+    removeProductOffer
 }

@@ -1,41 +1,40 @@
 const Category = require('../models/categoryModel');
 const Offer = require('../models/offerModel')
-
-const loadCategory = async (req,res)=> {
-
+const loadCategory = async (req, res) => {
     try {
-
-        const { page = 1 , limit = 10, search = ""} = req.query;
+        const { page = 1, limit = 10, search = "" } = req.query;
 
         const query = search 
-              ? { name : { $regex: search, $options: "i"}} : {};
+              ? { name: { $regex: search, $options: "i" } } : {};
 
         const categories = await Category.find(query)
-        .skip((page - 1) * limit ).limit(parseInt(limit));
+            .populate('offer', 'name discount') 
+            .skip((page - 1) * limit).limit(parseInt(limit));
        
         const totalCount = await Category.countDocuments(query);
 
-        const offer = await Offer.find()
+        const offers = await Offer.find();
 
-        const totalPages = Math.ceil(totalCount / limit );
+        const totalPages = Math.ceil(totalCount / limit);
 
-        if(!categories || categories.length === 0){
-            return res.render('admin/category',{category:[],message:"No Categories"})
+        if (!categories || categories.length === 0) {
+            return res.render('admin/category', { category: [], message: "No Categories" });
         }
-        res.render("admin/category",{ 
-            categories,
-            currentPage : parseInt(page) ,
-            totalPages,
-            limit : parseInt(limit),
-            totalCount,
-            offers: offer
 
-        })
+        res.render("admin/category", { 
+            categories,
+            currentPage: parseInt(page),
+            totalPages,
+            limit: parseInt(limit),
+            totalCount,
+            offers
+        });
     } catch (error) {
-        console.log("Error loading category : ",error.message);
-        res.render('admin/404')
+        console.log("Error loading category: ", error.message);
+        res.render('admin/404');
     }
-}
+};
+
 
 
 const addCategoryLoad = (req,res) =>{

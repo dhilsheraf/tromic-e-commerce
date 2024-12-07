@@ -312,7 +312,7 @@
                                         <td><%= coupon.code %></td>
                                         <td><%= coupon.discount %></td>
                                         <td><%= coupon.minAmount %></td>
-                                        <td><%= new Date(coupon.createdAt).toLocaleDateString('en-US', {
+                                        <td><%= new Date(coupon.activeAt).toLocaleDateString('en-US', {
                                             day: '2-digit',
                                             month: 'short',
                                             year: 'numeric'

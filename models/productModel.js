@@ -13,7 +13,10 @@ const productSchema = new mongoose.Schema({
         ref:'Offer'
     },
     originalPrice: {
-        type:Number
+        type:Number,
+        default:function (){
+            return this.price;
+        }
     }
 }, { timestamps: true });
 

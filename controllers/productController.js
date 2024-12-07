@@ -1,5 +1,6 @@
 const Product = require('../models/productModel');
 const Category = require('../models/categoryModel')
+const Offer = require('../models/offerModel')
 
 const getProduct = async (req, res) => {
     try {
@@ -10,15 +11,16 @@ const getProduct = async (req, res) => {
 
         const totalProducts = await Product.countDocuments();
         const totalPages = Math.ceil(totalProducts / limit);
+        const offers = await Offer.find()
 
-
-        const products = await Product.find({}).skip(skip).limit(limit).populate('category');
+        const products = await Product.find({}).skip(skip).limit(limit).populate({path:'category',populate:{path:'offer',model:'Offer'}}).populate('offer');
 
 
             res.render('admin/product', {
             products,
             currentPage: page,
             totalPages,
+            offers
         });
     } catch (error) {
         console.error('Error fetching products:', error);
@@ -65,6 +67,7 @@ const addProduct = async (req, res) => {
             stock: parseInt(stock, 10),
             category,
             images: imagePaths, // Save image paths
+            originalPrice:price
         });
 
         await newProduct.save();
@@ -116,6 +119,7 @@ const editProduct = async (req, res) => {
                 description,
                 price,
                 stock,
+                originalPrice:price,
                 category,
                 images: updatedImages.filter((url) => url), // Remove any undefined URLs
             },

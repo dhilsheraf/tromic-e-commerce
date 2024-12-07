@@ -145,8 +145,9 @@
                         </div>
     
                       <!-- Display Discounted Price -->
-                    <div class="price-box pb-3">
-                        <del> <span class="original-price text-muted">₹<%= product.price - 1 %></span></del>
+                    <div class="price-box pb-3"><%if(product.offer){%>
+                        <del> <span class="original-price text-muted">₹<%= product.originalPrice %></span></del>
+                    <%}%>
                         <span class="discounted-price text-danger" id="final-price">₹<%= product.price %></span> <!-- Discounted Price -->
                     </div>
                     

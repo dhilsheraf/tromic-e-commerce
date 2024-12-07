@@ -276,7 +276,7 @@
                                             <% categories.forEach((category, index)=> { %>
                                                 <tr class="table-row">
                                                     <td>
-                                                        <%= (currentPage-1)*limit+index + 1 %>
+                                                        <%= (currentPage - 1) * limit + index + 1 %>
                                                     </td>
                                                     <td>
                                                         <%= category.name %>
@@ -291,8 +291,19 @@
                                                         </button>
                                                     </td>
                                                     <td>
-                                                        <button class="btn btn-primary btn-sm apply-offer-btn"
-                                                            data-category-id="<%= category._id %>">Apply Offer</button>
+                                                        <!-- Inside category-table tbody -->
+                                                        <% if (category.offer) { %>
+                                                            <button class="btn btn-danger btn-sm remove-offer-btn"
+                                                                data-category-id="<%= category._id %>">Remove Offer <%=
+                                                                    category.offer.name%>
+                                                                    <%= category.offer.discount %>%</button>
+                                                            <% } else { %>
+                                                                <button class="btn btn-primary btn-sm apply-offer-btn"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#applyOfferModal"
+                                                                    data-category-id="<%= category._id %>">Apply
+                                                                    Offer</button>
+                                                                <% } %>
                                                     </td>
                                                     <td>
                                                         <a href="/admin/category/edit/<%= category._id %>"
@@ -306,6 +317,7 @@
                                                         </tr>
                                                         <% } %>
                                     </tbody>
+
                                 </table>
                             </div>
                         </div>
@@ -328,7 +340,7 @@
                             <label for="offer-select">Choose an Offer:</label>
                             <select id="offer-select" class="form-control">
                                 <% offers.forEach(offer=> { %>
-                                    <option value="<%= offer._id %>">
+                                    <option value="<%= offer._id %>" data-discount="<%= offer.discount %>">
                                         <%= offer.name %>&nbsp;<%= offer.discount %>% &nbsp;
                                     </option>
                                     <% }); %>
@@ -336,7 +348,6 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-danger" id="removeOfferButton">Remove Offer</button>
                             <button type="button" class="btn btn-primary" id="applyOfferButton">Apply Offer</button>
                         </div>
                     </div>
@@ -394,67 +405,97 @@
     <script src="/assets/js/main.js?v=1.1" type="text/javascript"></script>
 
     <script>
-
         $(document).ready(function () {
 
-            $('.apply-offer-btn').on('click', function () {
-                const categoryId = $(this).data('category-id'); // Get the category ID from the data attribute
-                $('#applyOfferModal').modal('show'); // Show the modal
+            $(document).ready(function () {
+
+                // Open modal and set category ID on button click
+                $('.apply-offer-btn').on('click', function () {
+                    const categoryId = $(this).data('category-id');
+                    $('#applyOfferModal').data('category-id', categoryId); // Save the category ID to modal
+                });
+
+                // Apply offer logic
+                $('#applyOfferButton').on('click', function () {
+                    const categoryId = $('#applyOfferModal').data('category-id');
+                    const offerId = $('#offer-select').val();
+                    const discount = $('#offer-select option:selected').data('discount');
+
+                    $.ajax({
+                        url: '/admin/category/apply-offer',
+                        method: 'POST',
+                        data: {
+                            categoryId: categoryId,
+                            offerId: offerId,
+                            discount: discount
+                        },
+                        success: function (response) {
+                            Swal.fire({
+                                title: 'Offer applied successfully!',
+                                icon: 'success',
+                            }).then(() => {
+                                location.reload();
+                            })
 
 
-                $('#applyOfferModal').data('category-id', categoryId);
-            });
-
-            // Apply the selected offer to the category
-            $('#applyOfferButton').on('click', function () {
-                const categoryId = $('#applyOfferModal').data('category-id');
-                const offerId = $('#offer-select').val(); // Get the selected offer ID
-                const discount = $('#offer-select option:selected').text().split(' ')[1]; // Get the discount percentage from the option text
-
-                // Send the offer to the server to apply it to the products of this category
-                $.ajax({
-                    url: '/admin/category/apply-offer', // Backend endpoint
-                    method: 'POST',
-                    data: {
-                        categoryId: categoryId,
-                        offerId: offerId,
-                        discount: discount
-                    },
-                    success: function (response) {
-                        alert('Offer applied successfully!');
-                        location.reload(); // Reload the page to reflect the changes
-                    },
-                    error: function (error) {
-                        alert('Error applying offer');
-                        console.error(error);
-                    }
+                        },
+                        error: function (error) {
+                            alert('Error applying offer');
+                            console.error(error);
+                        }
+                    });
                 });
             });
 
-            // Remove the offer from the category
-            $('#removeOfferButton').on('click', function () {
-                const categoryId = $('#applyOfferModal').data('category-id');
 
-                // Send the request to the server to remove the offer from products in this category
-                $.ajax({
-                    url: '/admin/category/remove-offer', // Backend endpoint
-                    method: 'POST',
-                    data: { categoryId: categoryId },
-                    success: function (response) {
-                        alert('Offer removed successfully!');
-                        location.reload(); // Reload the page to reflect the changes
-                    },
-                    error: function (error) {
-                        alert('Error removing offer');
-                        console.error(error);
+//remove offer button
+
+            $('.remove-offer-btn').on('click', function () {
+                const categoryId = $(this).data('category-id'); // Get the category ID
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'You are about to remove the offer from this category.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, remove offer',
+                    cancelButtonText: 'No, keep offer',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '/admin/category/remove-offer',
+                            method: 'POST',
+                            data: { categoryId: categoryId },
+                            success: function (response) {
+                                Swal.fire({
+                                    title: 'Offer removed successfully!',
+                                    icon: 'success',
+                                }).then(() => {
+                                    location.reload(); // Reload the page to update the offer status
+                                });
+                            },
+                            error: function (error) {
+                                Swal.fire({
+                                    title: 'Error removing offer',
+                                    icon: 'error',
+                                    text: error.responseJSON.message || 'Something went wrong!',
+                                });
+                            }
+                        });
                     }
                 });
             });
         });
 
+
     </script>
 
     <script src="/assets/js/category.js"></script>
+    <!-- SweetAlert2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="stylesheet">
+
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.js"></script>
+
 </body>
 
 </html>

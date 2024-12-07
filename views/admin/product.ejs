@@ -79,6 +79,263 @@
             background-color: #4CAF50;
             color: white;
         }
+
+        .product-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .product-table th,
+        .product-table td {
+            padding: 8px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        .product-table th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+
+        .product-table img {
+            width: 40px;
+            height: 40px;
+            border-radius: 5px;
+        }
+
+        .btn {
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+
+        .btn-edit {
+            background-color: #ffc107;
+            color: #333;
+        }
+
+        .btn-delete {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-offer {
+            background-color: #17a2b8;
+            color: white;
+        }
+
+        .btn-add {
+            margin-bottom: 20px;
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-add:hover {
+            background-color: #45a049;
+            color: white;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 500px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            color: #333;
+        }
+
+        .close-btn {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-btn:hover {
+            color: #000;
+        }
+
+        .modal-body {
+            padding: 20px 0;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .modal-footer {
+            border-top: 1px solid #e0e0e0;
+            padding-top: 15px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .btn-primary {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            /* Changed to 80% to be more responsive */
+            max-width: 500px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            color: #333;
+            font-size: 1.25em;
+        }
+
+        .close-btn {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-btn:hover {
+            color: #000;
+        }
+
+        .modal-body {
+            padding: 20px 0;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .modal-footer {
+            border-top: 1px solid #e0e0e0;
+            padding-top: 15px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .btn-primary {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        /* Responsive adjustment */
+        @media (max-width: 768px) {
+            .modal-content {
+                width: 90%;
+            }
+
+            .modal-header h2 {
+                font-size: 1.1em;
+            }
+
+            .form-group label,
+            .form-control {
+                font-size: 0.9em;
+            }
+        }
     </style>
 
 </head>
@@ -132,14 +389,14 @@
                 </li>
                 <li class="menu-item ">
                     <a class="menu-link" href="/admin/offer">
-                      <i class="icon material-icons md-monetization_on"></i>
-                      <span class="text">Offer</span>
+                        <i class="icon material-icons md-monetization_on"></i>
+                        <span class="text">Offer</span>
                     </a>
-                  </li>
+                </li>
                 <li class="menu-item">
-                    <a class="menu-link" href="/admin/coupon"> 
+                    <a class="menu-link" href="/admin/coupon">
                         <i class="icon material-icons md-stars">
-                    </i> <span class="text">Coupons</span> </a>
+                        </i> <span class="text">Coupons</span> </a>
                 </li>
             </ul>
         </nav>
@@ -166,23 +423,10 @@
         <section class="content-main">
 
             <div class="card mb-4">
-                <header class="card-header">
-                    <div class="row gx-3">
-                        <div class="col-lg-2 col-6 col-md-3">
-                            <select class="form-select">
-                                <option>Low Stock</option>
-                                <option>High Stock</option>
-                                <option>Out of stock</option>
-                            </select>
-                        </div>
-                    </div>
-                </header>   
-                <!-- card-header end// -->
+                <!-- Existing card header and search remains the same -->
                 <div class="card-body">
                     <div class="table-responsive">
                         <div class="container">
-                            <!-- <h1>Product List</h1> -->
-                            <!-- Button to add a new product -->
                             <div style="margin-bottom: 20px;">
                                 <a href="/admin/products/add" class="btn-add">Add New Product</a>
                             </div>
@@ -199,14 +443,12 @@
                                         <th>Stock</th>
                                         <th>Category</th>
                                         <th>Actions</th>
-
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <% if (products.length> 0) { %>
                                         <% products.forEach((product,index)=> { %>
                                             <tr>
-                                                <!-- Display first image if available, otherwise show a placeholder -->
                                                 <td>
                                                     <%= (currentPage-1)*10+1+index %>
                                                 </td>
@@ -238,19 +480,38 @@
                                                     <form action="/admin/products/toggle/<%= product._id %>"
                                                         method="POST" style="display:inline;">
                                                         <% if (product.isActive) { %>
-                                                            <button type="submit" class="btn btn-delete"
-                                                                onclick="return confirm('Deactivate this product?');">Deactivate</button>
+                                                            <button type="submit"
+                                                                class="btn btn-delete">Deactivate</button>
                                                             <% } else { %>
                                                                 <button type="submit"
                                                                     class="btn btn-edit">Activate</button>
                                                                 <% } %>
                                                     </form>
+                                                    <% if (product.category.offer) { %>
+                                                        <!-- Display Category Offer if Available -->
+                                                        <span class="offer-details">
+                                                            Category Offer: <%= product.category.offer.name %> - <%= product.category.offer.discount %>% off
+                                                        </span>
+                                                    <% } else { %>
+                                                        <!-- Display Product's Offer Options -->
+                                                        <% if (product.offer) { %>
+                                                            <form action="/admin/product/remove-offer/<%= product._id %>" method="POST" style="display:inline;">
+                                                                <button type="submit" class="btn btn-danger">
+                                                                    <%= product.offer.name %> - <%= product.offer.discount %>% | Remove Offer
+                                                                </button>
+                                                            </form>
+                                                        <% } else { %>
+                                                            <button class="btn btn-offer" onclick="openOfferModal('<%= product._id %>', '<%= product.name %>', '<%= product.price %>')">
+                                                                Apply Offer
+                                                            </button>
+                                                        <% } %>
+                                                    <% } %>                                
                                                 </td>
                                             </tr>
                                             <% }) %>
                                                 <% } else { %>
                                                     <tr>
-                                                        <td colspan="6" style="text-align: center;">No products
+                                                        <td colspan="7" style="text-align: center;">No products
                                                             available.</td>
                                                     </tr>
                                                     <% } %>
@@ -259,7 +520,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- card-body end// -->
             </div>
             <!-- card end// -->
             <div class="pagination-area mt-15 mb-50">
@@ -296,6 +556,48 @@
         <!-- content-main end// -->
 
     </main>
+    <!-- Offer Modal -->
+    <!-- Offer Modal -->
+    <div id="offerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Apply Offer to Product</h2>
+                <span class="close-btn" onclick="closeOfferModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="applyOfferForm">
+                    <input type="hidden" id="productId" name="productId">
+
+                    <div class="form-group">
+                        <label>Product Name</label>
+                        <input type="text" id="productName" class="form-control" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Product Price</label>
+                        <input type="text" id="productPrice" class="form-control" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="offerType">Offer Type</label>
+                        <select id="offerType" name="offerType" class="form-control" required>
+                            <option value="" disabled selected>Select an Offer</option>
+                            <% offers.forEach(offer=> { %>
+                                <option value="<%= offer._id %>">
+                                    <%= offer.name %> - <%= offer.discount %>%
+                                </option>
+                                <% }); %>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeOfferModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="applyOffer()">Apply Offer</button>
+            </div>
+        </div>
+    </div>
+
 
     <footer class="main-footer font-xs">
         <div class="row pb-30 pt-15">
@@ -316,8 +618,73 @@
     <script src="/assets/js/vendors/select2.min.js"></script>
     <script src="/assets/js/vendors/perfect-scrollbar.js"></script>
     <script src="/assets/js/vendors/jquery.fullscreen.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- Main Script -->
     <script src="/assets/js/main.js?v=1.1" type="text/javascript"></script>
+
+    <script>
+
+
+        function openOfferModal(productId, productName, productPrice) {
+            document.getElementById('productId').value = productId;
+            document.getElementById('productName').value = productName;
+            document.getElementById('productPrice').value = '₹' + productPrice;
+            document.getElementById('offerType').value = '';
+            document.getElementById('offerModal').style.display = 'block';
+        }
+
+        function closeOfferModal() {
+            document.getElementById('offerModal').style.display = 'none';
+        }
+
+
+        function applyOffer() {
+            const productId = document.getElementById('productId').value;
+            const offerId = document.getElementById('offerType').value;
+
+            if (!offerId) {
+                Swal.fire('Please select an offer type.');
+                return;
+            }
+
+
+            Swal.fire({
+                title: 'Applying offer...',
+                text: 'Please wait while we apply the offer.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            fetch(`/admin/product/apply-offer`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ productId, offerId })
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.success) {
+                        Swal.fire('Success!', 'Offer applied successfully!', 'success').then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire('Error!', 'Failed to apply the offer.', 'error');
+                    }
+                })
+                .catch((error) => {
+                    Swal.fire('Error!', 'Something went wrong. Please try again.', 'error');
+                })
+                .finally(() => {
+                    Swal.close();
+                    closeOfferModal();
+                });
+        }
+    </script>
+    </script>
+
 </body>
 
 </html>

@@ -48,8 +48,14 @@ router.put('/order/:orderId/product/:productId/status',orderController.orderStat
 router.get('/offer',offerController.getOffer);
 router.post('/add-offer',offerController.addOffer)
 router.delete('/delete-offer/:offerId',offerController.deleteOffer)
+//category offer
 router.post('/category/apply-offer',offerController.addCategoryOffer)
 router.post('/category/remove-offer',offerController.removeCategoryOffer)
+
+//product offer
+router.post('/product/apply-offer',offerController.addProductOffer)
+router.post('/product/remove-offer/:productId',offerController.removeProductOffer)
+
 //coupon
 router.get('/coupon',couponController.getCoupon);
 router.post('/add-coupon',couponController.addCoupon)
