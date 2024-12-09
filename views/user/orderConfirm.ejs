@@ -140,7 +140,8 @@
             </ul>
         </div>
         <div class="order-total">
-            Total Price: ₹<%= order.totalPrice %>
+            Total Price : <%= order.totalPriceWithoutCouponOffer %> <br>
+            Coupon applied Price : ₹<%= order.totalPrice %>
         </div>
         <a href="/" class="home-button">Return to Home</a>
     </div>

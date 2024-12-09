@@ -15,10 +15,17 @@ const addCoupon = async (req, res) => {
     const { code, discountValue, minAmount, expirationDate, activationDate } = req.body;
 
     if (!code || !discountValue || !minAmount || !expirationDate) {
-        return res.status(400).json({ message: 'All fields are required.' });
+        return res.status(400).json({success:false, message: 'All fields are required.' });
     }
 
     try {
+
+
+        const codeCap = code.trim().toUpperCase()
+        const duplicateCoupon = await Coupon.findOne({code:codeCap})
+        if(duplicateCoupon){ 
+            return res.status(409).json({success:false,message:'Coupon code already exist'}) }
+
         const newCoupon = new Coupon({
             code,
             minAmount,
@@ -29,7 +36,7 @@ const addCoupon = async (req, res) => {
 
         await newCoupon.save();
 
-        res.status(201).json({
+        res.status(201).json({success:true,
             message: 'Coupon added successfully',
             coupon: newCoupon,
         });

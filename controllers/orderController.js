@@ -6,13 +6,19 @@ const Cart = require('../models/cartModel')
 const razorpay = require('razorpay')
 const env = require('dotenv').config()
 const crypto = require('crypto');
-
+const Coupon = require('../models/couponModel')
+const Wallet = require('../models/walletModel')
 
 const getCheckout = async (req, res) => {
     try {
 
         const user = await User.findById(req.session.user);
-
+      
+        const currentDate = new Date();
+        const coupons = await Coupon.find({
+            activeAt: { $lte: currentDate }, // Coupon is active if current date is after activeAt
+            expiresAt: { $gte: currentDate }  // Coupon is valid if current date is before expiresAt
+        });
 
 
         const userAddresses = await Address.find({ userId: req.session.user })
@@ -31,13 +37,20 @@ const getCheckout = async (req, res) => {
             total: item.productId.price * item.quantity
         }))
 
-        cartTotal = cartItems.reduce((sum, item) => sum + item.total, 0);
+        const wallet = await Wallet.findOne({ userId:req.session.user });
 
+        console.log(wallet)
+
+        cartTotal = cartItems.reduce((sum, item) => sum + item.total, 0);
+        const isWalletAvailable = wallet.balance >= cartTotal
         res.render('checkout', {
             userAddresses,
             cartItems,
             cartTotal,
-            user
+            user,
+            coupons,
+            wallet:wallet.balance,
+            isWalletAvailable
         })
 
 
@@ -55,20 +68,19 @@ const RazorpayInstance = new razorpay({
 const checkout = async (req, res) => {
     try {
 
-        const { addressId, paymentMethod, cartItems } = req.body;
+        const { addressId, paymentMethod, cartItems , couponCode} = req.body;
 
 
         if (!addressId || !paymentMethod || !cartItems || cartItems.length === 0) {
             return res.status(400).json({ success: false, message: 'Invalid order data' })
         }
-
         const address = await Address.findById(addressId);
         if (!address) {
             return res.status(404).json({ success: false, message: 'Address not found' });
         }
 
         let totalPrice = 0;
-
+        let totalPriceWithoutCouponOffer = 0 ;
         const orderProducts = [];
 
         
@@ -94,7 +106,7 @@ const checkout = async (req, res) => {
 
             }
 
-            totalPrice += product.price * item.quantity;
+            totalPriceWithoutCouponOffer += product.price * item.quantity;
 
             orderProducts.push({
                 product: product._id,
@@ -106,6 +118,23 @@ const checkout = async (req, res) => {
             product.stock -= item.quantity;
 
             await product.save();
+        }
+
+        let coupon = null ;
+
+        if(couponCode){
+            coupon = await Coupon.findOne({code:couponCode});
+            if(!coupon){
+                return res.status(400).json({success:false , message: 'Invalid coupon code'});
+            }
+            if(coupon.expiresAt < Date.now()) return res.status(400).json({ success:false , message:'Coupon has expired'})
+
+            if(totalPriceWithoutCouponOffer < coupon.minAmount) return res.status(400).json({ success:false , message:`Minimun purchase of ₹${coupon.minAmount} required for this coupon`})
+
+            const discount = coupon.discount;
+            totalPrice = totalPriceWithoutCouponOffer - discount ;
+        }else{
+            totalPrice = totalPriceWithoutCouponOffer;
         }
 
 
@@ -129,21 +158,23 @@ const checkout = async (req, res) => {
             payment: paymentMethod,
             products: orderProducts,
             totalPrice,
+            totalPriceWithoutCouponOffer,
             paymentStatus: paymentMethod === 'razorpay' ? 'Pending' : paymentMethod === 'COD' ?'Pending':'completed' ,
             razorpayOrderId,
-            status: 'Pending'
+            status: 'Pending',
+            coupon: coupon ? { code: coupon.code , discount: coupon.discount , minAmount:coupon.minAmount} :null
         })
 
         await newOrder.save();
-
+        console.log(newOrder)
         await Cart.findOneAndUpdate({ userId: req.session.user }, { $set: { items: [] } })
 
-        res.status(201).json({ success: true, message: `Order placed successfully`, orderId: newOrder._id , razorpayOrderId:razorpayOrderId })
+        res.status(201).json({ success: true, message: `Order placed successfully`, orderId: newOrder._id , razorpayOrderId:razorpayOrderId,totalPrice })
 
 
     } catch (error) {
         console.error("Error during checkout", error);
-        res.status(500).json({ success: false, message: 'An error occurred while placing the order' });
+        res.status(500).json({ success: false, message: 'An error occurred while placing the order',orderId:newOrder._id,razorpayOrderId:razorpayOrderId });
     }
 }
 
@@ -171,7 +202,7 @@ const verifyPayment = async (req, res) => {
                 order.paymentStatus = 'completed';
                 order.status = 'Pending';
                 await order.save();
-
+                await Cart.findOneAndUpdate({ userId: req.session.user }, { $set: { items: [] } })
                 // Optional: Update inventory or trigger other actions here.
 
                 res.status(200).json({ success: true, orderId: order._id });
@@ -337,17 +368,59 @@ const cancelOrder = async (req, res) => {
 
         if (productIndex <= -1) return res.status(404).json({ message: "Product not found in the order" })
 
-        if (order.products[productIndex].status !== 'Pending') return res.status(400).json({ message: "Product cannot be cancelled" })
+        const productItem = order.products[productIndex];
+        
+        if (productItem.status !== 'Pending') return res.status(400).json({ message: "Product cannot be cancelled" })
 
-        const product = await Product.findById({ _id: productId });
+        const product = await Product.findById( productId );
         if (!product) return res.status(404).json({ message: "Product not found " });
 
-        product.stock += order.products[productIndex].quantity;
+        product.stock += productItem.quantity;
 
         await product.save();
+        productItem.status = 'cancelled';
+        const refundAmount = productItem.price * productItem.quantity;
 
-        order.products[productIndex].status = 'cancelled';
+
+        if (isNaN(refundAmount) || refundAmount < 0) {
+            console.error("Invalid refundAmount", refundAmount);
+            return res.status(500).json({ message: "Invalid refund amount calculated" });
+        }
+
+        order.totalPriceWithoutCouponOffer -= refundAmount;
+
+
+        if(order.coupon && order.totalPriceWithoutCouponOffer < order.coupon.minAmount){
+            order.totalPrice += order.discount;
+            order.coupon = null;
+        }else {
+            order.totalPrice -= refundAmount;
+        }
+
+        order.totalPrice = Math.max(0,order.totalPrice);
+        order.totalPriceWithoutCouponOffer = Math.max(0,order.totalPriceWithoutCouponOffer)
+
         await order.save();
+
+
+        if(order.payment === 'razorpay' || order.payment === 'wallet'){
+            if(order.payment === 'razorpay' && order.paymentStatus !== 'completed'){
+                return res.status(400).json({ message: 'Payment not completed, refund cannot be procced'})
+            }
+            let wallet = await Wallet.findOne({ userId: order.userId});
+            if(!wallet){
+                wallet =  new Wallet({ userId:order.userId });
+            }
+            wallet.balance += refundAmount;
+            wallet.transactions.push({
+                type:'Credit',
+                amount:refundAmount,
+                description:`Cancelled product refund ${product.name}`,
+                orderId:order._id
+            })
+            await wallet.save();
+        }
+        
 
         res.status(200).json({ message: "Order item cancelled successfully" });
 

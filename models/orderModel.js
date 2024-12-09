@@ -35,6 +35,22 @@ const orderSchema = new mongoose.Schema(
             type: Number,
             required: true,
         },
+        coupon:{
+            code:{
+                type:String,
+            },
+            discount:{
+                type:Number
+            },
+            minAmount:{
+                type:Number
+            }
+        }
+        ,
+        totalPriceWithoutCouponOffer: {
+            type:Number,
+            required:true
+        },
         paymentStatus: {
             type: String,
             enum : ['Pending','failed','completed',],

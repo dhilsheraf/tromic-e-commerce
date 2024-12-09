@@ -42,16 +42,18 @@
                                         <h2 class="widgets-title mb-5">Shop By Categories</h2>
                                         <div class="widgets-item">
                                             <ul class="widgets-category">
-                                                <% category.forEach(item => { %>
+                                                <% category.forEach(item=> { %>
                                                     <li>
                                                         <a href="#">
                                                             <%= item.name %>
-                                                            <input type="checkbox" name="categories" value="<%= item._id %>" class="category-checkbox">
+                                                                <input type="checkbox" name="categories"
+                                                                    value="<%= item._id %>" class="category-checkbox">
                                                         </a>
                                                     </li>
-                                                <% }) %>
-                                            </ul>                                            
+                                                    <% }) %>
+                                            </ul>
                                             <div class="text-center">
+                                                <br>
                                                 <button class="btn btn-danger"
                                                     onclick="applyCategoryFilters()">Apply</button>
                                             </div>
@@ -103,51 +105,58 @@
                             </ul>
                         </div>
                         <div class="tab-content text-charcoal pt-8">
-                            <div class="tab-pane fade show active" id="grid-view" role="tabpanel" aria-labelledby="grid-view-tab">
-                              <div class="product-grid-view row">
-                                <!-- Loop through all products -->
-                                <% products.forEach(product=> { %>
-                                <div class="col-xl-4 col-sm-6">
-                                  <div class="product-item">
-                                    <div class="product-img img-zoom-effect">
-                                      <!-- Dynamically load the primary image for each product -->
-                                      <a href="/product/<%= product._id %>">
-                                        <img class="img-full" src="<%=product.images[0] %>" alt="Product Image">
-                                      </a>
-                                    </div>
-                                    <div class="product-content">
-                                      <div class="product-info-wrapper">
-                                        <a class="product-name" href="/product/<%= product._id %>">
-                                          <%= product.name %>
-                                        </a>
-                                        <div class="price-box">
-                                          <div class="price-box-holder">
-                                            <span class="price-label">Price:</span>
-                                            <span class="new-price text-primary">₹ <%= product.price.toFixed(2) %></span>
-                                          </div>
+                            <div class="tab-pane fade show active" id="grid-view" role="tabpanel"
+                                aria-labelledby="grid-view-tab">
+                                <div class="product-grid-view row">
+                                    <!-- Loop through all products -->
+                                    <% products.forEach(product=> { %>
+                                        <div class="col-xl-4 col-sm-6">
+                                            <div class="product-item">
+                                                <div class="product-img img-zoom-effect">
+                                                    <!-- Dynamically load the primary image for each product -->
+                                                    <a href="/product/<%= product._id %>">
+                                                        <img class="img-full" src="<%=product.images[0] %>"
+                                                            alt="Product Image">
+                                                    </a>
+                                                </div>
+                                                <div class="product-content">
+                                                    <div class="product-info-wrapper">
+                                                        <a class="product-name" href="/product/<%= product._id %>">
+                                                            <%= product.name %>
+                                                        </a>
+                                                        <div class="price-box">
+                                                            <div class="price-box-holder">
+                                                                <span class="price-label">Price:</span>
+                                                                <span class="new-price text-primary">₹ <%=
+                                                                        product.price.toFixed(2) %></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="product-add-action">
+                                                        <ul>
+                                                            <li>
+                                                                <button class="add-to-cart-btn"
+                                                                    data-id="<%= product._id %>"
+                                                                    data-tippy="Add to cart" style="color: red;">
+                                                                    <i class="pe-7s-cart"></i>
+                                                                </button>
+                                                            </li>
+                                                            <li>
+                                                                <button class="add-to-wishlist-btn"
+                                                                    data-id="<%= product._id %>"
+                                                                    data-tippy="Add to wishlist">
+                                                                    <i class="pe-7s-like"></i>
+                                                                </button>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                      </div>
-                                      <div class="product-add-action">
-                                        <ul>
-                                          <li>
-                                            <button class="add-to-cart-btn" data-id="<%= product._id %>" data-tippy="Add to cart" style="color: red;">
-                                              <i class="pe-7s-cart"></i>
-                                            </button>
-                                          </li>
-                                          <li>
-                                            <button class="add-to-wishlist-btn" data-id="<%= product._id %>" data-tippy="Add to wishlist">
-                                              <i class="pe-7s-like"  ></i>
-                                            </button>
-                                          </li>
-                                        </ul>
-                                      </div>
-                                    </div>
-                                  </div>
+                                        <% }); %> <!-- End of loop -->
                                 </div>
-                                <% }); %> <!-- End of loop -->
-                              </div>
                             </div>
-                          </div>
+                        </div>
 
                         <div class="pagination-area pt-10">
                             <nav aria-label="Page navigation example">
@@ -229,69 +238,70 @@
         </script>
         <script>
             //add to Wishlist
-            document.querySelectorAll('.add-to-wishlist-btn').forEach( button => {
-                button.addEventListener('click',async function (params){
+            document.querySelectorAll('.add-to-wishlist-btn').forEach(button => {
+                button.addEventListener('click', async function (params) {
                     const productId = this.getAttribute('data-id');
                     try {
                         console.log("Fetching of the started")
-                        const response =  await fetch('/add-to-wishlist',{
-                            
+                        const response = await fetch('/add-to-wishlist', {
+
                             method: 'POST',
                             headers: {
-                                'Content-type':'application/json',  
+                                'Content-type': 'application/json',
                             },
-                            body: JSON.stringify({productId}),
+                            body: JSON.stringify({ productId }),
                         })
                         const result = await response.json();
 
-                        if(response.ok){
-                            Swal.fire("Product added to Wishlist",result.message,'success');
-                        }else{
-                            if(response.status === 401 ){
+                        if (response.ok) {
+                            Swal.fire("Product added to Wishlist", result.message, 'success');
+                        } else {
+                            if (response.status === 401) {
                                 window.location.href = '/login'
-                            }else{
-                                swal.fire('Error',result.message || "Failed to add the product to wishlist").then(()=>{
+                            } else {
+                                swal.fire('Error', result.message || "Failed to add the product to wishlist").then(() => {
                                     window.location.href = '/wishlist'
                                 })
-                                
+
                             }
                         }
                     } catch (error) {
-                        console.error('Error porduct add wishlist',error);
-                        Swal.fire('An error occured','while product adding the wishlist')
+                        console.error('Error porduct add wishlist', error);
+                        Swal.fire('An error occured', 'while product adding the wishlist')
                     }
                 })
             })
         </script>
         <script>
+            
             async function fetchProducts() {
                 const search = document.querySelector('.input-field').value;
                 const sort = document.querySelector('.nice-select').value;
                 const page = 1;
 
                 try {
-        const response = await fetch(`/products?page=${page}&search=${search}&sort=${sort}`);
-        if (response.ok) {
-            const html = await response.text();
+                    const response = await fetch(`/products?page=${page}&search=${search}&sort=${sort}`);
+                    if (response.ok) {
+                        const html = await response.text();
 
-            
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = html;
 
-            
-            const newProductGrid = tempDiv.querySelector('.product-grid-view');
-            const newPagination = tempDiv.querySelector('.pagination-area');
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = html;
 
-            
-            document.querySelector('.product-grid-view').innerHTML = newProductGrid.innerHTML;
-            document.querySelector('.pagination-area').innerHTML = newPagination.innerHTML;
 
-        } else {
-            console.error("Failed to fetch products:", response.status);
-        }
-    } catch (error) {
-        console.error("Error fetching products", error);
-    }
+                        const newProductGrid = tempDiv.querySelector('.product-grid-view');
+                        const newPagination = tempDiv.querySelector('.pagination-area');
+
+
+                        document.querySelector('.product-grid-view').innerHTML = newProductGrid.innerHTML;
+                        document.querySelector('.pagination-area').innerHTML = newPagination.innerHTML;
+
+                    } else {
+                        console.error("Failed to fetch products:", response.status);
+                    }
+                } catch (error) {
+                    console.error("Error fetching products", error);
+                }
 
             }
 

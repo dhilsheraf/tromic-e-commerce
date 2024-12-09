@@ -416,41 +416,35 @@
     const activationDate = document.getElementById('startDate').value.trim();
     const expirationDate = document.getElementById('expiryDate').value.trim();
 
-    // Validation Rules
+
     const errors = [];
     const today = new Date().toISOString().split('T')[0];
 
-    // Check if all fields are filled
+
     if (!couponCode || !minAmount || !discount || !activationDate || !expirationDate) {
         errors.push('All fields are required.');
     }
 
-    // Validate Coupon Code
-    if (!/^[a-zA-Z0-9]{5,20}$/.test(couponCode)) {
+    if (!/^[a-zA-Z0-9]{5,20}$/.test(couponCode)) 
         errors.push('Coupon Code must be alphanumeric and 5-20 characters long.');
-    }
-
-    // Validate Minimum Amount
-    if (isNaN(minAmount) || minAmount <= 0) {
+    if (isNaN(minAmount) || minAmount <= 0)
         errors.push('Minimum Amount must be a positive number.');
-    }
+    
 
-    // Validate Discount Value
-    if (isNaN(discount) || discount <= 0) {
+    if(discount >= minAmount){
+        errors.push('discount should be below min amount')
+    }
+    if (isNaN(discount) || discount <= 0) 
         errors.push('Discount Value must be a positive number.');
-    }
 
-    // Validate Activation Date
     if (activationDate < today) {
         errors.push('Activation Date cannot be in the past.');
     }
 
-    // Validate Expiration Date
     if (expirationDate <= activationDate) {
         errors.push('Expiration Date must be after the Activation Date.');
     }
 
-    // If there are errors, show them and stop further execution
     if (errors.length > 0) {
         Swal.fire({
             icon: 'error',
@@ -460,7 +454,7 @@
         return;
     }
 
-    // Proceed with adding coupon
+
     fetch('/admin/add-coupon', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -474,7 +468,7 @@
     })
         .then(response => response.json())
         .then(data => {
-            if (data.message) {
+            if (data.success) {
                 Swal.fire({
                     icon: 'success',
                     title: 'Success',
@@ -497,13 +491,19 @@
                 document.getElementById('couponTableBody').insertAdjacentHTML('beforeend', newRow);
                 document.getElementById('addCouponForm').reset();
                 $('#addCouponModal').modal('hide');
+            }else{
+                Swal.fire({
+                    icon:'error',
+                    title:'Error',
+                    text:data.message
+                })
             }
         })
         .catch(error => {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: 'Failed to add the coupon. Please try again.',
+                text: 'Failed to add the coupon. .',
             });
             console.error(error);
         });

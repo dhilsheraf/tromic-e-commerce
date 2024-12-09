@@ -243,30 +243,39 @@
             event.preventDefault();
 
             const formData = new FormData(this);
-            const name = formData.get('name');
+            const name = formData.get('name').trim(); // Remove any extra spaces
             const discountPercentage = parseFloat(formData.get('discountPercentage'));
             const activationDate = new Date(formData.get('activeDate'));
             const expiryDate = new Date(formData.get('expiryDate'));
+            const currentDate = new Date();
 
             // Validate name
-            if (name.length < 3 || name.length > 50) {
-                Swal.fire('Offer name must be between 3 and 50 characters.');
+            if (!name || name.length < 3 || name.length > 50) {
+                Swal.fire('Validation Error', 'Offer name must be between 3 and 50 characters.', 'error');
                 return;
             }
 
             // Validate discount percentage
             if (isNaN(discountPercentage) || discountPercentage < 1 || discountPercentage > 100) {
-                Swal.fire('Discount percentage must be between 1 and 100.');
+                Swal.fire('Validation Error', 'Discount percentage must be a number between 1 and 100.', 'error');
                 return;
             }
 
             // Validate dates
+            if (isNaN(activationDate.getTime()) || isNaN(expiryDate.getTime())) {
+                Swal.fire('Validation Error', 'Invalid date(s). Please select valid activation and expiry dates.', 'error');
+                return;
+            }
+            if (activationDate < currentDate) {
+                Swal.fire('Validation Error', 'Activation date cannot be in the past.', 'error');
+                return;
+            }
             if (activationDate >= expiryDate) {
-                Swal.fire('Expiry date must be after the activation date.');
+                Swal.fire('Validation Error', 'Expiry date must be after the activation date.', 'error');
                 return;
             }
 
-            // Prepare data for server
+
             const offerData = { name, discountPercentage, activationDate, expiryDate };
 
             try {

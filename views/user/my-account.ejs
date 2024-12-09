@@ -61,16 +61,106 @@
                                 </p>
                             </div>
                         </div>      
-                        <div class="tab-pane fade " id="account-wallet" role="tabpanel" aria-labelledby="account-wallet-tab">
-                            <div class="myaccount-waller text-center">
-                                <p style="color: black;">Your Waller details:</p>
-                                <ul>
-                                    <li style="color: black;">Username: <%= user.username %></li>
-                                 
-                                    <li style="color: black;">Wallet Balance: 99999 </li>
-                                </ul>
+                        <div class="tab-pane fade" id="account-wallet" role="tabpanel" aria-labelledby="account-wallet-tab">
+                            <style>
+                                .wallet-container {
+                                    background: linear-gradient(135deg, #f6f8f9 0%, #e5ebee 100%);
+                                    border-radius: 15px;
+                                    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+                                    padding: 30px;
+                                }
+                        
+                                .wallet-header {
+                                    background-color: #4a90e2;
+                                    color: white;
+                                    padding: 15px;
+                                    border-radius: 10px;
+                                    margin-bottom: 20px;
+                                }
+                        
+                                .wallet-details {
+                                    background-color: white;
+                                    border-radius: 10px;
+                                    padding: 20px;
+                                    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+                                    margin-bottom: 20px;
+                                }
+                        
+                                .transactions-table {
+                                    background-color: white;
+                                    border-radius: 10px;
+                                    overflow: hidden;
+                                }
+                        
+                                .transactions-table thead {
+                                    background-color: #f1f4f7;
+                                }
+                        
+                                .transaction-type-credit {
+                                    color: #28a745;
+                                    font-weight: bold;
+                                }
+                        
+                                .transaction-type-debit {
+                                    color: #dc3545;
+                                    font-weight: bold;
+                                }
+                            </style>
+                        
+                            <div class="wallet-container">
+                                <div class="wallet-header text-center">
+                                    <h3 class="mb-0">My Wallet</h3>
+                                </div>
+                                
+                                <div class="wallet-details">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p class="mb-2"><strong>Username:</strong> <%= user.username %></p>
+                                        </div>
+                                        <div class="col-md-6 text-md-end">
+                                            <p class="mb-2">
+                                                <strong>Balance:</strong> 
+                                                <span class="text-success">₹<%= wallet.balance.toFixed(2) %></span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                        
+                                <div class="transactions-table">
+                                    <h5 class="px-3 pt-3">Recent Transactions</h5>
+                                    <% if (wallet.transactions && wallet.transactions.length > 0) { %>
+                                        <table class="table table-hover mb-0">
+                                            <thead>
+                                                <tr>
+                                                    <th>Date</th>
+                                                    <th>Type</th>
+                                                    <th>Amount</th>
+                                                    <th>Description</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% wallet.transactions.forEach(transaction => { %>
+                                                    <tr>
+                                                        <td><%= new Date(transaction.date).toLocaleDateString() %></td>
+                                                        <td>
+                                                            <span class="<%= transaction.type === 'Credit' ? 'transaction-type-credit' : 'transaction-type-debit' %>">
+                                                                <%= transaction.type %>
+                                                            </span>
+                                                        </td>
+                                                        <td>₹<%= transaction.amount.toFixed(2) %></td>
+                                                        <td><%= transaction.description || 'N/A' %></td>
+                                                    </tr>
+                                                <% }) %>
+                                            </tbody>
+                                        </table>
+                                    <% } else { %>
+                                        <div class="text-center py-3">
+                                            <p class="text-muted mb-0">No transactions found.</p>
+                                        </div>
+                                    <% } %>
+                                </div>
                             </div>
-                        </div>                        
+                        </div>                                
                         
                         <div class="tab-pane fade" id="account-orders" role="tabpanel" aria-labelledby="account-orders-tab">
                             <div class="myaccount-orders">
@@ -82,6 +172,7 @@
                                       <th>ORDER ID</th>
                                       <th>DATE</th>
                                       <th>PAYMENT</th>
+                                      <th>STATUS</th>
                                       <th>TOTAL</th>
                                       <th>Detail</th>
                                     </tr>
@@ -97,6 +188,7 @@
                                           </td>
                                           <td><%= new Date(order.createdAt).toLocaleDateString() %></td>
                                           <td><Strong><%= order.payment %></Strong> </td>
+                                          <td><Strong><%= order.paymentStatus %></Strong> </td>
                                           <td>
                                             ₹<%= order.totalPrice %> for <%= order.products.reduce((sum, item) => sum + item.quantity, 0) %> items
                                           </td>
