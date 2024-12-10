@@ -138,11 +138,7 @@
                 <div class="col-lg-6 pt-9 pt-lg-0">
                     <div class="single-product-content">
                         <h2 class="title mb-3"><%= product.name %></h2>
-                        <div class="coupon-section pb-3">
-                            <label for="coupon-code">Have a Coupon?</label>
-                            <input type="text" id="coupon-code" placeholder="Enter coupon code">
-                            <button class="apply-coupon btn btn-secondary">Apply</button>
-                        </div>
+                       
     
                       <!-- Display Discounted Price -->
                     <div class="price-box pb-3"><%if(product.offer){%>
@@ -194,10 +190,12 @@
                                 </button>
                             </li>
                             <li class="wishlist-btn-wrap">
-                                <a class="custom-circle-btn" href="#">
+                                <button 
+                                    class="custom-circle-btn add-to-wishlist-btn" 
+                                    data-id="<%= product._id %>">
                                     <i class="pe-7s-like"></i>
-                                </a>
-                            </li>
+                                </button>
+                            </li>                            
                         </ul>
     
                         <!-- Categories -->
@@ -509,6 +507,42 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
+</script>
+<script>
+    //add to Wishlist
+    document.querySelectorAll('.add-to-wishlist-btn').forEach(button => {
+        button.addEventListener('click', async function (params) {
+            const productId = this.getAttribute('data-id');
+            try {
+                console.log("Fetching of the started")
+                const response = await fetch('/add-to-wishlist', {
+
+                    method: 'POST',
+                    headers: {
+                        'Content-type': 'application/json',
+                    },
+                    body: JSON.stringify({ productId }),
+                })
+                const result = await response.json();
+
+                if (response.ok) {
+                    Swal.fire("Product added to Wishlist", result.message, 'success');
+                } else {
+                    if (response.status === 401) {
+                        window.location.href = '/login'
+                    } else {
+                        swal.fire('Error', result.message || "Failed to add the product to wishlist").then(() => {
+                            window.location.href = '/wishlist'
+                        })
+
+                    }
+                }
+            } catch (error) {
+                console.error('Error porduct add wishlist', error);
+                Swal.fire('An error occured', 'while product adding the wishlist')
+            }
+        })
+    })
 </script>
 
 <script src="/js/singleProduct.js"></script>

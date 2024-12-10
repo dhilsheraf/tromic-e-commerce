@@ -16,9 +16,7 @@ const getCheckout = async (req, res) => {
       
         const currentDate = new Date();
         const coupons = await Coupon.find({
-            activeAt: { $lte: currentDate }, // Coupon is active if current date is after activeAt
-            expiresAt: { $gte: currentDate }  // Coupon is valid if current date is before expiresAt
-        });
+            activeAt: { $lte: currentDate },  expiresAt: { $gte: currentDate }   });
 
 
         const userAddresses = await Address.find({ userId: req.session.user })
@@ -37,7 +35,12 @@ const getCheckout = async (req, res) => {
             total: item.productId.price * item.quantity
         }))
 
-        const wallet = await Wallet.findOne({ userId:req.session.user });
+        let wallet = await Wallet.findOne({ userId:req.session.user });
+
+        if(!wallet){
+            wallet = new Wallet({userId:req.session.user ,balance:0,transactions:[]});
+            await wallet.save()
+        }
 
 
         cartTotal = cartItems.reduce((sum, item) => sum + item.total, 0);
@@ -136,6 +139,24 @@ const checkout = async (req, res) => {
             totalPrice = totalPriceWithoutCouponOffer;
         }
 
+        if (paymentMethod === 'wallet') {
+            const wallet = await Wallet.findOne({ userId: req.session.user });
+            if (!wallet) {
+                return res.status(404).json({ success: false, message: 'Wallet not found' });
+            }
+            if (wallet.balance < totalPrice) {
+                return res.status(400).json({ success: false, message: 'Insufficient wallet balance' });
+            }
+
+            // Deduct the amount and add transaction
+            wallet.balance -= totalPrice;
+            wallet.transactions.push({
+                type: 'Debit',
+                amount: totalPrice,
+                description: 'Order payment',
+            });
+            await wallet.save();
+        }
 
         let razorpayOrderId = '';
         if(paymentMethod === 'razorpay'){
@@ -149,6 +170,7 @@ const checkout = async (req, res) => {
             const razorpayOrder = await RazorpayInstance.orders.create(options);
             razorpayOrderId = razorpayOrder.id;  
         }
+        
         
 
         const newOrder = new Order({
@@ -195,14 +217,12 @@ const verifyPayment = async (req, res) => {
         
 
         if (expectedSignature === razorpay_signature) {
-            // Payment is successful, update the order status
             const order = await Order.findOne({ razorpayOrderId: razorpay_order_id });
             if (order) {
                 order.paymentStatus = 'completed';
                 order.status = 'Pending';
                 await order.save();
                 await Cart.findOneAndUpdate({ userId: req.session.user }, { $set: { items: [] } })
-                // Optional: Update inventory or trigger other actions here.
 
                 res.status(200).json({ success: true, orderId: order._id });
             } else {
@@ -506,6 +526,12 @@ const approveReturn = async (req, res) => {
 
         productItem.status = 'return'
         await order.save();
+
+        const product = await Product.findById(productId);
+        if(product){
+            product.stock += productItem.quantity;
+            await product.save()
+        }
 
         res.json({ success: true, message: 'Return approved and money credited to wallet successfully' });
     } catch (error) {

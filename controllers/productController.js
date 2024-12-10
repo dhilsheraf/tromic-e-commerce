@@ -1,11 +1,13 @@
 const Product = require('../models/productModel');
 const Category = require('../models/categoryModel')
 const Offer = require('../models/offerModel')
+const mongoose = require('mongoose');
+
 
 const getProduct = async (req, res) => {
     try {
-        const page = parseInt(req.query.page) || 1; 
-        const limit = 10; 
+        const page = parseInt(req.query.page) || 1;
+        const limit = 10;
         const skip = (page - 1) * limit;
 
         const searchQuery = req.query.search || '';
@@ -13,17 +15,17 @@ const getProduct = async (req, res) => {
 
         const queryConditions = {}
 
-        if(searchQuery){
+        if (searchQuery) {
             queryConditions.$or = [
-                { name: {$regex: searchQuery ,$options:'i'}}
+                { name: { $regex: searchQuery, $options: 'i' } }
             ];
         }
 
-        if(stockStatus){
-            if(stockStatus === 'out-of-stock') {
+        if (stockStatus) {
+            if (stockStatus === 'out-of-stock') {
                 queryConditions.stock = 0
-            } else if ( stockStatus === 'low-stock') queryConditions.stock = { $lt: 10 ,$gt:0 }
-            else if(stockStatus === 'in-stock') queryConditions.stock = { $gte: 50 }
+            } else if (stockStatus === 'low-stock') queryConditions.stock = { $lt: 10, $gt: 0 }
+            else if (stockStatus === 'in-stock') queryConditions.stock = { $gte: 50 }
         }
 
         const totalProducts = await Product.countDocuments(queryConditions)
@@ -31,17 +33,18 @@ const getProduct = async (req, res) => {
 
         const offers = await Offer.find()
 
-        const products = await Product.find(queryConditions).skip(skip).limit(limit).populate({path:'category',populate:{path:'offer',model:'Offer'}}).populate('offer');
+        const products = await Product.find(queryConditions).skip(skip).limit(limit).populate({ path: 'category', populate: { path: 'offer', model: 'Offer' } }).populate('offer');
 
-        const totalPages = Math.ceil(totalProducts/limit)
+        const totalPages = Math.ceil(totalProducts / limit)
 
-            res.render('admin/product', { products,
+        res.render('admin/product', {
+            products,
             currentPage: page,
-            totalPages,offers,
+            totalPages, offers,
             stockStatus,
             searchQuery
         });
-    }catch (error) {
+    } catch (error) {
         console.error('Error fetching products:', error);
         res.status(500).render('admin/404');
     }
@@ -86,7 +89,7 @@ const addProduct = async (req, res) => {
             stock: parseInt(stock, 10),
             category,
             images: imagePaths, // Save image paths
-            originalPrice:price
+            originalPrice: price
         });
 
         await newProduct.save();
@@ -138,7 +141,7 @@ const editProduct = async (req, res) => {
                 description,
                 price,
                 stock,
-                originalPrice:price,
+                originalPrice: price,
                 category,
                 images: updatedImages.filter((url) => url), // Remove any undefined URLs
             },
@@ -165,13 +168,13 @@ const aiProduct = async (req, res) => {
         if (!product) {
             console.log("product not found")
             return res.status(404).send('Product not found');
-            
-        }
-         
-        product.isActive = !product.isActive;
-        await product.save(); 
 
-        res.redirect('/admin/products'); 
+        }
+
+        product.isActive = !product.isActive;
+        await product.save();
+
+        res.redirect('/admin/products');
     } catch (error) {
         console.error(error);
         res.status(500).send('Internal Server Error');
@@ -180,103 +183,96 @@ const aiProduct = async (req, res) => {
 
 const loadProduct = async (req, res) => {
     try {
-
-        const {search = '' , sort = '' , page = 1 , limit = 12 } = req.query;
-        
-        
-        const skip = (page - 1 ) * limit ;
-
-        const searchFilter = search 
-          ? { name : {$regex: search , $options: 'i'}} : {} ;
+        const { search = '', sort = '', categories = [], page = 1, limit = 12 } = req.query;
 
 
-          let sortOption = {} ;
-          if(sort === 'price-asc' ) sortOption.price = 1 ;
-          else if(sort === 'price-desc' ) sortOption.price = -1 ;
-          else if(sort === 'new-arrivals' ) sortOption.createdAt = 1 ;
-          else if(sort === 'a-z' ) sortOption.name = 1 ;
-          else if(sort === 'z-a' ) sortOption.name = -1 ;
-          else sortOption = { createdAt: -1 }
+        const skip = (page - 1) * limit;
 
-          
-        const category = await Category.find({isActive:true});
-        
+
+        const searchFilter = search ? { name: { $regex: search, $options: 'i' } } : {};
+
+
+        const categoriesArray = Array.isArray(categories)
+            ? categories
+            : categories
+                ? [categories]
+                : [];
+
+
+        const validCategoryIds = categoriesArray.filter(c => mongoose.Types.ObjectId.isValid(c));
+
+        let categoryFilter = {};
+        if (validCategoryIds.length > 0) {
+            categoryFilter = {
+                "categoryDetails._id": {
+                    $in: validCategoryIds.map(c => new mongoose.Types.ObjectId(c))
+                }
+            };
+        }
+
+
+
+        let sortOption = {};
+        if (sort === 'price-asc') sortOption.price = 1;
+        else if (sort === 'price-desc') sortOption.price = -1;
+        else if (sort === 'new-arrivals') sortOption.createdAt = -1;
+        else if (sort === 'a-z') sortOption.name = 1;
+        else if (sort === 'z-a') sortOption.name = -1;
+        else sortOption = { createdAt: -1 };
+
+        const categoryList = await Category.find({ isActive: true });
 
         const products = await Product.aggregate([
-            {
-                $match: {
+            { $match: {
                     isActive: true,
-                    ...searchFilter
-                }
-            },
+                    ...searchFilter } },
+                { $lookup: {
+                    from: "categories", 
+                    localField: "category", 
+                    foreignField: "_id", 
+                    as: "categoryDetails", 
+                }},
+
+            { $unwind: "$categoryDetails"},
+            {$match: {"categoryDetails.isActive": true, ...categoryFilter}},
+            { $sort: sortOption },{ $skip: skip },{ $limit: Number(limit) }, 
+            { $project: {
+                    name: 1,
+                    price: 1,
+                    description: 1,
+                    images: 1,
+                    stock: 1,
+                    isActive: 1,
+                    category: "$categoryDetails",
+                }}]);
+
+        const totalProducts = await Product.aggregate([
+            { $match: { isActive: true, ...searchFilter,} },
             {
                 $lookup: {
-                    from:"categories",
-                    localField:"category",
-                    foreignField:"_id",
-                    as:"categoryDetails"
+                    from: "categories",
+                    localField: "category",
+                    foreignField: "_id",
+                    as: "categoryDetails",
+                },},
+            { $unwind: "$categoryDetails"},
+            { $match: { "categoryDetails.isActive": true, ...categoryFilter} },
+            { $count: "total"},
+        ]);
 
-                }
-            },{
-                $match:{
-                    "categoryDetails.isActive":true
-                }
-            },
-            { $sort:sortOption },
-            {
-                $skip:skip
-            },
-            {
-                $limit:Number(limit)
-            },{
-                $project:{
-                    name:1, price:1,description:1,
-                    images:1,stock:1,isActive:1,
-                    category:{$arrayElemAt: ["$categoryDetails",0]}
-                }
-            }
-        ])
 
-        const totalProducts = await Product.aggregate([{
-            $match:{
-                isActive:true,
-                ...searchFilter
-            }
-        },{
-            $lookup:{
-                from:"categories",
-                localField:"category",
-                foreignField:"_id",
-                as:"categoryDetails"
-            }
-        },
-        {
-            $match:{ "categoryDetails.isActive":true}
-        },
-        {
-            $count:"total"
-        }
-    ])
+        const totalCount = totalProducts[0]?.total || 0;
 
-    const totalCount = totalProducts[0]?.total || 0
-        
-    // console.log(products)
+        res.render('shop', { products, currentPage: Number(page),totalPages: Math.ceil(totalCount / limit),
+            totalProducts: totalCount, search, sort,category: categoryList, selectedCategories: categoriesArray,});
 
-      
-        res.render('shop', { 
-            products,
-            currentPage: Number(page),
-            totalPages: Math.ceil(totalCount/ limit),
-            totalProducts:totalCount,
-            search,
-            sort,
-            category
-         });  
     } catch (err) {
         console.error(err);
-        res.status(500).send('Server error');
+        res.status(500).render('error');
     }
-}
+};
+
+
 
 const getProductDetails = async (req, res) => {
     try {
@@ -286,10 +282,8 @@ const getProductDetails = async (req, res) => {
             return res.status(404).send("Product not found");
         }
 
-        
-
         const relatedProducts = await Product.find({
-            _id: { $ne: productId }  
+            _id: { $ne: productId }
         }).limit(4).lean();
 
         res.render("single-product", { product, relatedProducts });
