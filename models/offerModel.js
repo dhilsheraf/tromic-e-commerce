@@ -18,6 +18,9 @@ const offerSchema = new mongoose.Schema({
     activeAt:{
         type:Date,
         required:true
+    },
+    isActive:{
+        type:Boolean
     }
 })
 

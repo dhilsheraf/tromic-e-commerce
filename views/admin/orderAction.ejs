@@ -159,20 +159,37 @@
                                                         </td>
                                                         <td class="text-center align-middle">
                                                             <select
-                                                                class="form-select"
-                                                                aria-label="Delivery Status"
-                                                                onchange="updateStatus('<%= order._id %>', '<%= productItem.product._id %>', this.value)"
-                                                                <%=  productItem.status === 'delivered' || productItem.status === 'cancelled' ? 'disabled' : '' %>>
-                                                                <option <%= productItem.status === 'Pending' ? 'selected' : '' %>>Pending</option>
-                                                                <option <%= productItem.status === 'shipped' ? 'selected' : '' %>>shipped</option>
-                                                                <option <%= productItem.status === 'on delivery' ? 'selected' : '' %>>on delivery</option>
-                                                                <option <%= productItem.status === 'delivered' ? 'selected' : '' %>>delivered</option>
-                                                                <option <%= productItem.status === 'cancelled' ? 'selected' : '' %>>cancelled</option>
-                                                            </select>
+                                                            class="form-select"
+                                                            aria-label="Delivery Status"
+                                                            onchange="updateStatus('<%= order._id %>', '<%= productItem.product._id %>', this.value)"
+                                                            <%= productItem.status === 'return' || productItem.status === 'delivered' || productItem.status === 'cancelled' || productItem.status === 'return reject' ? 'disabled' : '' %>>
+                                                            
+                                                            <option value="Pending" <%= productItem.status === 'Pending' ? 'selected' : '' %>>Pending</option>
+                                                            <option value="shipped" <%= productItem.status === 'shipped' ? 'selected' : '' %>>Shipped</option>
+                                                            <option value="on delivery" <%= productItem.status === 'on delivery' ? 'selected' : '' %>>On Delivery</option>
+                                                            <option value="delivered" <%= productItem.status === 'delivered' ? 'selected' : '' %>>Delivered</option>
+                                                            <option value="cancelled" <%= productItem.status === 'cancelled' ? 'selected' : '' %>>Cancelled</option>     
+
+                                                        </select><span style="color: green;"><%= productItem.status %></span>
+                                                                                                             
                                                         </td>
                                                         
                                                     </tr>
-                                                    <% }); %>
+                                                    <% if(productItem.status === 'delivered') { %>
+                                                    <% if (productItem.reasonForReturn) { %>
+                                                        <tr>
+                                                            <td colspan="5" class="text-center">
+                                                                <h5 class="card-title mb-3">Return Reason</h5>
+                                                                <p><strong><%= productItem.reasonForReturn %></strong></p>
+                                                                <div class="d-flex justify-content-between">
+                                                                    <button class="btn btn-success" onclick="approveReturn('<%= order._id %>', '<%= productItem.product._id %>')">Approve Return</button>
+                                                                    <button class="btn btn-danger" onclick="rejectReturn('<%= order._id %>', '<%= productItem.product._id %>')">Reject Return</button>                                                                  </div>
+                                                            </td>
+                                                        </tr>
+                                                    <% } %>
+                                                    <% } %>
+                                                <% }); %>
+                                                   
                                             </tbody>
                                         </table>
                                     </div>
@@ -260,5 +277,57 @@
         alert('An error occured while order status update')
     })
  }
+
+
+//returnnnnnnnnnnnnnnnnnnnnn
+ function approveReturn(orderId, productId) {
+    fetch(`/admin/order/${orderId}/product/${productId}/approve-return`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            Swal.fire('Return Approved', data.message, 'success').then(()=>{
+                window.location.reload();  
+            })
+            
+        } else {
+            Swal.fire('Failed to approve return', data.message, 'error');
+        }
+    })
+    .catch((error) => {
+        console.error("Error occurred while approving return:", error);
+        Swal.fire('Error', 'An error occurred while processing the return', 'error');
+    });
+}
+
+
+function rejectReturn(orderId, productId) {
+    fetch(`/admin/order/${orderId}/product/${productId}/reject-return`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: 'return rejected' })  
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            Swal.fire('Return Rejected', data.message, 'success').then(() => {
+                window.location.reload();  
+            });
+        } else {
+            Swal.fire('Failed to reject return', data.message, 'error')
+        }
+    })
+    .catch((error) => {
+        console.error("Error occurred while rejecting return:", error);
+        Swal.fire('Error', 'An error occurred while processing the return rejection', 'error');
+    });
+}
+
 </script>
 </html>

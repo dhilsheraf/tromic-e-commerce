@@ -405,86 +405,109 @@
     <script src="/assets/js/main.js?v=1.1" type="text/javascript"></script>
 
     <script>
-        $(document).ready(function () {
+document.addEventListener('DOMContentLoaded', function () {
 
-            $(document).ready(function () {
+// Open modal and set category ID on button click
+document.querySelectorAll('.apply-offer-btn').forEach(button => {
+    button.addEventListener('click', function () {
+        const categoryId = this.dataset.categoryId;
+        document.querySelector('#applyOfferModal').dataset.categoryId = categoryId; // Save the category ID to modal
+    });
+});
 
-                // Open modal and set category ID on button click
-                $('.apply-offer-btn').on('click', function () {
-                    const categoryId = $(this).data('category-id');
-                    $('#applyOfferModal').data('category-id', categoryId); // Save the category ID to modal
-                });
+// Apply offer logic using fetch
+document.querySelector('#applyOfferButton').addEventListener('click', async function () {
+    const categoryId = document.querySelector('#applyOfferModal').dataset.categoryId;
+    const offerId = document.querySelector('#offer-select').value;
+    const discount = document.querySelector('#offer-select').selectedOptions[0].dataset.discount;
 
-                // Apply offer logic
-                $('#applyOfferButton').on('click', function () {
-                    const categoryId = $('#applyOfferModal').data('category-id');
-                    const offerId = $('#offer-select').val();
-                    const discount = $('#offer-select option:selected').data('discount');
+    try {
+        const response = await fetch('/admin/category/apply-offer', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                categoryId: categoryId,
+                offerId: offerId,
+                discount: discount
+            })
+        });
 
-                    $.ajax({
-                        url: '/admin/category/apply-offer',
-                        method: 'POST',
-                        data: {
-                            categoryId: categoryId,
-                            offerId: offerId,
-                            discount: discount
-                        },
-                        success: function (response) {
-                            Swal.fire({
-                                title: 'Offer applied successfully!',
-                                icon: 'success',
-                            }).then(() => {
-                                location.reload();
-                            })
-
-
-                        },
-                        error: function (error) {
-                            alert('Error applying offer');
-                            console.error(error);
-                        }
-                    });
-                });
+        if (response.ok) {
+            const data = await response.json();
+            Swal.fire({
+                title: 'Offer applied successfully!',
+                icon: 'success',
+            }).then(() => {
+                location.reload(); // Reload the page to update the category offer
             });
+        } else {
+            const errorData = await response.json();
+            Swal.fire({
+                title: 'Error applying offer',
+                icon: 'error',
+                text: errorData.message || 'Something went wrong!',
+            });
+        }
+    } catch (error) {
+        Swal.fire('Error applying offer');
+        console.error(error);
+    }
+});
 
+// Remove offer logic using fetch
+document.querySelectorAll('.remove-offer-btn').forEach(button => {
+    button.addEventListener('click', function () {
+        const categoryId = this.dataset.categoryId;
 
-//remove offer button
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'You are about to remove the offer from this category.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, remove offer',
+            cancelButtonText: 'No, keep offer',
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    const response = await fetch('/admin/category/remove-offer', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ categoryId: categoryId })
+                    });
 
-            $('.remove-offer-btn').on('click', function () {
-                const categoryId = $(this).data('category-id'); // Get the category ID
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: 'You are about to remove the offer from this category.',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Yes, remove offer',
-                    cancelButtonText: 'No, keep offer',
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            url: '/admin/category/remove-offer',
-                            method: 'POST',
-                            data: { categoryId: categoryId },
-                            success: function (response) {
-                                Swal.fire({
-                                    title: 'Offer removed successfully!',
-                                    icon: 'success',
-                                }).then(() => {
-                                    location.reload(); // Reload the page to update the offer status
-                                });
-                            },
-                            error: function (error) {
-                                Swal.fire({
-                                    title: 'Error removing offer',
-                                    icon: 'error',
-                                    text: error.responseJSON.message || 'Something went wrong!',
-                                });
-                            }
+                    if (response.ok) {
+                        Swal.fire({
+                            title: 'Offer removed successfully!',
+                            icon: 'success',
+                        }).then(() => {
+                            location.reload(); // Reload the page to update the offer status
+                        });
+                    } else {
+                        const errorData = await response.json();
+                        Swal.fire({
+                            title: 'Error removing offer',
+                            icon: 'error',
+                            text: errorData.message || 'Something went wrong!',
                         });
                     }
-                });
-            });
+                } catch (error) {
+                    Swal.fire({
+                        title: 'Error removing offer',
+                        icon: 'error',
+                        text: 'Something went wrong!',
+                    });
+                    console.error(error);
+                }
+            }
         });
+    });
+});
+
+});
 
 
     </script>

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Nest Dashboard</title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta property="og:title" content="" />
+    <meta property="og:type" content="" />
+    <meta property="og:url" content="" />
+    <meta property="og:image" content="" />
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/imgs/theme/favicon.svg" />
+    <!-- Template CSS -->
+    <link href="/assets/css/main.css?v=1.1" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<style>
+    .btn-lg {
+        padding: 10px 20px;
+        font-size: 16px;
+    }
+
+    .btn:hover {
+        opacity: 0.9;
+    }
+
+    .btn-success {
+        background-color: #28a745;
+        border-color: #28a745;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+</style>
+
+<body>
+    <div class="screen-overlay"></div>
+    <aside class="navbar-aside" id="offcanvas_aside">
+        <div class="aside-top">
+            <a href="/admin/dashboard" class="brand-wrap">
+                <img src="/assets/imgs/theme/logo.svg" class="logo" alt="Nest Dashboard" />
+            </a>
+            <div>
+                <button class="btn btn-icon btn-aside-minimize">
+                    <i class="text-muted material-icons md-menu_open"></i>
+                </button>
+            </div>
+        </div>
+        <nav>
+            <ul class="menu-aside">
+                <li class="menu-item active">
+                    <a class="menu-link" href="/admin/dashboard">
+                        <i class="icon material-icons md-home"></i>
+                        <span class="text">Dashboard</span>
+                    </a>
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="/admin/users">
+                        <i class="icon material-icons md-person"></i>
+                        <span class="text">Users</span>
+                    </a>
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="/admin/products">
+                        <i class="icon material-icons md-add_box"></i>
+                        <span class="text">Products</span>
+                    </a>
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="/admin/category">
+                        <i class="icon material-icons md-store"></i>
+                        <span class="text">Category</span>
+                    </a>
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="/admin/orders">
+                        <i class="icon material-icons md-shopping_cart"></i>
+                        <span class="text">Orders</span>
+                    </a>
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="/admin/offer">
+                        <i class="icon material-icons md-monetization_on"></i>
+                        <span class="text">Offer</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" href="/admin/coupon">
+                        <i class="icon material-icons md-stars">
+                        </i> <span class="text">Coupons</span> </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+    <main class="main-wrap">
+        <header class="main-header navbar">
+            <div class="col-nav">
+                <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside">
+                    <i class="material-icons md-apps"></i>
+                </button>
+                <ul class="nav">
+                    <li class="nav-item">
+                        <a class="nav-link btn-icon darkmode" href="#">
+                            <i class="material-icons md-nights_stay"></i>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="requestfullscreen nav-link btn-icon"><i
+                                class="material-icons md-cast"></i></a>
+                    </li>
+                </ul>
+            </div>
+        </header>
+        <section class="content-main">
+            <div class="content-header">
+                <h2 class="content-title text-2xl md:text-3xl">Sales Report</h2>
+                <h3>Total Sales: ₹<%= summary.totalSales %>
+                </h3>
+                <h3>Total Orders: <%= summary.totalOrders %>
+                </h3>
+            </div>
+            <div class="row mb-4 flex flex-col sm:flex-row">
+                <div class="col-md-4 mb-4 sm:mb-0">
+                    <label for="dateRange">Custom Date Range</label>
+                    <input type="date" id="startDate" class="form-control w-full" placeholder="Start Date">
+                    <input type="date" id="endDate" class="form-control mt-2 w-full" placeholder="End Date">
+                </div>
+
+                <div class="col-md-4 d-flex justify-content-end align-items-end sm:mt-0 mt-4">
+                    <div class="btn-group" role="group">
+                        <button id="filterBtn" class="btn btn-success btn-lg me-2">Filter</button>
+                        <a href="/admin/sales-report?startDate=<%= startDate %>&endDate=<%= endDate %>&format=excel"
+                            class="btn btn-success btn-lg me-2" id="downloadExcel">Download Excel</a>
+                        <a href="/admin/sales-report?startDate=<%= startDate %>&endDate=<%= endDate %>&format=pdf"
+                            class="btn btn-danger btn-lg" id="downloadPdf">Download PDF</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">
+                                                No.
+                                            </th>
+                                            <th>ID</th>
+                                            <th>Payment <br>status</th>
+                                            <th>Date</th>
+                                            <th>total</th>
+                                            <th>Payment</th>
+                                            <th>Total <br>Items</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% if (orders.length===0) { %>
+                                            <tr>
+                                                <td colspan="7" class="text-center">No orders found</td>
+                                            </tr>
+                                            <% } else { %>
+                                                <% orders.forEach((order, index)=> { %>
+                                                    <tr>
+                                                        <td class="text-center">
+                                                            <%= index + 1 %>
+                                                        </td>
+                                                        <td>
+                                                            <%= order._id %>
+                                                        </td>
+                                                        <td>
+                                                            <%= order.paymentStatus %>
+                                                        </td>
+                                                        <td>
+                                                            <%= new Date(order.createdAt).toLocaleDateString() %>
+                                                        </td>
+                                                        <td>₹<%= order.totalPrice %>
+                                                        </td>
+                                                        <td>
+                                                            <%= order.payment %>
+                                                        </td>
+                                                        <td>
+                                                            <%= order.products.length %>
+                                                        </td>
+                                                    </tr>
+                                                    <% }); %>
+                                                        <% } %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <footer class="main-footer font-xs">
+            <div class="row pb-30 pt-15">
+                <div class="col-sm-6">
+                    <script>
+                        document.write(new Date().getFullYear());
+                    </script>
+                    &copy; Nest - HTML Ecommerce Template .
+                </div>
+                <div class="col-sm-6">
+                    <div class="text-sm-end">All rights reserved</div>
+                </div>
+            </div>
+        </footer>
+    </main>
+    <script src="/assets/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="/assets/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="/assets/js/vendors/select2.min.js"></script>
+    <script src="/assets/js/vendors/perfect-scrollbar.js"></script>
+    <script src="/assets/js/vendors/jquery.fullscreen.min.js"></script>
+    <script src="/assets/js/vendors/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script src="/assets/js/main.js?v=1.1" type="text/javascript"></script>
+    <script src="/assets/js/custom-chart.js" type="text/javascript"></script>
+    <script>
+        const filterBtn = document.getElementById('filterBtn');
+        const startDateInput = document.getElementById('startDate');
+        const endDateInput = document.getElementById('endDate');
+
+        filterBtn.addEventListener('click', () => {
+            const startDate = startDateInput.value;
+            const endDate = endDateInput.value;
+
+            if (!startDate || !endDate) {
+                Swal.fire('Please select both start and end dates.');
+                return;
+            }
+
+            if (new Date(startDate) > new Date(endDate)) {
+                Swal.fire('Start date cannot be after end date.');
+                return;
+            }
+
+            window.location.href = `/admin/sales-report?startDate=${startDate}&endDate=${endDate}`;
+        });
+    </script>
+</body>
+
+</html>

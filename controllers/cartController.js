@@ -5,8 +5,9 @@ const mongoose = require('mongoose')
 
 const addToCart = async (req, res) => {
     try {
-        if (!req.session.user) return res.status(401).json({ message: "Please login" });
-
+        if (!req.session.user) {
+            return res.status(401).json({ success: false, message: "Please login" });
+        }        
         const { productId, quantity } = req.body;
         const userId = req.session.user;
 

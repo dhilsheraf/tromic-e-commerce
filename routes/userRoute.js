@@ -33,12 +33,12 @@ router.post("/add-to-wishlist",userController.addToWishlist)
 router.get("/wishlist-remove/:productId",session.checkUserSession,userController.removeWishlist)
 
 // sign up
-router.get("/signup", session.existUser, userController.loadSignup)
-router.post("/signup", userController.signUp)
+router.get("/signup",session.existUser, userController.loadSignup)
+router.post("/signup",session.existUser, userController.signUp)
 
 //login
-router.get("/login", session.existUser, userController.loadLogin);
-router.post("/login", userController.login)
+router.get("/login",session.existUser, userController.loadLogin);
+router.post("/login",session.existUser, userController.login)
 
 //google authentication
 router.get("/auth/google" ,passport.authenticate('google', { scope: ['profile', 'email'] }))
@@ -64,9 +64,9 @@ router.get('/product/:id', productController.getProductDetails);
 router.post("/profile-update", userController.profileUpdate)
 
 //address
-router.post('/add-address', addressController.addAddress)
-router.post("/edit-address", addressController.editAddress);
-router.delete('/delete-address/:id', addressController.deleteAddress);
+router.post('/add-address',session.checkUserSession, addressController.addAddress)
+router.post("/edit-address",session.checkUserSession, addressController.editAddress);
+router.delete('/delete-address/:id',session.checkUserSession, addressController.deleteAddress);
 
 
 //password
@@ -78,19 +78,21 @@ router.post('/change-password', userController.changePassword)
  
 //cart
 router.get('/cart',session.checkUserSession,cartController.listCart)
-router.post('/add-cart', cartController.addToCart)
-router.post('/update-cart',cartController.updateCartQuantity)
-router.delete('/delete-cart',cartController.deleteCart) 
+router.post('/add-cart',session.checkUserSession, cartController.addToCart)
+router.post('/update-cart',session.checkUserSession,cartController.updateCartQuantity)
+router.delete('/delete-cart',session.checkUserSession,cartController.deleteCart) 
 
 //checkout
 router.get('/checkout',session.checkUserSession,orderController.getCheckout)
-router.post('/checkout',orderController.checkout)
+router.post('/checkout',session.checkUserSession,orderController.checkout)
 router.get('/order-confirm/:orderId',session.checkUserSession,orderController.orderConfirm)
 router.post('/verify-payment', orderController.verifyPayment);
 
 
 //order detail
 router.get('/order/:orderId',session.checkUserSession,orderController.detailOrder)
-router.post('/cancel-order',orderController.cancelOrder)
+router.post('/cancel-order',session.checkUserSession,orderController.cancelOrder)
+router.patch('/return-order',orderController.returnOrder)
+
 
 module.exports = router;

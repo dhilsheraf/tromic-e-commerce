@@ -43,6 +43,9 @@ router.post('/products/toggle/:id', productController.aiProduct)
 router.get('/orders',admin.checkAdminSession,orderController.showOrder)
 router.get('/orders/:orderId',admin.checkAdminSession,orderController.orderAction)
 router.put('/order/:orderId/product/:productId/status',orderController.orderStatus)
+router.put('/order/:orderId/product/:productId/approve-return',orderController.approveReturn)
+router.put('/order/:orderId/product/:productId/reject-return', orderController.rejectReturn);
+
 
 //offer
 router.get('/offer',offerController.getOffer);
@@ -60,6 +63,9 @@ router.post('/product/remove-offer/:productId',offerController.removeProductOffe
 router.get('/coupon',couponController.getCoupon);
 router.post('/add-coupon',couponController.addCoupon)
 router.delete('/delete-coupon/:id',couponController.deleteCoupon)
+
+//sale report
+router.get('/sales-report',adminController.salesReport)
 
 
 module.exports = router

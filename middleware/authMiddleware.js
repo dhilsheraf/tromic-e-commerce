@@ -1,16 +1,31 @@
+const User = require('../models/userModel')
 
-const checkUserSession = (req, res, next) => {
-    if (!req.session.user ) {
-        return res.redirect('/login');  
+
+const checkUserSession = async (req, res, next) => {
+    if(req.session.user){
+        try {
+            const user = await User.findById(req.session.user)
+            if(user &&  !user.isBlocked){
+                next();
+            }else{
+                delete req.session.user
+                res.redirect('/login');
+            } 
+        }catch (error) {
+            console.log('user auth error', error.message);
+            res.status(500).send('server error');
+        }
+    }else{
+        res.redirect('/login');
     }
-    next();  
+
 };
 
 const existUser = (req,res,next) => {
-        if(req.session.user ){
-            return res.redirect('/')
-        }
-        next()
+    if(req.session.user ){
+        return res.redirect('/')
+    }
+    next()
 }
 
 
@@ -37,6 +52,6 @@ const existAdmin = (req,res,next) => {
 module.exports = {
     checkUserSession,
     checkAdminSession,
-    existUser,
-    existAdmin
+    existAdmin,
+    existUser
 };

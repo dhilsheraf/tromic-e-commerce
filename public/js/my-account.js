@@ -394,3 +394,6 @@ $(document).on('click', '.edit-address-btn', function () {
     $('#editPincode').val(pincode);
     $('#editAddressType').val(addressType);
 });
+
+
+

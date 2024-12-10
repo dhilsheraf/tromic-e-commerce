@@ -1,7 +1,7 @@
 const Offer = require('../models/offerModel')
 const Category = require('../models/categoryModel')
 const Product = require('../models/productModel')
-
+const cron = require('node-cron');
 
 const getOffer = async (req, res) => {
     try {
@@ -79,30 +79,37 @@ const deleteOffer = async (req,res) => {
 const addCategoryOffer = async (req, res) => {
     try {
         const { categoryId, offerId, discount } = req.body;
-
         const offer = await Offer.findById(offerId);
-        if (!offer) {
-            return res.status(400).json({ success: false, message: "Offer not found" });
+
+        // Check if the offer has expired or hasn't been activated yet
+        const currentDate = new Date();
+        if (offer.expiresAt < currentDate) {
+            return res.status(400).json({ success: false, message: 'This offer has expired' });
+        }
+
+        if (offer.activeAt > currentDate) {
+            return res.status(400).json({ success: false, message: 'This offer has not been activated yet' });
         }
 
         const products = await Product.find({ category: categoryId });
 
-          
         for (const product of products) {
             const newPrice = product.originalPrice * (1 - discount / 100);
             if (product.originalPrice === undefined) {
-                product.originalPrice = product.price;  // Save the original price
+                product.originalPrice = product.price; // Save the original price
             }
             product.price = Math.floor(newPrice);
             product.offer = offerId;
             await product.save();
         }
+
         await Category.findByIdAndUpdate(categoryId, { offer: offerId });
 
-        res.json({ success: true, message: "Offer applied successfully" });
+        res.json({ success: true, message: 'Offer applied successfully' });
+
     } catch (error) {
         console.error(error);
-        res.status(500).json({ success: false, message: "An error occurred while applying the offer" });
+        res.status(500).json({ success: false, message: 'An error occurred while applying the offer' });
     }
 };
 
@@ -127,31 +134,39 @@ const removeCategoryOffer = async (req, res) => {
         return res.status(500).json({ success: false, message: "Failed to remove offer", error });
     }
 };
-
-//product offer
 const addProductOffer = async (req, res) => {
     try {
-        const {offerId , productId } = req.body
-        console.log(req.body)
+        const { offerId, productId } = req.body;
         const offer = await Offer.findById(offerId);
-        if(!offer) return res.status(400).json({ success:false , message : 'offer not found'});
+
+        if (!offer) return res.status(400).json({ success: false, message: 'Offer not found' });
+
+        const currentDate = new Date();
+
+        // Check if the offer has expired or hasn't been activated yet
+        if (offer.expiresAt < currentDate) {
+            return res.status(400).json({ success: false, message: 'This offer has expired' });
+        }
+
+        if (offer.activeAt > currentDate) {
+            return res.status(400).json({ success: false, message: 'This offer has not been activated yet' });
+        }
 
         const product = await Product.findById(productId);
-      
-        if(!product) return res.status(400).json({ success: false , message : 'Product not found'})
+        if (!product) return res.status(400).json({ success: false, message: 'Product not found' });
 
         const discountFactor = 1 - offer.discount / 100;
-        const newPrice = product.originalPrice * discountFactor;    
-        
-        product.offer = offerId
+        const newPrice = product.originalPrice * discountFactor;
+
+        product.offer = offerId;
         product.price = Math.floor(newPrice);
         await product.save();
 
-        res.status(200).json({ success: true , message : "Offer applied successfull"})
+        res.status(200).json({ success: true, message: 'Offer applied successfully' });
 
     } catch (error) {
         console.error(error);
-        res.status(500).json({success:false , message :"Error occured while adding product offer"})
+        res.status(500).json({ success: false, message: 'Error occurred while adding product offer' });
     }
 };
 
@@ -175,6 +190,30 @@ const removeProductOffer = async (req,res) => {
     return res.status(500).send('erro while remove the offer')
    }
 }
+
+const removeExpiredOffers = async () => {
+    try {
+        const currentDate = new Date();
+        
+
+        const expiredOffers = await Offer.find({ expiresAt: { $lt: currentDate } });
+
+        for (const offer of expiredOffers) {
+
+            await Product.updateMany(
+                { offer: offer._id },
+                { $set: { offer: null, price: '$originalPrice' } }
+            );
+        }
+        console.log('Expired offers have been removed from products');
+    } catch (error) {
+        console.error('Error occurred while removing expired offers:', error);
+    }
+};
+
+
+cron.schedule('0 0 * * *', removeExpiredOffers);  // Runs daily at midnight
+
 
 module.exports = {
     getOffer,

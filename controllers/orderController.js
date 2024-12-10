@@ -39,7 +39,6 @@ const getCheckout = async (req, res) => {
 
         const wallet = await Wallet.findOne({ userId:req.session.user });
 
-        console.log(wallet)
 
         cartTotal = cartItems.reduce((sum, item) => sum + item.total, 0);
         const isWalletAvailable = wallet.balance >= cartTotal
@@ -399,6 +398,7 @@ const cancelOrder = async (req, res) => {
 
         order.totalPrice = Math.max(0,order.totalPrice);
         order.totalPriceWithoutCouponOffer = Math.max(0,order.totalPriceWithoutCouponOffer)
+        if(order.totalPrice === 0) order.paymentStatus = 'cancelled'
 
         await order.save();
 
@@ -430,6 +430,115 @@ const cancelOrder = async (req, res) => {
     }
 }
 
+const returnOrder = async (req,res) => {
+    try {
+        const { orderId, productId, reason } = req.body;
+
+        if (!orderId || !productId || !reason) {
+            return res.status(400).json({ success: false, message: 'Missing required fields.' });
+        }
+
+        const order = await Order.findOneAndUpdate(
+            { _id: orderId, 'products.product': productId }, 
+            {
+                $set: {
+                    'products.$.reasonForReturn': reason, 
+                },
+            },
+            { new: true } 
+        );
+
+        if (!order) {
+            return res.status(404).json({ success: false, message: 'Order or product not found.' })
+        }
+
+        res.status(200).json({ success: true, message: 'Return reason updated successfully.', order })
+    } catch (error) {
+        console.error('Error processing return request:', error);
+        res.status(500).json({ success: false, message: 'An error occurred while processing your request.' });
+    }
+}
+
+
+
+const approveReturn = async (req, res) => {
+    const { orderId, productId } = req.params;
+    
+    try {
+
+        const order = await Order.findById(orderId);
+        if (!order) {
+            return res.status(404).json({ success: false, message: 'Order not found' });
+        }
+
+        const productItem = order.products.find(p => p.product.toString() === productId);
+        if (!productItem) {
+            return res.status(404).json({ success: false, message: 'Product not found in the order' });
+        }
+
+        const refundAmount = productItem.price * productItem.quantity;
+
+        const user = await User.findById(order.userId);
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        let wallet = await Wallet.findOne({ userId: user._id });
+        if (!wallet) {
+
+            wallet = new Wallet({ userId: user._id })
+        }
+
+        wallet.balance += refundAmount
+
+        wallet.transactions.push({
+            type: 'Credit',
+            amount: refundAmount,
+            description: `Refund for returned product `,
+            orderId: order._id,
+        });
+
+        await wallet.save()
+
+        order.totalPrice -= refundAmount;
+        if(order.totalPrice < 0) order.totalPrice = 0;
+
+
+        productItem.status = 'return'
+        await order.save();
+
+        res.json({ success: true, message: 'Return approved and money credited to wallet successfully' });
+    } catch (error) {
+        console.error("Error while approving return:", error.message);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+};
+
+
+
+const rejectReturn = async (req, res) => {
+    const { orderId, productId } = req.params;
+
+    try {
+        const order = await Order.findById(orderId)
+        if (!order) {
+            return res.status(404).json({ success: false, message: 'Order not found' })
+        }
+
+        const productItem = order.products.find(p => p.product.toString() === productId);
+        if (!productItem) {
+            return res.status(404).json({ success: false, message: 'Product not found in the order' })
+        }
+        productItem.status = 'return reject'
+
+        await order.save()
+
+        res.json({ success: true, message: 'Return rejected successfully' });
+    } catch (error) {
+        console.error("Error while rejecting return:", error.message)
+        res.status(500).json({ success: false, message: 'Internal server error' })
+    }
+};
 
 module.exports = {
     getCheckout,
@@ -440,5 +549,8 @@ module.exports = {
     orderAction,
     orderStatus,
     cancelOrder,
-    verifyPayment
+    verifyPayment,
+    returnOrder,
+    approveReturn,
+    rejectReturn
 }

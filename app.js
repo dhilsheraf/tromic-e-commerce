@@ -56,7 +56,7 @@ cloudinary.config({
 app.use('/',userRoute) ;
 app.use('/admin',adminRoute)
 app.get('/test',(req,res)=>{
-    res.render('admin/offer')
+    res.render('admin/salesReport')
 })
  
 app.listen(PORT,()=>

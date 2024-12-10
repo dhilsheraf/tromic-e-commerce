@@ -685,14 +685,14 @@
                             location.reload();
                         });
                     } else {
-                        Swal.fire('Error!', 'Failed to apply the offer.', 'error');
+                        Swal.fire(data.message ||'Error!', 'Failed to apply the offer.', 'error');
                     }
                 })
                 .catch((error) => {
                     Swal.fire('Error!', 'Something went wrong. Please try again.', 'error');
                 })
                 .finally(() => {
-                    Swal.close();
+                    
                     closeOfferModal();
                 });
 
