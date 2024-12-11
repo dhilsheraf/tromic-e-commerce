@@ -23,8 +23,8 @@ const addCoupon = async (req, res) => {
 
         const codeCap = code.trim().toUpperCase()
         const duplicateCoupon = await Coupon.findOne({code:codeCap})
-        if(duplicateCoupon){ 
-            return res.status(409).json({success:false,message:'Coupon code already exist'}) }
+        if(duplicateCoupon)
+            return res.status(409).json({success:false,message:'Coupon code already exist'}) 
 
         const newCoupon = new Coupon({
             code,

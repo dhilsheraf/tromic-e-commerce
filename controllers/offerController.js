@@ -27,9 +27,6 @@ const addOffer = async (req, res) => {
             return res.status(400).json({ success: false,message: 'Discount percentage must be between 1 and 100.' });
         }
 
-
-
-
         const activation = new Date(activationDate);
         const expiry = new Date(expiryDate);
         if (isNaN(activation.getTime()) || isNaN(expiry.getTime())) {
@@ -96,7 +93,7 @@ const addCategoryOffer = async (req, res) => {
         for (const product of products) {
             const newPrice = product.originalPrice * (1 - discount / 100);
             if (product.originalPrice === undefined) {
-                product.originalPrice = product.price; // Save the original price
+                product.originalPrice = product.price; 
             }
             product.price = Math.floor(newPrice);
             product.offer = offerId;
@@ -143,7 +140,6 @@ const addProductOffer = async (req, res) => {
 
         const currentDate = new Date();
 
-        // Check if the offer has expired or hasn't been activated yet
         if (offer.expiresAt < currentDate) {
             return res.status(400).json({ success: false, message: 'This offer has expired' });
         }
@@ -212,7 +208,7 @@ const removeExpiredOffers = async () => {
 };
 
 
-cron.schedule('0 0 * * *', removeExpiredOffers);  // Runs daily at midnight
+cron.schedule('0 0 * * *', removeExpiredOffers);
 
 
 module.exports = {

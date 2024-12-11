@@ -235,6 +235,13 @@ const loadProduct = async (req, res) => {
             { $unwind: "$categoryDetails"},
             {$match: {"categoryDetails.isActive": true, ...categoryFilter}},
             { $sort: sortOption },{ $skip: skip },{ $limit: Number(limit) }, 
+            { $lookup: {
+                from:'offers',
+                localField:'offer',
+                foreignField:'_id',
+                as:"offerDetails"
+            }},
+            { $unwind : { path : '$offerDetails' , preserveNullAndEmptyArrays:true}},
             { $project: {
                     name: 1,
                     price: 1,
@@ -242,11 +249,13 @@ const loadProduct = async (req, res) => {
                     images: 1,
                     stock: 1,
                     isActive: 1,
+                    offer:1,
                     category: "$categoryDetails",
                     inWishlist: {
                         $in :["$_id",wishlistProductIds.map(id => new mongoose.Types.ObjectId(id))]
-                    }
-                }}]);
+                    },
+                    offerDetails:1
+                }}])
 
         const totalProducts = await Product.aggregate([
             { $match: { isActive: true, ...searchFilter,} },
@@ -278,17 +287,24 @@ const loadProduct = async (req, res) => {
 
 const getProductDetails = async (req, res) => {
     try {
+        const userId = req.session.user;
         const productId = req.params.id;
         const product = await Product.findById(productId).populate('category');
         if (!product) {
             return res.status(404).send("Product not found");
         }
 
-        const relatedProducts = await Product.find({
-            _id: { $ne: productId }
-        }).limit(4).lean();
+        let isInWishlist = false;
+        if(userId){
+            const wishlist = await Wishlist.findOne( { userId });
+            if (wishlist && wishlist.items.some(item => item.productId.toString() === productId)) {
+                isInWishlist = true;
+            }
+        }
 
-        res.render("single-product", { product, relatedProducts });
+        const relatedProducts = await Product.find({ _id:{ $ne: productId}}).limit(4).lean();
+
+        res.render("single-product", { product, relatedProducts ,isInWishlist});
     } catch (error) {
         console.error("Error fetching product details:", error);
         res.status(500).render('error')

@@ -243,25 +243,25 @@
             event.preventDefault();
 
             const formData = new FormData(this);
-            const name = formData.get('name').trim(); // Remove any extra spaces
+            const name = formData.get('name').trim();
             const discountPercentage = parseFloat(formData.get('discountPercentage'));
             const activationDate = new Date(formData.get('activeDate'));
+            activationDate.setHours(0, 0, 0, 0);
             const expiryDate = new Date(formData.get('expiryDate'));
             const currentDate = new Date();
+            currentDate.setHours(0, 0, 0, 0);
 
-            // Validate name
+
             if (!name || name.length < 3 || name.length > 50) {
                 Swal.fire('Validation Error', 'Offer name must be between 3 and 50 characters.', 'error');
                 return;
             }
 
-            // Validate discount percentage
             if (isNaN(discountPercentage) || discountPercentage < 1 || discountPercentage > 100) {
                 Swal.fire('Validation Error', 'Discount percentage must be a number between 1 and 100.', 'error');
                 return;
             }
 
-            // Validate dates
             if (isNaN(activationDate.getTime()) || isNaN(expiryDate.getTime())) {
                 Swal.fire('Validation Error', 'Invalid date(s). Please select valid activation and expiry dates.', 'error');
                 return;

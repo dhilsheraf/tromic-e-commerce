@@ -50,24 +50,20 @@ const addCategory = async (req, res) => {
     try {
         const { name, description } = req.body;
 
-        // Validate the data
-        if (!name.trim() === "" ||!name || !description) {
+        
+        if (!name.trim() === "" ||!name || !description) 
             return res.render("admin/addcategory",{ message: 'Both name and description are required.' });
-        }
 
-        // Check if a category with the same name already exists
         const existingCategory = await Category.findOne({ name: name });
         if (existingCategory) {
             return res.render("admin/addcategory",{ message: 'Category name already exists.' });
         }
 
-        // Create a new category if name is unique
         const newCategory = new Category({
             name,
             description
         });
 
-        // Save the category to the database
         await newCategory.save();
 
         res.redirect("/admin/category");
@@ -79,7 +75,6 @@ const addCategory = async (req, res) => {
 const activeInactive = async (req, res) => {
     const categoryId = req.params.id;
     
-    // Find the category by ID and toggle its status
     try {
         const category = await Category.findById(categoryId);
         if (!category) {
@@ -87,7 +82,6 @@ const activeInactive = async (req, res) => {
             return res.status(404).send("Category not found");
         }
 
-        // Toggle the status (Active <-> Inactive)
         category.isActive = !category.isActive;
         await category.save();
 
@@ -122,11 +116,11 @@ const editCategory = async (req, res) => {
         const categorys = await Category.findByIdAndUpdate(
             categoryId,
             { name, description },
-            { new: true }  // This option returns the updated document
+            { new: true }
         );
 
         if (!categorys) return res.status(404).send("Category not found");
-        res.redirect('/admin/category'); // Redirect to the category list page after updating
+        res.redirect('/admin/category'); 
     } catch (error) {
         console.error('Error updating category:', error);
         res.status(500).send("Server Error");

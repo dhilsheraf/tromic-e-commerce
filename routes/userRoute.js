@@ -29,6 +29,7 @@ router.get("/contact", userController.loadContact);
 router.get("/my-account", session.checkUserSession, userController.loadMyAccount)
 //wishlist
 router.get("/wishlist", session.checkUserSession, userController.loadWishlist)
+router.get("/wishlist", session.checkUserSession, userController.loadWishlist)
 router.post("/toggle-wishlist",userController.toggleWishlist)
 router.get("/wishlist-remove/:productId",session.checkUserSession,userController.removeWishlist)
 
@@ -61,7 +62,7 @@ router.get('/product/:id', productController.getProductDetails);
 
 
 //profile 
-router.post("/profile-update", userController.profileUpdate)
+router.post("/profile-update",session.checkUserSession, userController.profileUpdate)
 
 //address
 router.post('/add-address',session.checkUserSession, addressController.addAddress)
@@ -70,15 +71,15 @@ router.delete('/delete-address/:id',session.checkUserSession, addressController.
 
 
 //password
-router.get('/forgot-password', userController.forgotPasswordLoad)
+router.get('/forgot-password',session.checkUserSession, userController.forgotPasswordLoad)
 router.post('/forgot-password', userController.forgotPassword)
 router.get("/reset-password/:token",userController.resetPasswordLoad)
 router.post("/reset-password/:token", userController.resetPassword)
 router.post('/change-password', userController.changePassword)
  
 //cart
-router.get('/cart',session.checkUserSession,cartController.listCart)
-router.post('/add-cart',session.checkUserSession, cartController.addToCart)
+router.get('/cart',session.checkUserSession,session.checkUserSession,cartController.listCart)
+router.post('/add-cart',cartController.addToCart)
 router.post('/update-cart',session.checkUserSession,cartController.updateCartQuantity)
 router.delete('/delete-cart',session.checkUserSession,cartController.deleteCart) 
 
@@ -86,13 +87,13 @@ router.delete('/delete-cart',session.checkUserSession,cartController.deleteCart)
 router.get('/checkout',session.checkUserSession,orderController.getCheckout)
 router.post('/checkout',session.checkUserSession,orderController.checkout)
 router.get('/order-confirm/:orderId',session.checkUserSession,orderController.orderConfirm)
-router.post('/verify-payment', orderController.verifyPayment);
+router.post('/verify-payment',session.checkUserSession, orderController.verifyPayment);
 
 
 //order detail
 router.get('/order/:orderId',session.checkUserSession,orderController.detailOrder)
 router.post('/cancel-order',session.checkUserSession,orderController.cancelOrder)
-router.patch('/return-order',orderController.returnOrder)
+router.patch('/return-order',session.checkUserSession,orderController.returnOrder)
 
 
 module.exports = router;

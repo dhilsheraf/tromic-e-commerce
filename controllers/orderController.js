@@ -45,14 +45,8 @@ const getCheckout = async (req, res) => {
 
         cartTotal = cartItems.reduce((sum, item) => sum + item.total, 0);
         const isWalletAvailable = wallet.balance >= cartTotal
-        res.render('checkout', {
-            userAddresses,
-            cartItems,
-            cartTotal,
-            user,
-            coupons,
-            wallet:wallet.balance,
-            isWalletAvailable
+        res.render('checkout', { userAddresses, cartItems, cartTotal,
+            user, coupons, wallet:wallet.balance, isWalletAvailable
         })
 
 
@@ -84,8 +78,6 @@ const checkout = async (req, res) => {
         let totalPrice = 0;
         let totalPriceWithoutCouponOffer = 0 ;
         const orderProducts = [];
-
-        
 
         for (const item of cartItems) {
             const product = await Product.findById(item.productId).populate('category');
@@ -170,8 +162,6 @@ const checkout = async (req, res) => {
             const razorpayOrder = await RazorpayInstance.orders.create(options);
             razorpayOrderId = razorpayOrder.id;  
         }
-        
-        
 
         const newOrder = new Order({
             userId: req.session.user,
@@ -187,7 +177,6 @@ const checkout = async (req, res) => {
         })
 
         await newOrder.save();
-        console.log(newOrder)
         await Cart.findOneAndUpdate({ userId: req.session.user }, { $set: { items: [] } })
 
         res.status(201).json({ success: true, message: `Order placed successfully`, orderId: newOrder._id , razorpayOrderId:razorpayOrderId,totalPrice })
@@ -202,7 +191,6 @@ const checkout = async (req, res) => {
 
 const verifyPayment = async (req, res) => {
     try {
-        console.log("Working verifyPayment");
 
         const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = req.body;
 
@@ -226,11 +214,9 @@ const verifyPayment = async (req, res) => {
 
                 res.status(200).json({ success: true, orderId: order._id });
             } else {
-                console.log('Order not found for Razorpay Order ID:', razorpay_order_id);
                 res.status(404).json({ success: false, message: 'Order not found' });
             }
         } else {
-            console.log('Signature mismatch.');
             res.status(400).json({ success: false, message: 'Payment verification failed' });
         }
     } catch (error) {
@@ -285,7 +271,7 @@ const showOrder = async (req, res) => {
 
         
         const orders = await Order.find()
-            .populate('userId').populate('products.product').populate('addressId')
+            .populate('userId').populate('products.product').populate('addressId').sort({'createdAt':-1})
             .skip(skip)
             .limit(Number(limit))
             .lean();
@@ -418,7 +404,7 @@ const cancelOrder = async (req, res) => {
 
         order.totalPrice = Math.max(0,order.totalPrice);
         order.totalPriceWithoutCouponOffer = Math.max(0,order.totalPriceWithoutCouponOffer)
-        if(order.totalPrice === 0) order.paymentStatus = 'cancelled'
+        
 
         await order.save();
 

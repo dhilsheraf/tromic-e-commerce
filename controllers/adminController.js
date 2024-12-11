@@ -14,9 +14,11 @@ const adminLogin = async (req, res) => {
         const admin = await Admin.findOne({ email: email })
 
         if (admin) {
-            req.session.adminId = admin._id;
+            
             const passwordMatch = await bcrypt.compare(password, admin.password);
             if (passwordMatch) {
+                req.session.adminId = admin._id;
+                
                 res.redirect('/admin/dashboard');
             } else {
                 res.render('admin/adminlogin', { message: "Incorrect password" })
@@ -58,8 +60,6 @@ const loadAdminDashboard = async (req, res) => {
 
         const monthly = monthlyEarning.length > 0 ? monthlyEarning[0].total : 0;
 
-
-
         res.render('admin/adminDashboard', { totalOrder, revenue, products, categorys, monthly })
     } catch (error) {
         console.log("error while loading admin dashboard", error);
@@ -76,13 +76,9 @@ const loadUsers = async (req, res) => {
             .skip((page - 1) * limit)
             .limit(parseInt(limit));
 
-        // Render the EJS view and pass the user data
         res.render('admin/adminUser', {
-            users,
-            totalUsers,
-            currentPage: parseInt(page),
-            totalPages: Math.ceil(totalUsers / limit),
-            limit: parseInt(limit)
+            users, totalUsers, currentPage: parseInt(page),
+            totalPages: Math.ceil(totalUsers / limit),limit: parseInt(limit)
         });
     } catch (error) {
         console.error("Error fetching users:", error);
@@ -121,7 +117,8 @@ const blockunblock = async (req, res) => {
 
 const logout = async (req, res) => {
     try {
-        delete req.session.admin;
+        delete req.session.adminId;
+        return res.redirect('/admin')
     } catch (error) {
         console.log("Logout error", error);
         
@@ -191,7 +188,7 @@ const generateExcel = (res, orders, summary, startDate, endDate) => {
     worksheet.addRow(['Total Sales', summary.totalSales])
     worksheet.addRow(['Total Orders', summary.totalOrders]);
 
-    // Send the Excel file to the user
+    //  file to the user
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     res.setHeader('Content-Disposition', 'attachment; filename=sales_report.xlsx')
     workbook.xlsx.write(res).then(() => {

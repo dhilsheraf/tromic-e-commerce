@@ -396,6 +396,7 @@
                                     if(verificationData.success) {
                                         window.location.href = '/order-confirm/'+verificationData.orderId
                                     }else{
+                                        window.location.href = '/order-confirm/'+verificationData.orderId
                                         Swal.fire(verificationData.message || "Payment verification failed")
                                     }
                                 })

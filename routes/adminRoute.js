@@ -13,6 +13,7 @@ const offerController = require('../controllers/offerController')
 router.get("/",admin.existAdmin, adminController.loadAdminLogin)
 router.post("/", adminController.adminLogin)
 router.get("/dashboard", admin.checkAdminSession, adminController.loadAdminDashboard)
+router.get('/logout',adminController.logout)
 
 // users 
 router.get("/users", admin.checkAdminSession, adminController.loadUsers)
@@ -48,7 +49,7 @@ router.put('/order/:orderId/product/:productId/reject-return', orderController.r
 
 
 //offer
-router.get('/offer',offerController.getOffer);
+router.get('/offer',admin.checkAdminSession,offerController.getOffer);
 router.post('/add-offer',offerController.addOffer)
 router.delete('/delete-offer/:offerId',offerController.deleteOffer)
 //category offer
@@ -60,12 +61,12 @@ router.post('/product/apply-offer',offerController.addProductOffer)
 router.post('/product/remove-offer/:productId',offerController.removeProductOffer)
 
 //coupon
-router.get('/coupon',couponController.getCoupon);
+router.get('/coupon',admin.checkAdminSession,couponController.getCoupon);
 router.post('/add-coupon',couponController.addCoupon)
 router.delete('/delete-coupon/:id',couponController.deleteCoupon)
 
 //sale report
-router.get('/sales-report',adminController.salesReport)
+router.get('/sales-report',admin.checkAdminSession,adminController.salesReport)
 
 
 module.exports = router

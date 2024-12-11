@@ -89,6 +89,30 @@
 .cart-plus-minus:focus-within {
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
 }
+/* Normal state */
+.custom-circle-btn {
+    color: grey; /* Default color when not in wishlist */
+    transition: color 0.3s ease;
+}
+
+.custom-circle-btn.in-wishlist {
+    color: red;
+}
+
+.custom-circle-btn:hover {
+    color: #808080;
+}
+
+.custom-circle-btn.in-wishlist:hover {
+    color: grey;}
+.custom-circle-btn.in-wishlist {
+    color: red;
+}
+
+.custom-circle-btn.in-wishlist:hover {
+    color: grey; /* Hover color */
+}
+
 </style>
 
 <main class="main-content">
@@ -190,12 +214,10 @@
                                 </button>
                             </li>
                             <li class="wishlist-btn-wrap">
-                                <button 
-                                    class="custom-circle-btn add-to-wishlist-btn" 
-                                    data-id="<%= product._id %>">
+                                <a class="custom-circle-btn <%= isInWishlist ? 'in-wishlist' : '' %>" href="#" data-id="<%= product._id %>">
                                     <i class="pe-7s-like"></i>
-                                </button>
-                            </li>                            
+                                </a>                                
+                            </li>                                                                          
                         </ul>
     
                         <!-- Categories -->
@@ -462,11 +484,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const productId = button.dataset.productId;
             const quantityInput = button.closest(".quantity-with-btn").querySelector('.cart-plus-minus-box');
-            const quantity = parseInt(quantityInput.value, 10);
-            const maxStock = parseInt(quantityInput.dataset.stock, 10);
+            const quantity = parseInt(quantityInput.value, 10)
+            const maxStock = parseInt(quantityInput.dataset.stock, 10)
 
             if (quantity <= 0) {
-                Swal.fire("Quantity must be at least one.");
+                Swal.fire("Quantity must be at least one.")
                 return;
             }
 
@@ -484,11 +506,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     body: JSON.stringify({ productId, quantity }),
                 });
 
-                const result = await response.json();
+                const result = await response.json()
 
                 if (response.ok) {
                    Swal.fire("Product Added to cart").then(()=>{
-                    window.location.href = '/cart';
+                    window.location.href = '/cart'
                    })
                 }else {
                     Swal.fire(result.message || "Failed to add product to cart.").then(()=>{
@@ -497,8 +519,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     
                 }
             } catch (error) {
-                console.error("Error adding to cart:", error);
-                Swal.fire("An error occurred. Please try again.");
+                console.error("Error adding to cart:", error)
+                Swal.fire("An error occurred. Please try again.")
             }
         });
     });
@@ -510,39 +532,47 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 <script>
     //add to Wishlist
-    document.querySelectorAll('.add-to-wishlist-btn').forEach(button => {
-        button.addEventListener('click', async function (params) {
-            const productId = this.getAttribute('data-id');
-            try {
-                console.log("Fetching of the started")
-                const response = await fetch('/add-to-wishlist', {
+    document.querySelectorAll('.custom-circle-btn').forEach(button => {
+    button.addEventListener('click', async function () {
+        const productId = this.getAttribute('data-id')
+        const isInWishlist = this.classList.contains('in-wishlist'); // Check current state
 
-                    method: 'POST',
-                    headers: {
-                        'Content-type': 'application/json',
-                    },
-                    body: JSON.stringify({ productId }),
-                })
-                const result = await response.json();
+        try {
+            console.log("Processing Wishlist Action...");
+            const response = await fetch('/toggle-wishlist', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ productId }),
+            });
 
-                if (response.ok) {
-                    Swal.fire("Product added to Wishlist", result.message, 'success');
+            const result = await response.json()
+
+            if (response.ok) {
+                if (isInWishlist) {
+                    this.classList.remove('in-wishlist')
+                    Swal.fire("Product Removed", "Product removed from Wishlist", 'success');
                 } else {
-                    if (response.status === 401) {
-                        window.location.href = '/login'
-                    } else {
-                        swal.fire('Error', result.message || "Failed to add the product to wishlist").then(() => {
-                            window.location.href = '/wishlist'
-                        })
-
-                    }
+                    this.classList.add('in-wishlist')
+                    Swal.fire("Product Added", "Product added to Wishlist", 'success');
                 }
-            } catch (error) {
-                console.error('Error porduct add wishlist', error);
-                Swal.fire('An error occured', 'while product adding the wishlist')
+            } else {
+                if (response.status === 401) {
+                    window.location.href = '/login'
+                } else {
+                    Swal.fire('Error', result.message || "Failed to update Wishlist").then(() => {
+                        window.location.href = '/wishlist'
+                    });
+                }
             }
-        })
-    })
+        } catch (error) {
+            console.error('Error updating wishlist:', error);
+            Swal.fire('An error occurred', 'while updating the wishlist');
+        }
+    });
+});
+
 </script>
 
 <script src="/js/singleProduct.js"></script>
