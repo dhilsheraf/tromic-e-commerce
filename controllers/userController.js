@@ -97,33 +97,38 @@ const loadWishlist = async (req, res) => {
     }
 }
 
-const addToWishlist = async (req,res) => {
-    const {productId} = req.body;
-    const userId = req.session.user
+const toggleWishlist = async (req, res) => {
+    const { productId } = req.body;
+    const userId = req.session.user;
 
-    if(!userId) return res.status(401).json({message:"Please log in to add wishlist "})
+    if (!userId) return res.status(401).json({ message: "Please log in to manage your Wishlist" });
+
     try {
-        
-        let wishlist = await Wishlist.findOne({userId});
-        
-        if(!wishlist) { 
-            wishlist = new Wishlist( { userId , items: []} )
+        let wishlist = await Wishlist.findOne({ userId });
+
+        if (!wishlist) {
+            wishlist = new Wishlist({ userId, items: [] });
         }
 
-        const alreadyWishlist = wishlist.items.some( item => item.productId.toString() === productId)
+        const itemIndex = wishlist.items.findIndex(item => item.productId.toString() === productId);
+        //if wroong index remove
+        if (itemIndex !== -1) {
 
-        if(alreadyWishlist) return res.status(400).json({ message: "Product already in Wishlist"})
-
-        wishlist.items.push({productId});
-        await wishlist.save()
-       
-        return res.status(200).json({ success:true ,message:"Product added to wishlist"})
-
+            wishlist.items.splice(itemIndex, 1);
+            await wishlist.save();
+            return res.status(200).json({ success: true, message: "Product removed from Wishlist" })
+        } else {
+         //otherwise add
+            wishlist.items.push({ productId });
+            await wishlist.save();
+            return res.status(200).json({ success: true, message: "Product added to Wishlist" })
+        }
     } catch (error) {
-        console.error("Error while aadding wishlist : ",error);
-        res.status(500).json({ success:false ,message:"An error occured while adding wishlist"})
+        console.error("Error while toggling wishlist:", error);
+        res.status(500).json({ success: false, message: "An error occurred while managing the Wishlist" });
     }
-}
+};
+
 
 const  removeWishlist = async (req,res) => {
     const userId = req.session.user ;
@@ -530,6 +535,6 @@ module.exports = {
     resetPasswordLoad,
     resetPassword,
     changePassword,
-    addToWishlist,
+    toggleWishlist,
     removeWishlist
 } 

@@ -29,7 +29,7 @@ router.get("/contact", userController.loadContact);
 router.get("/my-account", session.checkUserSession, userController.loadMyAccount)
 //wishlist
 router.get("/wishlist", session.checkUserSession, userController.loadWishlist)
-router.post("/add-to-wishlist",userController.addToWishlist)
+router.post("/toggle-wishlist",userController.toggleWishlist)
 router.get("/wishlist-remove/:productId",session.checkUserSession,userController.removeWishlist)
 
 // sign up

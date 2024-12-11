@@ -2,7 +2,7 @@ const Product = require('../models/productModel');
 const Category = require('../models/categoryModel')
 const Offer = require('../models/offerModel')
 const mongoose = require('mongoose');
-
+const Wishlist = require('../models/wishlistModel')
 
 const getProduct = async (req, res) => {
     try {
@@ -108,9 +108,8 @@ const loadEditProduct = async (req, res) => {
 
         if (!product) return res.status(404).json({ message: 'Product not found' });
 
-        const categories = await Category.find(); // Fetch all categories
-
-        // Render the editProduct view
+        const categories = await Category.find(); 
+        
         res.render('admin/editProduct', { product, categories });
     } catch (error) {
         console.error("Error loading product for edit:", error);
@@ -185,10 +184,9 @@ const loadProduct = async (req, res) => {
     try {
         const { search = '', sort = '', categories = [], page = 1, limit = 12 } = req.query;
 
+        const userId = req.session.user
 
         const skip = (page - 1) * limit;
-
-
         const searchFilter = search ? { name: { $regex: search, $options: 'i' } } : {};
 
 
@@ -197,7 +195,6 @@ const loadProduct = async (req, res) => {
             : categories
                 ? [categories]
                 : [];
-
 
         const validCategoryIds = categoriesArray.filter(c => mongoose.Types.ObjectId.isValid(c));
 
@@ -211,7 +208,6 @@ const loadProduct = async (req, res) => {
         }
 
 
-
         let sortOption = {};
         if (sort === 'price-asc') sortOption.price = 1;
         else if (sort === 'price-desc') sortOption.price = -1;
@@ -221,6 +217,9 @@ const loadProduct = async (req, res) => {
         else sortOption = { createdAt: -1 };
 
         const categoryList = await Category.find({ isActive: true });
+
+        const wishlist = userId ? await Wishlist.findOne({userId}) : null ;
+        const wishlistProductIds = wishlist ? wishlist.items.map( item => item.productId.toString()) : [];
 
         const products = await Product.aggregate([
             { $match: {
@@ -244,6 +243,9 @@ const loadProduct = async (req, res) => {
                     stock: 1,
                     isActive: 1,
                     category: "$categoryDetails",
+                    inWishlist: {
+                        $in :["$_id",wishlistProductIds.map(id => new mongoose.Types.ObjectId(id))]
+                    }
                 }}]);
 
         const totalProducts = await Product.aggregate([

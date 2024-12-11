@@ -9,6 +9,14 @@
         justify-content: center;
         align-items: center;
     }
+    .wishlist-active {
+    color: red;
+    font-weight: bold;
+}
+.add-to-wishlist-btn.wishlist-active i {
+    color: red !important;
+}
+
 </style>
 <main class="main-content">
     <div class="breadcrumb-area breadcrumb-height" data-bg-image="/images/breadcrumb/bg/1-1-1920x400.jpg">
@@ -127,12 +135,11 @@
                                                                 <i class="pe-7s-cart"></i>
                                                             </button>
                                                         </li>
-                                                        <li>
-                                                            <button class="add-to-wishlist-btn" data-id="<%= product._id %>"
-                                                                data-tippy="Add to wishlist">
-                                                                <i class="pe-7s-like"></i>
-                                                            </button>
-                                                        </li>
+                                                        <button class="add-to-wishlist-btn <%= product.inWishlist ? 'wishlist-active' : '' %>" 
+                                                            data-id="<%= product._id %>" 
+                                                            data-tippy="<%= product.inWishlist ? 'Remove from wishlist' : 'Add to wishlist' %>">
+                                                        <i class="pe-7s-like"></i>
+                                                    </button>                                                                                                       
                                                     </ul>
                                                 </div>
                                             </div>
@@ -228,42 +235,49 @@
             });
 
         </script>
-        <script>
-            //add to Wishlist
-            document.querySelectorAll('.add-to-wishlist-btn').forEach(button => {
-                button.addEventListener('click', async function (params) {
-                    const productId = this.getAttribute('data-id');
-                    try {
-                        console.log("Fetching of the started")
-                        const response = await fetch('/add-to-wishlist', {
+<script>
+    // wishlist
+    document.querySelectorAll('.add-to-wishlist-btn').forEach(button => {
+        button.addEventListener('click', async function () {
+            const productId = this.getAttribute('data-id');
+            const isInWishlist = this.classList.contains('wishlist-active'); // Check current state
+            
+            try {
+                console.log("Processing Wishlist Action...");
+                const response = await fetch('/toggle-wishlist', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ productId }),
+                });
 
-                            method: 'POST',
-                            headers: {
-                                'Content-type': 'application/json',
-                            },
-                            body: JSON.stringify({ productId }),
-                        })
-                        const result = await response.json();
+                const result = await response.json();
 
-                        if (response.ok) {
-                            Swal.fire("Product added to Wishlist", result.message, 'success');
-                        } else {
-                            if (response.status === 401) {
-                                window.location.href = '/login'
-                            } else {
-                                swal.fire('Error', result.message || "Failed to add the product to wishlist").then(() => {
-                                    window.location.href = '/wishlist'
-                                })
-
-                            }
-                        }
-                    } catch (error) {
-                        console.error('Error porduct add wishlist', error);
-                        Swal.fire('An error occured', 'while product adding the wishlist')
+                if (response.ok) {
+                    if (isInWishlist) {
+                        this.classList.remove('wishlist-active');
+                        Swal.fire("Product Removed", "Product removed from Wishlist", 'success');
+                    } else {
+                        this.classList.add('wishlist-active');
+                        Swal.fire("Product Added", "Product added to Wishlist", 'success');
                     }
-                })
-            })
-        </script>
+                } else {
+                    if (response.status === 401) {
+                        window.location.href = '/login';
+                    } else {
+                        Swal.fire('Error', result.message || "Failed to update Wishlist").then(() => {
+                            window.location.href = '/wishlist';
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('Error updating wishlist:', error);
+                Swal.fire('An error occurred', 'while updating the wishlist');
+            }
+        });
+    });
+</script>
 
 
         <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.13/dist/sweetalert2.min.css" rel="stylesheet">
