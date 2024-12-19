@@ -434,19 +434,25 @@
                                 <form action="/admin/products" method="get">
                                     <select id="stockFilter" class="form-select" name="stock">
                                         <option value="">All Stocks</option>
-                                        <option value="out-of-stock" <%= stockStatus === 'out-of-stock' ? 'selected' : '' %>>Out of stock</option>
-                                        <option value="low-stock" <%= stockStatus === 'low-stock' ? 'selected' : '' %>>Low stock</option>
-                                        <option value="in-stock" <%= stockStatus === 'in-stock' ? 'selected' : '' %>>In stock</option>
-                                    </select>
-                                    <button type="submit" class="btn btn-filter" style="background-color: #4CAF50;">Filter</button>
+                                        <option value="out-of-stock" <%=stockStatus==='out-of-stock' ? 'selected' : ''
+                                            %>>Out of stock</option>
+                                        <option value="low-stock" <%=stockStatus==='low-stock' ? 'selected' : '' %>>Low
+                                            stock</option>
+                                        <option value="in-stock" <%=stockStatus==='in-stock' ? 'selected' : '' %>>In
+                                            stock</option>
+                                    </select><br>
+                                    <button type="submit" class="btn btn-filter"
+                                        style="background-color: #4CAF50;">Filter</button>
+                                        <br><br>
                                 </form>
-                            </div>                            
+                            </div>
                             <div class="col-lg-4 col-md-6 me-auto">
                                 <form action="/admin/products" method="get">
-                                    <input type="text" name="search" placeholder="Search..." class="form-control" value="<%= searchQuery %>"/>
+                                    <input type="text" name="search" placeholder="Search..." class="form-control"
+                                        value="<%= searchQuery %>" />
                                     <button type="submit" class="btn btn-search">Search</button>
                                 </form>
-                            </div>                            
+                            </div>
                             <table class="product-table">
                                 <thead>
                                     <tr>
@@ -504,22 +510,28 @@
                                                     <% if (product.category.offer) { %>
                                                         <!-- Display Category Offer if Available -->
                                                         <span class="offer-details">
-                                                            Category Offer: <%= product.category.offer.name %> - <%= product.category.offer.discount %>% off
+                                                            Category Offer: <%= product.category.offer.name %> - <%=
+                                                                    product.category.offer.discount %>% off
                                                         </span>
-                                                    <% } else { %>
-                                                        <!-- Display Product's Offer Options -->
-                                                        <% if (product.offer) { %>
-                                                            <form action="/admin/product/remove-offer/<%= product._id %>" method="POST" style="display:inline;">
-                                                                <button type="submit" class="btn btn-danger">
-                                                                    <%= product.offer.name %> - <%= product.offer.discount %>% | Remove Offer
-                                                                </button>
-                                                            </form>
                                                         <% } else { %>
-                                                            <button class="btn btn-offer" onclick="openOfferModal('<%= product._id %>', '<%= product.name %>', '<%= product.price %>')">
-                                                                Apply Offer
-                                                            </button>
-                                                        <% } %>
-                                                    <% } %>                                
+                                                            <!-- Display Product's Offer Options -->
+                                                            <% if (product.offer) { %>
+                                                                <form
+                                                                    action="/admin/product/remove-offer/<%= product._id %>"
+                                                                    method="POST" style="display:inline;">
+                                                                    <button type="submit" class="btn btn-danger">
+                                                                        <%= product.offer.name %> - <%=
+                                                                                product.offer.discount %>% | Remove
+                                                                                Offer
+                                                                    </button>
+                                                                </form>
+                                                                <% } else { %>
+                                                                    <button class="btn btn-offer"
+                                                                        onclick="openOfferModal('<%= product._id %>', '<%= product.name %>', '<%= product.price %>')">
+                                                                        Apply Offer
+                                                                    </button>
+                                                                    <% } %>
+                                                                        <% } %>
                                                 </td>
                                             </tr>
                                             <% }) %>
@@ -638,7 +650,6 @@
 
     <script>
 
-
         function openOfferModal(productId, productName, productPrice) {
             document.getElementById('productId').value = productId;
             document.getElementById('productName').value = productName;
@@ -651,7 +662,6 @@
             document.getElementById('offerModal').style.display = 'none';
         }
 
-
         function applyOffer() {
             const productId = document.getElementById('productId').value;
             const offerId = document.getElementById('offerType').value;
@@ -660,7 +670,6 @@
                 Swal.fire('Please select an offer type.');
                 return;
             }
-
 
             Swal.fire({
                 title: 'Applying offer...',
@@ -685,33 +694,31 @@
                             location.reload();
                         });
                     } else {
-                        Swal.fire(data.message ||'Error!', 'Failed to apply the offer.', 'error');
+                        Swal.fire(data.message || 'Error!', 'Failed to apply the offer.', 'error');
                     }
                 })
                 .catch((error) => {
                     Swal.fire('Error!', 'Something went wrong. Please try again.', 'error');
                 })
                 .finally(() => {
-                    
+
                     closeOfferModal();
                 });
 
-                document.getElementById('stockFilter').addEventListener('change', function() {
-    const searchQuery = document.querySelector('input[name="search"]').value; // Get the current search query if any
-    const stock = this.value; // Get the selected stock option
+            document.getElementById('stockFilter').addEventListener('change', function () {
+                const searchQuery = document.querySelector('input[name="search"]').value;
+                const stock = this.value;
 
-    // Create the query string with stock and search (if applicable)
-    let queryString = '';
-    if (searchQuery) {
-        queryString += `search=${encodeURIComponent(searchQuery)}&`;
-    }
-    if (stock) {
-        queryString += `stock=${encodeURIComponent(stock)}`;
-    }
+                let queryString = '';
+                if (searchQuery) {
+                    queryString += `search=${encodeURIComponent(searchQuery)}&`;
+                }
+                if (stock) {
+                    queryString += `stock=${encodeURIComponent(stock)}`;
+                }
 
-    // Redirect to the updated URL
-    window.location.href = `/admin/products?${queryString}`;
-});
+                window.location.href = `/admin/products?${queryString}`;
+            });
 
 
         }

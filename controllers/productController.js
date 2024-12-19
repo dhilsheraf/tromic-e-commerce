@@ -108,8 +108,8 @@ const loadEditProduct = async (req, res) => {
 
         if (!product) return res.status(404).json({ message: 'Product not found' });
 
-        const categories = await Category.find(); 
-        
+        const categories = await Category.find();
+
         res.render('admin/editProduct', { product, categories });
     } catch (error) {
         console.error("Error loading product for edit:", error);
@@ -142,7 +142,7 @@ const editProduct = async (req, res) => {
                 stock,
                 originalPrice: price,
                 category,
-                images: updatedImages.filter((url) => url), // Remove any undefined URLs
+                images: updatedImages.filter((url) => url), 
             },
             { new: true }
         );
@@ -218,64 +218,76 @@ const loadProduct = async (req, res) => {
 
         const categoryList = await Category.find({ isActive: true });
 
-        const wishlist = userId ? await Wishlist.findOne({userId}) : null ;
-        const wishlistProductIds = wishlist ? wishlist.items.map( item => item.productId.toString()) : [];
+        const wishlist = userId ? await Wishlist.findOne({ userId }) : null;
+        const wishlistProductIds = wishlist ? wishlist.items.map(item => item.productId.toString()) : [];
 
         const products = await Product.aggregate([
-            { $match: {
+            {
+                $match: {
                     isActive: true,
-                    ...searchFilter } },
-                { $lookup: {
-                    from: "categories", 
-                    localField: "category", 
-                    foreignField: "_id", 
-                    as: "categoryDetails", 
-                }},
-
-            { $unwind: "$categoryDetails"},
-            {$match: {"categoryDetails.isActive": true, ...categoryFilter}},
-            { $sort: sortOption },{ $skip: skip },{ $limit: Number(limit) }, 
-            { $lookup: {
-                from:'offers',
-                localField:'offer',
-                foreignField:'_id',
-                as:"offerDetails"
-            }},
-            { $unwind : { path : '$offerDetails' , preserveNullAndEmptyArrays:true}},
-            { $project: {
-                    name: 1,
-                    price: 1,
-                    description: 1,
-                    images: 1,
-                    stock: 1,
-                    isActive: 1,
-                    offer:1,
-                    category: "$categoryDetails",
-                    inWishlist: {
-                        $in :["$_id",wishlistProductIds.map(id => new mongoose.Types.ObjectId(id))]
-                    },
-                    offerDetails:1
-                }}])
-
-        const totalProducts = await Product.aggregate([
-            { $match: { isActive: true, ...searchFilter,} },
+                    ...searchFilter
+                }
+            },
             {
                 $lookup: {
                     from: "categories",
                     localField: "category",
                     foreignField: "_id",
                     as: "categoryDetails",
-                },},
-            { $unwind: "$categoryDetails"},
-            { $match: { "categoryDetails.isActive": true, ...categoryFilter} },
-            { $count: "total"},
+                }
+            },
+
+            { $unwind: "$categoryDetails" },
+            { $match: { "categoryDetails.isActive": true, ...categoryFilter } },
+            { $sort: sortOption }, { $skip: skip }, { $limit: Number(limit) },
+            {
+                $lookup: {
+                    from: 'offers',
+                    localField: 'offer',
+                    foreignField: '_id',
+                    as: "offerDetails"
+                }
+            },
+            { $unwind: { path: '$offerDetails', preserveNullAndEmptyArrays: true } },
+            {
+                $project: {
+                    name: 1,
+                    price: 1,
+                    description: 1,
+                    images: 1,
+                    stock: 1,
+                    isActive: 1,
+                    offer: 1,
+                    category: "$categoryDetails",
+                    inWishlist: {
+                        $in: ["$_id", wishlistProductIds.map(id => new mongoose.Types.ObjectId(id))]
+                    },
+                    offerDetails: 1
+                }
+            }])
+
+        const totalProducts = await Product.aggregate([
+            { $match: { isActive: true, ...searchFilter, } },
+            {
+                $lookup: {
+                    from: "categories",
+                    localField: "category",
+                    foreignField: "_id",
+                    as: "categoryDetails",
+                },
+            },
+            { $unwind: "$categoryDetails" },
+            { $match: { "categoryDetails.isActive": true, ...categoryFilter } },
+            { $count: "total" },
         ]);
 
 
         const totalCount = totalProducts[0]?.total || 0;
 
-        res.render('shop', { products, currentPage: Number(page),totalPages: Math.ceil(totalCount / limit),
-            totalProducts: totalCount, search, sort,category: categoryList, selectedCategories: categoriesArray,});
+        res.render('shop', {
+            products, currentPage: Number(page), totalPages: Math.ceil(totalCount / limit),
+            totalProducts: totalCount, search, sort, category: categoryList, selectedCategories: categoriesArray,
+        });
 
     } catch (err) {
         console.error(err);
@@ -295,16 +307,16 @@ const getProductDetails = async (req, res) => {
         }
 
         let isInWishlist = false;
-        if(userId){
-            const wishlist = await Wishlist.findOne( { userId });
+        if (userId) {
+            const wishlist = await Wishlist.findOne({ userId });
             if (wishlist && wishlist.items.some(item => item.productId.toString() === productId)) {
                 isInWishlist = true;
             }
         }
 
-        const relatedProducts = await Product.find({ _id:{ $ne: productId}}).limit(4).lean();
+        const relatedProducts = await Product.find({ _id: { $ne: productId } }).limit(4).lean();
 
-        res.render("single-product", { product, relatedProducts ,isInWishlist});
+        res.render("single-product", { product, relatedProducts, isInWishlist });
     } catch (error) {
         console.error("Error fetching product details:", error);
         res.status(500).render('error')

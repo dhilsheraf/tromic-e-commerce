@@ -94,6 +94,7 @@ router.post('/verify-payment',session.checkUserSession, orderController.verifyPa
 router.get('/order/:orderId',session.checkUserSession,orderController.detailOrder)
 router.post('/cancel-order',session.checkUserSession,orderController.cancelOrder)
 router.patch('/return-order',session.checkUserSession,orderController.returnOrder)
+router.get('/download-invoice/:orderId',orderController.invoice)
 
 
 module.exports = router;

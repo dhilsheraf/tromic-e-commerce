@@ -8,6 +8,10 @@ const env = require('dotenv').config()
 const crypto = require('crypto');
 const Coupon = require('../models/couponModel')
 const Wallet = require('../models/walletModel')
+const PDFDocument = require('pdfkit')
+const fs = require('fs')
+
+
 
 const getCheckout = async (req, res) => {
     try {
@@ -265,16 +269,10 @@ const showOrder = async (req, res) => {
     try {
         const { page = 1, limit = 10 } = req.query;
 
-
-
-        const skip = (page - 1) * limit;
-
-        
+        const skip = (page - 1) * limit;    
         const orders = await Order.find()
             .populate('userId').populate('products.product').populate('addressId').sort({'createdAt':-1})
-            .skip(skip)
-            .limit(Number(limit))
-            .lean();
+            .skip(skip).limit(Number(limit)).lean();
 
         
         const totalOrders = await Order.countDocuments();
@@ -388,7 +386,7 @@ const cancelOrder = async (req, res) => {
 
 
         if (isNaN(refundAmount) || refundAmount < 0) {
-            console.error("Invalid refundAmount", refundAmount);
+            console.error("refund amount illaa", refundAmount);
             return res.status(500).json({ message: "Invalid refund amount calculated" });
         }
 
@@ -431,7 +429,7 @@ const cancelOrder = async (req, res) => {
         res.status(200).json({ message: "Order item cancelled successfully" });
 
     } catch (error) {
-        console.error('Error:', error);
+        console.error('error occured while cancel order Error:', error);
         res.status(500).json({ message: "An error occurred while cancelling the order" });
     }
 }
@@ -552,6 +550,18 @@ const rejectReturn = async (req, res) => {
     }
 };
 
+function generateInvoice(invoiceData,response){
+
+}
+
+const invoice = async (req,res) => {
+    try {
+        const { orderId } = req.params
+    } catch (error) {
+        
+    }
+}
+
 module.exports = {
     getCheckout,
     checkout,
@@ -564,5 +574,6 @@ module.exports = {
     verifyPayment,
     returnOrder,
     approveReturn,
-    rejectReturn
+    rejectReturn,
+    invoice
 }

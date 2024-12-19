@@ -32,7 +32,6 @@ const existUser = (req,res,next) => {
 function checkAdminSession(req, res, next) {
 
     if (req.session.adminId) {
-
         next();
     } else {
         res.redirect('/admin');

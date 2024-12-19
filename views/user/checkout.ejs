@@ -313,13 +313,25 @@
                                                 <h5 class="panel-title">
                                                     <label for="cod-payment" class="d-flex align-items-center">
                                                         <input type="radio" id="cod-payment" name="payment-method"
-                                                            value="COD">&nbsp;
+                                                            value="COD" <% if(cartTotal > 1000) {%>
+                                                                disabled
+                                                                <%} else {%> 
+                                                                    checked
+                                                                <%}%>
+                                                                >&nbsp;
                                                         Cash on delivery
                                                     </label>
                                                 </h5>
                                             </div>
                                             <div class="card-body">
-                                                <p>Product will be shipped in 14 working days</p>
+                                                <div class="card-body">
+                                                    <% if (cartTotal > 1000) { %>
+                                                        <p style="color: red;">Cash on delivery not available for order above 1000 </p>
+                                                        
+                                                    <% } else { %>
+                                                        <p style="color: #28a745;">Cash on delivery available </p>
+                                                    <% } %>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -400,6 +412,9 @@
                                         Swal.fire(verificationData.message || "Payment verification failed")
                                     }
                                 })
+                            },
+                            modal:{
+                                "ondismiss": window.location
                             },
                             theme: {
                                 color: '#F37254'

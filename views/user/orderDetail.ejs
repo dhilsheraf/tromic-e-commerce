@@ -32,6 +32,7 @@
             <%= order.addressId.state %>,
               <%= order.addressId.country %>
       </p>
+      <span><a href="/download-invoice/<%= order._id %>" class="btn btn-danger">Download Invoice</a></span><br><br>
 
       <h2>Ordered Products</h2>
       <% order.products.forEach(product=> { %>
@@ -48,8 +49,7 @@
             </p>
             <p>Total: ₹<%= product.quantity * product.product.price %>
             </p>
-            <p>Discounted: ₹<%= product.discount || 0 %>
-            </p>
+            
             <% if (product.status==='Pending' && product.status !=='delivered' ) { %>
               <span><button type="submit" class="btn btn-danger"
                   onclick="cancelOrder('<%=order._id %>','<%=product.product._id%>')">Cancel Order</button></span>
@@ -65,6 +65,7 @@
               <% if(product.status === 'return reject') { %>
                 <span style="color: red;">Return rejected</span>
               <% } %>
+              
               </div>
               </div>
               <div class="status-container">
