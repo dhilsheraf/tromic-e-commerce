@@ -12,7 +12,7 @@ const offerController = require('../controllers/offerController')
 
 router.get("/",admin.existAdmin, adminController.loadAdminLogin)
 router.post("/", adminController.adminLogin)
-router.get("/dashboard", admin.checkAdminSession, adminController.loadAdminDashboard)
+router.get("/dashboard", adminController.loadAdminDashboard)
 router.get('/logout',adminController.logout)
 
 // users 
@@ -67,6 +67,6 @@ router.delete('/delete-coupon/:id',couponController.deleteCoupon)
 
 //sale report
 router.get('/sales-report',admin.checkAdminSession,adminController.salesReport)
-
+router.post('/graph',adminController.graph)
 
 module.exports = router

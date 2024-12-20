@@ -180,7 +180,7 @@ document.addEventListener("DOMContentLoaded", ()=> {
             if(data.success){
                 location.reload();
             }else{
-                alert(data.message);
+                Swal.message(data.message);
             }
         }) 
         .catch((error)=>{

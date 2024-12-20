@@ -414,7 +414,16 @@
                                 })
                             },
                             modal:{
-                                "ondismiss": window.location
+                                "ondismiss": function () {Swal.fire({
+                                    title:"Payment Failed",
+                                    text:"It seems you closed the payment window please try again to complete you order",
+                                    icon:"warning",
+                                    confirmButtonText:"Go to Orders"
+                                }).then(()=>{
+                                    window.location.href = '/my-account'
+                                })
+
+                                }
                             },
                             theme: {
                                 color: '#F37254'

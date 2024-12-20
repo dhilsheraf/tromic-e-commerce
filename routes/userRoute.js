@@ -88,13 +88,13 @@ router.get('/checkout',session.checkUserSession,orderController.getCheckout)
 router.post('/checkout',session.checkUserSession,orderController.checkout)
 router.get('/order-confirm/:orderId',session.checkUserSession,orderController.orderConfirm)
 router.post('/verify-payment',session.checkUserSession, orderController.verifyPayment);
-
+router.post('/continue-payment',orderController.continuePayment)
 
 //order detail
 router.get('/order/:orderId',session.checkUserSession,orderController.detailOrder)
 router.post('/cancel-order',session.checkUserSession,orderController.cancelOrder)
 router.patch('/return-order',session.checkUserSession,orderController.returnOrder)
-router.get('/download-invoice/:orderId',orderController.invoice)
+router.get('/download-invoice/:orderId',session.checkUserSession,orderController.invoice)
 
 
 module.exports = router;

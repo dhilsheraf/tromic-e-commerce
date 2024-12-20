@@ -26,12 +26,16 @@
       </p>
       <p>Payment Method: <%= order.payment || 'Not specified' %>
       </p>
+      <p <%if(order.paymentStatus == 'Pending'){%>style="color: red;"<%}%> > Payment Status: <%= order.paymentStatus || 'Not specified'%></p>
       <p>Address: <%= order.addressId.addressLine || 'N/A' %>
       </p>
       <p>Shipping: <%= order.addressId.pincode %>, <%= order.addressId.city %>,
             <%= order.addressId.state %>,
               <%= order.addressId.country %>
       </p>
+      <% if (order.paymentStatus === 'Pending' && order.payment === 'razorpay') { %>
+        <button class="btn btn-success" onclick="continuePayment('<%= order._id %>')">Continue Payment</button>
+    <% } %>    
       <span><a href="/download-invoice/<%= order._id %>" class="btn btn-danger">Download Invoice</a></span><br><br>
 
       <h2>Ordered Products</h2>
@@ -43,21 +47,20 @@
             <h3>
               <%= product.product.name %>
             </h3>
-            <p>Price: ₹<%= product.product.price %>
+            <p>Price: ₹<%= product.price %>
             </p>
             <p>Quantity: <%= product.quantity %>
             </p>
-            <p>Total: ₹<%= product.quantity * product.product.price %>
+            <p>Total: ₹<%= product.quantity * product.price %>
             </p>
             
             <% if (product.status==='Pending' && product.status !=='delivered' ) { %>
               <span><button type="submit" class="btn btn-danger"
                   onclick="cancelOrder('<%=order._id %>','<%=product.product._id%>')">Cancel Order</button></span>
-
               <% } %>
               <% if (product.status === 'delivered') { %>
                 <% if (product.reasonForReturn) { %>
-                  <span style="color: #c9302c;">Applied for Return</span> <!-- Show this if there's a return reason -->
+                  <span style="color: #c9302c;">Applied for Return</span> 
                 <% } else { %>
                   <span><button type="button" class="btn btn-warning" onclick="returnOrder('<%= order._id %>', '<%= product.product._id %>')">Return Order</button></span>
                 <% } %>
@@ -65,7 +68,6 @@
               <% if(product.status === 'return reject') { %>
                 <span style="color: red;">Return rejected</span>
               <% } %>
-              
               </div>
               </div>
               <div class="status-container">
@@ -105,7 +107,7 @@
     </div>
   </main>
 
-
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <script>
     async function cancelOrder(orderId, productId) {
 
@@ -196,6 +198,69 @@
   }
 }
 
+async function continuePayment(orderId) {
+    try {
+        // Fetch the payment order details from the backend
+        const response = await fetch('/continue-payment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ orderId }),
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            const options = {
+                key: 'rzp_test_eBs0auPt7YNKUD',
+                amount: data.totalPrice * 100,
+                currency: 'INR',
+                name: 'Tromic',
+                description: 'Order payment',
+                order_id: data.razorpayOrderId,
+                handler: function (response) {
+                    fetch('/verify-payment', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_signature: response.razorpay_signature,
+                        }),
+                    })
+                    .then((res) => res.json())
+                    .then((verificationData) => {
+                        if (verificationData.success) {
+                            window.location.href = '/order-confirm/' + verificationData.orderId;
+                        } else {
+                            Swal.fire('Payment verification failed', verificationData.message, 'error');
+                        }
+                    });
+                },
+                modal: {
+                    ondismiss: function () {
+                        Swal.fire({
+                            title: 'Payment Incomplete',
+                            text: 'You closed the payment window. Please try again.',
+                            icon: 'warning',
+                            confirmButtonText: 'Retry',
+                        });
+                    },
+                },
+                theme: {
+                    color: '#F37254',
+                },
+            };
+
+            const rzp1 = new Razorpay(options);
+            rzp1.open();
+        } else {
+            Swal.fire('Error', data.message || 'Unable to initiate payment.', 'error');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        Swal.fire('Error', 'An unexpected error occurred.', 'error');
+    }
+}
 
 
   </script>

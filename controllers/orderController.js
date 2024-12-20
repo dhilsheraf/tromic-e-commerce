@@ -10,7 +10,8 @@ const Coupon = require('../models/couponModel')
 const Wallet = require('../models/walletModel')
 const PDFDocument = require('pdfkit')
 const fs = require('fs')
-
+const path = require('path');
+const mongoose  = require('mongoose');
 
 
 const getCheckout = async (req, res) => {
@@ -198,15 +199,12 @@ const verifyPayment = async (req, res) => {
 
         const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = req.body;
 
-        
-
+        console.log(req.body)
         const body = razorpay_order_id + "|" + razorpay_payment_id;
         const expectedSignature = crypto
             .createHmac('sha256', RazorpayInstance.key_secret)
             .update(body)
             .digest('hex');
-
-        
 
         if (expectedSignature === razorpay_signature) {
             const order = await Order.findOne({ razorpayOrderId: razorpay_order_id });
@@ -550,17 +548,116 @@ const rejectReturn = async (req, res) => {
     }
 };
 
-function generateInvoice(invoiceData,response){
 
-}
-
-const invoice = async (req,res) => {
+const invoice = async (req, res) => {
     try {
-        const { orderId } = req.params
+      const { orderId } = req.params;
+  
+      const order = await Order.findById(orderId)
+        .populate('userId') 
+        .populate('products.product') 
+        .populate('addressId'); 
+
+      const doc = new PDFDocument();
+  
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', 'attachment; filename=invoice.pdf');
+  
+      doc.pipe(res);
+  
+      const logoPath = path.join(__dirname, '../public/images/logo/dark.png'); 
+      doc.image(logoPath, 50, 50, { width: 100 });
+  
+      doc.fontSize(12).text('TROMIC', { align: 'right' });
+      doc.text('India Delhi', { align: 'right' });
+      doc.text('Email: tromic@gmail.com', { align: 'right' });
+      doc.text('Phone: +91234567890', { align: 'right' });
+  
+      doc.moveDown(2).moveTo(50, doc.y).lineTo(550, doc.y).stroke();
+  
+      doc.moveDown(1);
+   doc.fontSize(14).text('Customer Information', { underline: true });
+      doc.fontSize(12).text(`Name: ${order.userId.username}`);
+      doc.text(`Email: ${order.userId.email}`);
+   doc.text(`Phone: ${order.userId.number || 'N/A'}`);
+  
+      doc.moveDown(1).moveTo(50, doc.y).lineTo(550, doc.y).stroke();
+  
+      doc.moveDown(1);
+     doc.fontSize(14).text('Shipping Address', { underline: true });
+      doc.fontSize(12).text(`Address: ${order.addressId.addressLine}`);
+      doc.text(`City: ${order.addressId.city}`);
+      doc.text(`State: ${order.addressId.state}`);
+      doc.text(`Pincode: ${order.addressId.pincode}`);
+      doc.text(`Country: ${order.addressId.country}`);
+  
+      doc.moveDown(1).moveTo(50, doc.y).lineTo(550, doc.y).stroke();
+  
+      doc.moveDown(2);
+  
+      doc.fontSize(14).text('Ordered Products', { underline: true });
+  
+      let startY = doc.y;
+      const productHeader = ['Product Name', 'Price', 'Quantity', 'Total'];
+      const productWidth = [250, 100, 100, 100];
+  
+      doc.fontSize(12).text(productHeader[0], 50, startY);
+      doc.text(productHeader[1], 300, startY, { width: productWidth[1], align: 'right' });
+      doc.text(productHeader[2], 400, startY, { width: productWidth[2], align: 'right' });
+      doc.text(productHeader[3], 500, startY, { width: productWidth[3], align: 'right' });
+  
+      startY = doc.y + 5;
+      doc.moveTo(50, startY).lineTo(550, startY).stroke();
+  
+      order.products.forEach(product => {
+        startY = doc.y + 10;
+        doc.fontSize(12).text(product.product.name, 50, startY, { width: productWidth[0] });
+        doc.text(`${product.price}`, 300, startY, { width: productWidth[1], align: 'right' });
+        doc.text(product.quantity, 400, startY, { width: productWidth[2], align: 'right' });
+        doc.text(`${product.price * product.quantity}`, 500, startY, { width: productWidth[3], align: 'right' });
+  
+        doc.moveTo(50, doc.y + 5).lineTo(550, doc.y + 5).stroke();
+      });
+  
+      const totalAmount = order.products.reduce((sum, product) => sum + product.price * product.quantity, 0);
+      doc.moveDown(2);
+      doc.fontSize(12).text(`Total: ${totalAmount}`, { align: 'right' });
+  
+      doc.moveDown(1).moveTo(50, doc.y).lineTo(550, doc.y).stroke();
+  
+      doc.end();
+  
     } catch (error) {
+      console.error('Error generating invoice:', error);
+      res.status(500).send('Server error');
+    }
+  };
+
+
+const continuePayment = async (req,res) => {
+    try {
+        const { orderId } =req.body
+
+       
         
+        console.log(orderId)
+        const order = await Order.findById(orderId)
+        if(order.paymentStatus !== 'Pending' || order.payment !== 'razorpay'||!order){
+            console.log("order not found or invalid")
+            return res.status(404).json({ success: false , message:'Invalid order or non Pending'})
+        }
+        const paymentOrder = await RazorpayInstance.orders.create({
+            amount:order.totalPrice * 100 ,
+            currency:'INR',
+            receipt:`order_rcptid_${new Date().getTime()}`
+        });
+        res.json({success:true , razorpayOrderId:paymentOrder.id,totalPrice:order.totalPrice})
+    } catch (error) {
+        console.log('Error occured while continue the payment ',error);
+        res.status(500).json({ success:false , message:'Error while processsing the payment '})
     }
 }
+
 
 module.exports = {
     getCheckout,
@@ -575,5 +672,6 @@ module.exports = {
     returnOrder,
     approveReturn,
     rejectReturn,
-    invoice
+    invoice,
+    continuePayment
 }

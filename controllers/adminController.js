@@ -7,6 +7,7 @@ const Category = require('../models/categoryModel')
 const ExcelJS = require('exceljs');
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
+const { getProductDetails } = require('./productController');
 
 const adminLogin = async (req, res) => {
     try {
@@ -60,7 +61,40 @@ const loadAdminDashboard = async (req, res) => {
 
         const monthly = monthlyEarning.length > 0 ? monthlyEarning[0].total : 0;
 
-        res.render('admin/adminDashboard', { totalOrder, revenue, products, categorys, monthly })
+        const currentDate = new Date();
+        const startDate = new Date(currentDate);
+        startDate.setMonth(currentDate.getMonth() - 12);
+    
+        const revenueByMonth = await Order.aggregate([
+            {
+                $match: {
+                    createdAt: {
+                        $gte: startDate,  
+                        $lte: currentDate  
+                    }   
+                }
+            },
+            {
+                $project: {
+                    year: { $year: "$createdAt" },
+                    month: { $month: "$createdAt" },
+                    totalPrice: 1,
+                }
+            },
+            {
+                $group: {
+                    _id: { year: "$year", month: "$month" },
+                    totalRevenue: { $sum: "$totalPrice" },
+                }
+            },
+            {
+                $sort: { "_id.year": 1, "_id.month": 1 }
+            }
+        ]);
+        
+        const months = revenueByMonth.map(item => `${item._id.month}-${item._id.year}`);
+        const revenues = revenueByMonth.map(item => item.totalRevenue);
+        res.render('admin/adminDashboard', { totalOrder, revenue, products, categorys, monthly ,revenueByMonth ,months,revenues })
     } catch (error) {
         console.log("error while loading admin dashboard", error);
         res.status(500).render('admin/404')
@@ -220,6 +254,70 @@ const generatePDF = (res, orders, summary, startDate, endDate) => {
     doc.end()
 };
 
+
+const graph = async (req, res) => {
+    try {
+      const topProducts = await Order.aggregate([
+        { $unwind: '$products' },
+        { 
+            $group: { _id: '$products.product', totalQuantity: { $sum: '$products.quantity' } } },
+        { $sort: { totalQuantity: -1 } },
+        { $limit: 10 },
+        {
+          $lookup: {
+            from: 'products',
+            localField: '_id',
+            foreignField: '_id',
+            as: 'productDetails'
+          }
+        },
+        { $unwind: '$productDetails' },
+        { $project: { name: '$productDetails.name', totalQuantity: 1 } }
+      ]);
+  
+      const topCategories = await Order.aggregate([
+        { $unwind: '$products' },
+        {
+          $lookup: {
+            from: 'products',
+            localField: 'products.product',
+            foreignField: '_id',
+            as: 'productDetails'
+          }
+        },
+        { $unwind: '$productDetails' },
+        {
+          $lookup: {
+            from: 'categories',
+            localField: 'productDetails.category',
+            foreignField: '_id',
+            as: 'categoryDetails'
+          }
+        },
+        { $unwind: '$categoryDetails' },
+        { 
+            $group: { _id: '$categoryDetails.name', totalQuantity: { $sum: '$products.quantity' } } },
+        { 
+            $sort: { totalQuantity: -1 } },
+        { $limit: 10 },
+        { 
+            $project: { name: '$_id', totalQuantity: 1 } }
+      ]);
+  
+
+      console.log('Top Products:', topProducts);
+      console.log('Top Categories:', topCategories);
+        return res.json({ productLabels: topProducts.map(p => p.name),
+        productSales: topProducts.map(p => p.totalQuantity),
+        categoryLabels: topCategories.map(c => c.name),
+        categorySales: topCategories.map(c => c.totalQuantity)
+      });
+    } catch (error) {
+      console.error('Error fetching graph data:', error);
+      res.status(500).send('Internal Server Error');
+    }
+  };
+  
   
 module.exports = {
     loadAdminLogin,
@@ -228,5 +326,6 @@ module.exports = {
     loadUsers,
     blockunblock,
     logout,
-    salesReport
+    salesReport,
+    graph
 }
