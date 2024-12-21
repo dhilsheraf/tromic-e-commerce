@@ -188,7 +188,7 @@
                                           </td>
                                           <td><%= new Date(order.createdAt).toLocaleDateString() %></td>
                                           <td><Strong><%= order.payment %></Strong> </td>
-                                          <td><Strong><%= order.paymentStatus %></Strong> </td>
+                                          <td  <%if(order.paymentStatus === 'Pending'&& order.payment === 'razorpay'){%>style="color: red;"<%}%>><Strong><%= order.paymentStatus %></Strong> </td>
                                           <td>
                                             ₹<%= order.totalPrice %> for <%= order.products.reduce((sum, item) => sum + item.quantity, 0) %> items
                                           </td>

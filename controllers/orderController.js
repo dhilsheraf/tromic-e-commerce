@@ -638,9 +638,6 @@ const continuePayment = async (req,res) => {
     try {
         const { orderId } =req.body
 
-       
-        
-        console.log(orderId)
         const order = await Order.findById(orderId)
         if(order.paymentStatus !== 'Pending' || order.payment !== 'razorpay'||!order){
             console.log("order not found or invalid")
@@ -651,6 +648,9 @@ const continuePayment = async (req,res) => {
             currency:'INR',
             receipt:`order_rcptid_${new Date().getTime()}`
         });
+        order.razorpayOrderId = paymentOrder.id
+        await order.save()
+
         res.json({success:true , razorpayOrderId:paymentOrder.id,totalPrice:order.totalPrice})
     } catch (error) {
         console.log('Error occured while continue the payment ',error);
