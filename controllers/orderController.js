@@ -254,8 +254,10 @@ const detailOrder = async (req, res) => {
             return res.status(404).render('error', { message: 'Order not found' });
         }
 
-        
-        res.render('orderDetail', { order });
+        const date = new Date()
+        const diff = ( date - order.updatedAt ) / 86_400_00
+        console.log(diff)
+        res.render('orderDetail', { order,diff });
     } catch (err) {
         console.error(err);
         res.status(500).render('error', { message: 'Server error' });

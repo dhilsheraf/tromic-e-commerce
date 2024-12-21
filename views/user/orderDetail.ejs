@@ -62,7 +62,11 @@
                 <% if (product.reasonForReturn) { %>
                   <span style="color: #c9302c;">Applied for Return</span> 
                 <% } else { %>
+                  <% if(diff >=  8 ){ %>
+                     <span style="color: red;">Order can't be return after 7 Days</span>
+                 <% } else { %>
                   <span><button type="button" class="btn btn-warning" onclick="returnOrder('<%= order._id %>', '<%= product.product._id %>')">Return Order</button></span>
+                  <%}%>
                 <% } %>
               <% } %>
               <% if(product.status === 'return reject') { %>
