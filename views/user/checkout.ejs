@@ -460,56 +460,76 @@
     const originalCartTotal = <%= cartTotal %>;
 
     function updateOrderTotal(couponCode = null) {
-        const orderTotalElement = document.querySelector('.order-total td strong');
-        const couponInfoElement = document.getElementById('coupon-info');
+    const orderTotalElement = document.querySelector('.order-total td strong');
+    const couponInfoElement = document.getElementById('coupon-info');
 
-        if (!couponCode) {
-            orderTotalElement.textContent = `₹${originalCartTotal.toFixed(2)}`;
-            if (couponInfoElement) couponInfoElement.remove();
-            return;
-        }
+    // Reset to the original cart total
+    let discountedTotal = originalCartTotal;
 
-        const selectedCoupon = coupons.find(coupon => coupon.code === couponCode);
-
-        if (!selectedCoupon) return;
-
-        let discountedTotal;
-        if (selectedCoupon.type === 'percentage') {
-
-            const discountAmount = originalCartTotal * (selectedCoupon.discount / 100);
-            discountedTotal = originalCartTotal - discountAmount;
-        } else {
-
-            discountedTotal = Math.max(originalCartTotal - selectedCoupon.discount, 0);
-        }
-
+    if (!couponCode) {
         orderTotalElement.textContent = `₹${discountedTotal.toFixed(2)}`;
-
-        const couponInfo = document.createElement('div');
-        couponInfo.id = 'coupon-info';
-        couponInfo.innerHTML = `
-            <div style="
-                background-color: #e9ecef; 
-                color: green;
-                padding: 10px; 
-                margin-top: 10px; 
-                border-radius: 5px;
-                text-align: center;
-            ">
-                <small>
-                     ${selectedCoupon.code} Applied: 
-                    ${selectedCoupon.type === 'percentage' 
-                        ? `${selectedCoupon.discount}% off` 
-                        : `₹${selectedCoupon.discount} off`}
-                </small>
-                
-            </div>
-        `;
-
-
-        const orderTotalRow = document.querySelector('.order-total');
-        orderTotalRow.parentNode.insertBefore(couponInfo, orderTotalRow.nextSibling);
+        if (couponInfoElement) couponInfoElement.remove();
+        updateCODAvailability(discountedTotal);
+        return;
     }
+
+    const selectedCoupon = coupons.find(coupon => coupon.code === couponCode);
+
+    if (!selectedCoupon) return;
+
+    if (selectedCoupon.type === 'percentage') {
+        const discountAmount = originalCartTotal * (selectedCoupon.discount / 100);
+        discountedTotal -= discountAmount;
+    } else {
+        discountedTotal -= selectedCoupon.discount;
+    }
+
+    discountedTotal = Math.max(discountedTotal, 0);
+    orderTotalElement.textContent = `₹${discountedTotal.toFixed(2)}`;
+
+    if (couponInfoElement) couponInfoElement.remove();
+    const couponInfo = document.createElement('div');
+    couponInfo.id = 'coupon-info';
+    couponInfo.innerHTML = `
+        <div style="
+            background-color: #e9ecef; 
+            color: green;
+            padding: 10px; 
+            margin-top: 10px; 
+            border-radius: 5px;
+            text-align: center;
+        ">
+            <small>
+                ${selectedCoupon.code} Applied: 
+                ${selectedCoupon.type === 'percentage' 
+                    ? `${selectedCoupon.discount}% off` 
+                    : `₹${selectedCoupon.discount} off`}
+            </small>
+        </div>
+    `;
+
+    const orderTotalRow = document.querySelector('.order-total');
+    orderTotalRow.parentNode.insertBefore(couponInfo, orderTotalRow.nextSibling);
+
+    // Update COD availability
+    updateCODAvailability(discountedTotal);
+}
+function updateCODAvailability(discountedTotal) {
+    const codPaymentInput = document.getElementById('cod-payment');
+    const codMessage = codPaymentInput.closest('.card').querySelector('.card-body p');
+
+    if (discountedTotal > 1000) {
+        codPaymentInput.disabled = true;
+        codPaymentInput.checked = false;
+        codMessage.style.color = 'red';
+        codMessage.textContent = 'Cash on delivery not available for orders above ₹1000.';
+    } else {
+        codPaymentInput.disabled = false;
+        codMessage.style.color = '#28a745';
+        codMessage.textContent = 'Cash on delivery is available.';
+    }
+}
+
 
 
     document.addEventListener('DOMContentLoaded', () => {

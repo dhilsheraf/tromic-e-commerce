@@ -52,7 +52,6 @@ router.post("/verify-otp", userController.verifyOTP)
 router.post("/resend-otp", userController.resendOTP)
 
 //page not found
-router.get("/pageNotFound", userController.pageNotFound)
 
 //logout
 router.get("/logout", userController.logout)

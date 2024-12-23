@@ -11,10 +11,6 @@ const addToCart = async (req, res) => {
         const { productId, quantity } = req.body;
         const userId = req.session.user;
 
-        
-        if (!mongoose.Types.ObjectId.isValid(productId)) {
-            return res.status(400).json({ message: "Invalid Product ID" });
-        }
 
         const product = await Product.findById(productId).populate('category');
         if (!product) return res.status(404).json({ message: "Product not found" });

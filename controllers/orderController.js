@@ -145,7 +145,6 @@ const checkout = async (req, res) => {
                 return res.status(400).json({ success: false, message: 'Insufficient wallet balance' });
             }
 
-            // Deduct the amount and add transaction
             wallet.balance -= totalPrice;
             wallet.transactions.push({
                 type: 'Debit',
@@ -598,7 +597,7 @@ const invoice = async (req, res) => {
       doc.moveDown(2);
   
       doc.fontSize(14).text('Ordered Products', { underline: true });
-  
+      doc.moveDown(2)
       let startY = doc.y;
       const productHeader = ['Product Name', 'Price', 'Quantity', 'Total'];
       const productWidth = [250, 100, 100, 100];

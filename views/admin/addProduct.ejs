@@ -164,7 +164,6 @@
                             <div class=" card mb-4">
                             <div class="card-body">
                                 <form id="product-form" action="" method="POST" enctype="multipart/form-data">
-                                    <!-- <div id="server-response" style="display: none; color: red;"></div> -->
                                     <!-- Product Title -->
                                     <div class="product-form">
                                         <label for="product_name" class="form-label">Product Title</label>
@@ -181,7 +180,6 @@
                                             <div id="description-error" class="error-message">Description is required</div>
                                     </div>
 
-                                    <!-- Price and Stock Quantity -->
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="product-form">
@@ -221,7 +219,7 @@
                                             <!-- Image 1 -->
                                             <div class="col-lg-3">
                                                 <label class="form-label">Image 1</label>
-                                                <input type="file" class="form-control" name="images"
+                                                <input type="file" class="form-control" name="images" accept="image/png, image/webp, image/jpeg,image/jpg, image/avif"
                                                     onchange="previewImage(event, 1)" />
                                                 <div id="image-preview-container-1" class="image-preview-container">
                                                 </div>
@@ -259,12 +257,11 @@
                                             </div>
 
                                             <div id="server-response" style="display: none; color: red;"></div>
-                                            <!-- Add more inputs as needed -->
+                                            
                                         </div>
                                     </div>
 
 
-                                    <!-- Submit Buttons -->
                                     <div class="text-center">
                                         <button type="submit" id="submitButton" class="btn btn-submit rounded font-sm hover-up">Save
                                             Product</button>
@@ -346,7 +343,7 @@
             const fileInput = event.target;
             const imageFile = fileInput.files[0];
 
-            // Clear any existing images or cropper instances
+
             if (croppers[index]) {
                 croppers[index].destroy();
                 delete croppers[index];
@@ -364,10 +361,9 @@
                     imgElement.id = `crop-image-${index}`;
                     previewContainer.appendChild(imgElement);
 
-                    //  cropper ratio things
                     croppers[index] = new Cropper(imgElement, {
-                        aspectRatio: 1, // Set aspect ratio
-                        viewMode: 1, // Restrict the crop box to stay within the container
+                        aspectRatio: 1, 
+                        viewMode: 1,
                     });
                 };
 
@@ -383,18 +379,16 @@
             }
 
             const canvas = cropper.getCroppedCanvas({
-                width: 300, // specified dimension
+                width: 300, 
                 height: 300,
             });
 
             canvas.toBlob(function (blob) {
-                // Create a new file object from the cropped image blob
                 const croppedFile = new File([blob], `cropped_image_${index}.png`, {
                     type: "image/png",
                 });
 
-                // Replace the file in the input element
-                const fileInput = document.querySelectorAll('input[name="images"]')[index - 1]; // Correctly target the file input
+                const fileInput = document.querySelectorAll('input[name="images"]')[index - 1]; 
                 const dataTransfer = new DataTransfer();
                 dataTransfer.items.add(croppedFile);
                 fileInput.files = dataTransfer.files;

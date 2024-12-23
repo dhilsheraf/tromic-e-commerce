@@ -88,7 +88,7 @@ const addProduct = async (req, res) => {
             price: parseFloat(price),
             stock: parseInt(stock, 10),
             category,
-            images: imagePaths, // Save image paths
+            images: imagePaths, 
             originalPrice: price
         });
 
@@ -112,7 +112,7 @@ const loadEditProduct = async (req, res) => {
         res.render('admin/editProduct', { product, categories });
     } catch (error) {
         console.error("Error loading product for edit:", error);
-        res.status(500).json({ error: "Failed to load product for editing" });
+        res.status(500).render('admin/404').json({ error: "Failed to load product for editing" });
     }
 
 }

@@ -24,9 +24,22 @@
                 <div class="container">
                     <div class="row justify-content-center">
                         <div class="col-lg-6 pt-10 pt-lg-0">
-
+                           
                             <form id="signupForm" action="/signup" method="post" >
                                 <div class="login-form">
+                                    <!-- <div class="coupon-accordion"> 
+                                        <h3>Have a refferal? <span id="showcoupon">Click here to enter your code</span></h3>
+                                        <div id="checkout_coupon" class="coupon-checkout-content">
+                                            <div class="coupon-info">
+                                                <form action="javascript:void(0)">
+                                                    <p class="checkout-coupon">
+                                                        <input placeholder="Refferal code" type="text">
+                                                        <input class="coupon-inner_btn" value="Apply Refferal" type="submit">
+                                                    </p>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div> -->
                                     <% if(message) { %>
                                         <p style="color: red;"><%= message %></p>
                                     <% } %>
@@ -90,7 +103,6 @@
                 </div>
             </div>
         </main>
-        <!-- Main Content Area End Here -->
 
         <script>
     document.getElementById('signupForm').addEventListener('submit', function(event) {
@@ -114,7 +126,7 @@
 
 
          const username = document.getElementById('username').value.trim();
-         const usernamePattern = /[A-Za-z]/;  // Ensure at least one letter exists
+         const usernamePattern = /[A-Za-z]/;  
          if (!username || !usernamePattern.test(username)) {
          document.getElementById('usernameError').innerText = errorMessages.username;
          isValid = false;
@@ -130,7 +142,7 @@
 
         // number
         const phoneNumber = document.getElementById('number').value.trim();
-        const phonePattern = /^\d{10}$/; // Adjust for country code if needed
+        const phonePattern = /^\d{10}$/; 
         if (!phoneNumber || !phonePattern.test(phoneNumber)) {
             document.getElementById('numberError').innerText = errorMessages.phone;
             isValid = false;
@@ -140,7 +152,7 @@
         const password = document.getElementById('password').value;
 
         const password2 = document.getElementById('password').value;
-         const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;  // At least one lowercase, one uppercase, one digit, one special character, and minimum length 8
+         const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;  
          if (!password || !passwordPattern.test(password2)) {
          document.getElementById('passwordError').innerText = 
          `Password must be at least 8 characters long, 

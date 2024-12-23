@@ -12,6 +12,7 @@ const UserSchema = new mongoose.Schema({
     password: { type: String, required: false },
 
     isBlocked:{type:Boolean, default:false},
+    referral:  {type:String},
 
     resetToken: { type: String, default: null },
     

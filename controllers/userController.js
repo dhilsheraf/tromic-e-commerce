@@ -21,10 +21,10 @@ const loadHome = async (req, res) => {
         const products = await Product.find({}).limit(10).lean();
         const coupons = Coupon.find()
 
-        res.render('home', { products ,coupons })
+        res.render('home', { products, coupons })
     } catch (error) {
         console.error("Home page not loading", error);
-        res.status(500).redirect("/pageNotFound")
+        res.status(500).redirect("error")
     }
 }
 
@@ -33,7 +33,7 @@ const loadAbout = async (req, res) => {
         res.render("about")
     } catch (error) {
         console.error(error);
-        res.status(500).redirect("/pageNotFound")
+        res.status(500).render("error")
     }
 }
 
@@ -42,7 +42,7 @@ const loadContact = async (req, res) => {
         res.render('contact');
     } catch (error) {
         console.error(error);
-        res.status(500).redirect("/pageNotFound")
+        res.status(500).render("error")
     }
 }
 const loadBlog = async (req, res) => {
@@ -50,7 +50,7 @@ const loadBlog = async (req, res) => {
         res.render('blog');
     } catch (error) {
         console.error(error)
-        res.status(500).redirect("/pageNotFound")
+        res.status(500).render("error")
     }
 }
 
@@ -58,12 +58,12 @@ const loadBlog = async (req, res) => {
 const loadSignup = async (req, res) => {
     try {
         if (req.session.user) {
-            return res.redirect('/');  // Redirect to home if already logged in
+            return res.redirect('/');
         }
         return res.render("signup", { message: "" });
     } catch (error) {
         console.log("Error loading signup page", error);
-        res.redirect("/pageNotFound");
+        res.render("error")
     }
 }
 
@@ -73,26 +73,26 @@ const loadMyAccount = async (req, res) => {
         const userId = req.session.user
         const user = await User.findById(req.session.user)
         const addresses = await Address.find({ userId: req.session.user })
-        const orders = await Order.find({ userId }).sort({createdAt:-1}).populate('products.product', 'name price')
+        const orders = await Order.find({ userId }).sort({ createdAt: -1 }).populate('products.product', 'name price')
             .populate('addressId', 'addressLine city');
 
-        const wallet = await Wallet.findOne({userId}) || { balance:0 , transactions:[]}
+        const wallet = await Wallet.findOne({ userId }) || { balance: 0, transactions: [] }
 
-        res.render("my-account", { user, addresses, orders,wallet })
+        res.render("my-account", { user, addresses, orders, wallet })
     } catch (error) {
         console.log(error)
-        res.status(500).redirect("/pageNotFound")
+        res.status(500).render("error")
     }
 }
 
 //wishlist
 const loadWishlist = async (req, res) => {
     try {
-        const userId = req.session.user ;
+        const userId = req.session.user;
         const wishlist = await Wishlist.findOne({ userId }).populate('items.productId')
-        res.render("wishlist",{wishlist:wishlist ? wishlist.items : []})
+        res.render("wishlist", { wishlist: wishlist ? wishlist.items : [] })
     } catch (error) {
-        console.log("Error while rendering wishlist",error)
+        console.log("Error while rendering wishlist", error)
         res.status(500).render('error');
     }
 }
@@ -106,7 +106,7 @@ const toggleWishlist = async (req, res) => {
     try {
         let wishlist = await Wishlist.findOne({ userId });
 
-        if (!wishlist) 
+        if (!wishlist)
             wishlist = new Wishlist({ userId, items: [] });
         const itemIndex = wishlist.items.findIndex(item => item.productId.toString() === productId);
         if (itemIndex !== -1) {
@@ -126,13 +126,13 @@ const toggleWishlist = async (req, res) => {
 };
 
 
-const  removeWishlist = async (req,res) => {
-    const userId = req.session.user ;
-    const { productId } = req.params; 
+const removeWishlist = async (req, res) => {
+    const userId = req.session.user;
+    const { productId } = req.params;
     try {
         const wishlist = await Wishlist.findOne({ userId });
-        if(wishlist) {
-            wishlist.items = wishlist.items.filter(item => item.productId.toString() !== productId );
+        if (wishlist) {
+            wishlist.items = wishlist.items.filter(item => item.productId.toString() !== productId);
             await wishlist.save();
             return res.redirect('/wishlist')
         }
@@ -200,15 +200,24 @@ const signUp = async (req, res) => {
             return res.json("email-error")
         }
 
+        // let referredBy = null;
+        // if (referralCode) {
+        //     const referrer = await User.findOne({ referral: referralCode });
+        //     if (!referrer) {
+        //         return res.render('signup', { message: "Invalid referral code" });
+        //     }
+        //     referredBy = referrer._id
+        // }
+
         req.session.userOtp = otp;
-        req.session.userData = { email, password, number, username };
+        req.session.userData = { email, password, number, username, };
 
         res.render('verify-otp');
         console.log("OTP Send", otp)
 
     } catch (error) {
         console.error("signup error", error);
-        res.redirect("/pageNotFound")
+        res.render("error")
     }
 
 }
@@ -236,12 +245,25 @@ const verifyOTP = async (req, res) => {
             const passwordHash = await securePassword(user.password);
             console.log("assigning the user data");
 
+            // let referrerWallet = await Wallet.findOne({ userId: user.referredBy });
+            // if (!referrerWallet)
+            //     referrerWallet = await Wallet.create({ userId: referrerId, balance: 0, transactions: [] });
+
+            // referrerWallet.balance += bonusAmount;
+            // referrerWallet.transactions.push({
+            //     type: 'Credit',
+            //     amount: 250,
+            //     description: `Referral bonus for referring user `,
+            // });
+            // await referrerWallet.save();
+
             const saveUserData = new User({
                 username: user.username,
                 email: user.email,
                 number: user.number,
                 password: passwordHash,
             })
+
 
             await saveUserData.save();
             console.log("user data is saved");
@@ -261,6 +283,9 @@ const verifyOTP = async (req, res) => {
 
     }
 }
+// function generateReferral(name) {
+//     return name.slice(0, 4).toUpperCase() + Math.floor(1000 + Math.random() * 9000); 
+// }
 
 //n otp resending
 const resendOTP = async (req, res) => {
@@ -294,13 +319,11 @@ const loadLogin = async (req, res) => {
     try {
         res.render('login', { message: "" })
     } catch (error) {
-        res.redirect("/pageNotFound")
+        res.render("error")
     }
 }
 
-const pageNotFound = (req, res) => {
-    res.render("error")
-}
+
 
 const login = async (req, res) => {
     try {
@@ -327,17 +350,17 @@ const login = async (req, res) => {
     } catch (error) {
 
         console.error("Login error ", error);
-        res.send("login", { message: "login failed please try again later" })
+        res.render("error", { message: "login failed please try again later" })
     }
 }
 
 const logout = async (req, res) => {
     try {
-        delete req.session.user ;
+        delete req.session.user;
         res.redirect('/my-account')
-    }catch (error) {
+    } catch (error) {
         console.log("Logout error", error);
-        res.redirect("/pageNotFound");
+        res.render("error")
     }
 };
 
@@ -390,7 +413,7 @@ const forgotPassword = async (req, res) => {
 
         const resetToken = crypto.randomBytes(32).toString("hex");
         user.resetToken = resetToken;
-        user.resetTokenExpires = Date.now() + 3600000; 
+        user.resetTokenExpires = Date.now() + 3600000;
         await user.save();
 
 
@@ -448,7 +471,7 @@ const resetPasswordLoad = async (req, res) => {
         res.render("resetPassword", { token });
     } catch (error) {
         console.error(error);
-        res.status(500).send("Something went wrong.");
+        res.status(500).render("error")
     }
 }
 
@@ -521,7 +544,6 @@ module.exports = {
     verifyOTP,
     resendOTP,
     loadLogin,
-    pageNotFound,
     login,
     logout,
     profileUpdate,
