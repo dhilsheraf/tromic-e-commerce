@@ -12,7 +12,7 @@ const offerController = require('../controllers/offerController')
 
 router.get("/",admin.existAdmin, adminController.loadAdminLogin)
 router.post("/", adminController.adminLogin)
-router.get("/dashboard", adminController.loadAdminDashboard)
+router.get("/dashboard",admin.checkAdminSession, adminController.loadAdminDashboard)
 router.get('/logout',adminController.logout)
 
 // users 

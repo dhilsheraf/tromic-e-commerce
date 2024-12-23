@@ -199,7 +199,7 @@ const verifyPayment = async (req, res) => {
 
         const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = req.body;
 
-        console.log(req.body)
+        // console.log(req.body)
         const body = razorpay_order_id + "|" + razorpay_payment_id;
         const expectedSignature = crypto
             .createHmac('sha256', RazorpayInstance.key_secret)
@@ -256,7 +256,7 @@ const detailOrder = async (req, res) => {
 
         const date = new Date()
         const diff = ( date - order.updatedAt ) / 86_400_00
-        console.log(diff)
+        // console.log(diff)
         res.render('orderDetail', { order,diff });
     } catch (err) {
         console.error(err);
@@ -646,7 +646,7 @@ const continuePayment = async (req,res) => {
             return res.status(404).json({ success: false , message:'Invalid order or non Pending'})
         }
         const paymentOrder = await RazorpayInstance.orders.create({
-            amount:order.totalPrice * 100 ,
+            amount:order.totalPrice * 100,
             currency:'INR',
             receipt:`order_rcptid_${new Date().getTime()}`
         });

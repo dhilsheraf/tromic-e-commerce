@@ -109,7 +109,6 @@ const loadEditProduct = async (req, res) => {
         if (!product) return res.status(404).json({ message: 'Product not found' });
 
         const categories = await Category.find();
-
         res.render('admin/editProduct', { product, categories });
     } catch (error) {
         console.error("Error loading product for edit:", error);
@@ -131,12 +130,8 @@ const editProduct = async (req, res) => {
                 updatedImages[index] = file.path;
             });
         }
-
-
-        const updatedProduct = await Product.findByIdAndUpdate(
-            req.params.id,
-            {
-                name,
+        const updatedProduct = await Product.findByIdAndUpdate(req.params.id,
+            {   name,
                 description,
                 price,
                 stock,

@@ -229,14 +229,18 @@
                                         <div class="product-form">
                                             <label class="form-label">Category</label>
                                             <select class="form-select" name="category" required>
-                                                <% categories.forEach(category=> { %>
-                                                    <option value="<%= category._id %>"
-                                                        <%=product.category===category._id ? 'selected' : '' %>><%=
-                                                            category.name %>
-                                                    </option>
+                                                <% if (categories && categories.length > 0) { %>
+                                                    <% categories.forEach(category => { %>
+                                                        <option value="<%= category._id %>"
+                                                            <%= String(product.category) === String(category._id) ? 'selected' : '' %>>
+                                                            <%= category.name %>
+                                                        </option>
                                                     <% }); %>
+                                                <% } %>
+                                                    
                                             </select>
                                         </div>
+                                        
 
                                         <div class="product-form">
                                             <label class="form-label" style="color: rgb(0, 0, 0);">Product Images
@@ -247,19 +251,14 @@
                                                         <label class="form-label" style="color: black;">
                                                             <%= i===0 ? 'Display image' : 'Other images' %>
                                                         </label>
-
-                                                        <!-- Display the existing image if available -->
                                                         <% if (product.images[i]) { %>
                                                             <img src="<%= product.images[i] %>" class="image-preview" />
-                                                            <!-- Hidden field to pass the current image URL to the back-end -->
                                                             <input type="hidden" name="existingImages[]"
                                                                 value="<%= product.images[i] %>">
                                                             <% } else { %>
-                                                                <!-- Empty hidden input if there’s no image -->
                                                                 <input type="hidden" name="existingImages[]" value="">
                                                                 <% } %>
 
-                                                                    <!-- Input for uploading a new image -->
                                                                     <input type="file" class="form-control"
                                                                         name="images" data-index="<%= i %>"
                                                                         onchange="openCropper(event, <%= i %>)" />
@@ -277,8 +276,7 @@
                                             <br>
                                             <button type="submit" class="btn btn-submit rounded font-sm hover-up">Update
                                                 Product</button>
-                                            <a href="/admin/products"
-                                                class="btn btn-submit rounded font-sm hover-up">Back</a>
+                                                <a href="javascript:window.history.back();" class="btn btn-submit rounded font-sm hover-up">Back</a>
                                         </div>
                                     </form>
                                 </div>

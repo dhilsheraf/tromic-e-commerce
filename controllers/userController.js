@@ -106,19 +106,15 @@ const toggleWishlist = async (req, res) => {
     try {
         let wishlist = await Wishlist.findOne({ userId });
 
-        if (!wishlist) {
+        if (!wishlist) 
             wishlist = new Wishlist({ userId, items: [] });
-        }
-
         const itemIndex = wishlist.items.findIndex(item => item.productId.toString() === productId);
-        //if wroong index remove
         if (itemIndex !== -1) {
 
             wishlist.items.splice(itemIndex, 1);
             await wishlist.save();
             return res.status(200).json({ success: true, message: "Product removed from Wishlist" })
         } else {
-         //otherwise add
             wishlist.items.push({ productId });
             await wishlist.save();
             return res.status(200).json({ success: true, message: "Product added to Wishlist" })
@@ -394,7 +390,7 @@ const forgotPassword = async (req, res) => {
 
         const resetToken = crypto.randomBytes(32).toString("hex");
         user.resetToken = resetToken;
-        user.resetTokenExpires = Date.now() + 3600000; // 1 hour
+        user.resetTokenExpires = Date.now() + 3600000; 
         await user.save();
 
 
@@ -467,7 +463,6 @@ const resetPassword = async (req, res) => {
             return res.send("Invalid or expired reset token.");
         }
 
-        // Hash the new password
         const hashedPassword = await bcrypt.hash(password, 10);
         user.password = hashedPassword;
         user.resetToken = null;

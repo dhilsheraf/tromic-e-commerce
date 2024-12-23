@@ -50,27 +50,30 @@ const addCategory = async (req, res) => {
     try {
         const { name, description } = req.body;
 
-        
-        if (!name.trim() === "" ||!name || !description) 
-            return res.render("admin/addcategory",{ message: 'Both name and description are required.' });
+        if (!name || !name.trim() || !description) {
+            return res.status(400).render("admin/addcategory", {message: 'Both name and description are required.'});
+        }
 
-        const existingCategory = await Category.findOne({ name: name });
+        const existingCategory = await Category.findOne({ name: name.trim() });
         if (existingCategory) {
-            return res.render("admin/addcategory",{ message: 'Category name already exists.' });
+            return res.status(400).render("admin/addcategory", {message: 'Category name already exists.'});
         }
 
         const newCategory = new Category({
-            name,
-            description
+            name: name.trim(), description: description.trim(),
         });
 
         await newCategory.save();
 
         res.redirect("/admin/category");
     } catch (error) {
-        res.status(500).json({ message: 'There was an error adding the category.' });
+        console.error('Error adding category:', error);
+        res.status(500).render("admin/addcategory", { 
+            message: 'There was an error adding the category. Please try again.' 
+        });
     }
 };
+
 
 const activeInactive = async (req, res) => {
     const categoryId = req.params.id;
@@ -110,7 +113,7 @@ const editCategory = async (req, res) => {
 
     try {
         const category = await Category.findById(categoryId)
-        const existCategory = await Category.findOne({name:name});
+        const existCategory = await Category.findOne({name:name , _id:{$ne:categoryId}});
         if(existCategory) return res.render('admin/editCategory',{category,message:"Category with this name already exist"})
         
         const categorys = await Category.findByIdAndUpdate(

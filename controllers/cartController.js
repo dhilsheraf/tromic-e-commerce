@@ -103,18 +103,19 @@ const updateCartQuantity = async (req, res) => {
         const product = await Product.findById(productId).populate('category');
 
         if ( !product.isActive || product.category.isActive === false) {
-            return res.status(400).json({ success: false, message: 'Product is inactive or unavailable.\nIf it is on cart please remove it.' });
+            return res.status(400).json({ success: false, 
+            message: 'Product is inactive or unavailable.\nIf it is on cart please remove it.' })
         }
-
         const cart = await Cart.findOne({ userId: req.session.user });
 
-        if (!cart) return res.status(404).json({ success: false, message: "Cart not found " });
+        if (!cart) return res.status(404).json({ success: false, message: "Cart not found"})
 
         const item = cart.items.find(item => item.productId.toString() === productId);
 
-        if (!item) return res.status(404).json({ success: false, message: "Product not in cart " });
+        if (!item) return res.status(404).json({ success: false, message: "Product not in cart "})
         if(quantity === 1){
-        if(item.quantity === 10) return res.status(429).json({ success:false , message:"Product quantity limit exceed"})
+        if(item.quantity === 10) 
+            return res.status(429).json({ success:false , message:"Product quantity limit exceed"})
         }
         item.quantity += quantity;
 

@@ -405,118 +405,112 @@
     <script src="/assets/js/main.js?v=1.1" type="text/javascript"></script>
 
     <script>
-document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function () {
 
-// Open modal and set category ID on button click
-document.querySelectorAll('.apply-offer-btn').forEach(button => {
-    button.addEventListener('click', function () {
-        const categoryId = this.dataset.categoryId;
-        document.querySelector('#applyOfferModal').dataset.categoryId = categoryId; // Save the category ID to modal
-    });
-});
-
-// Apply offer logic using fetch
-document.querySelector('#applyOfferButton').addEventListener('click', async function () {
-    const categoryId = document.querySelector('#applyOfferModal').dataset.categoryId;
-    const offerId = document.querySelector('#offer-select').value;
-    const discount = document.querySelector('#offer-select').selectedOptions[0].dataset.discount;
-
-    try {
-        const response = await fetch('/admin/category/apply-offer', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                categoryId: categoryId,
-                offerId: offerId,
-                discount: discount
-            })
-        });
-
-        if (response.ok) {
-            const data = await response.json();
-            Swal.fire({
-                title: 'Offer applied successfully!',
-                icon: 'success',
-            }).then(() => {
-                location.reload(); // Reload the page to update the category offer
+            document.querySelectorAll('.apply-offer-btn').forEach(button => {
+                button.addEventListener('click', function () {
+                    const categoryId = this.dataset.categoryId;
+                    document.querySelector('#applyOfferModal').dataset.categoryId = categoryId; 
+                });
             });
-        } else {
-            const errorData = await response.json();
-            Swal.fire({
-                title: 'Error applying offer',
-                icon: 'error',
-                text: errorData.message || 'Something went wrong!',
-            });
-        }
-    } catch (error) {
-        Swal.fire('Error applying offer');
-        console.error(error);
-    }
-});
 
-// Remove offer logic using fetch
-document.querySelectorAll('.remove-offer-btn').forEach(button => {
-    button.addEventListener('click', function () {
-        const categoryId = this.dataset.categoryId;
+            document.querySelector('#applyOfferButton').addEventListener('click', async function () {
+                const categoryId = document.querySelector('#applyOfferModal').dataset.categoryId;
+                const offerId = document.querySelector('#offer-select').value;
+                const discount = document.querySelector('#offer-select').selectedOptions[0].dataset.discount;
 
-        Swal.fire({
-            title: 'Are you sure?',
-            text: 'You are about to remove the offer from this category.',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Yes, remove offer',
-            cancelButtonText: 'No, keep offer',
-        }).then(async (result) => {
-            if (result.isConfirmed) {
                 try {
-                    const response = await fetch('/admin/category/remove-offer', {
+                    const response = await fetch('/admin/category/apply-offer', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                         },
-                        body: JSON.stringify({ categoryId: categoryId })
+                        body: JSON.stringify({
+                            categoryId: categoryId,
+                            offerId: offerId,
+                            discount: discount
+                        })
                     });
 
                     if (response.ok) {
+                        const data = await response.json();
                         Swal.fire({
-                            title: 'Offer removed successfully!',
+                            title: 'Offer applied successfully!',
                             icon: 'success',
                         }).then(() => {
-                            location.reload(); // Reload the page to update the offer status
+                            location.reload();
                         });
                     } else {
                         const errorData = await response.json();
                         Swal.fire({
-                            title: 'Error removing offer',
+                            title: 'Error applying offer',
                             icon: 'error',
                             text: errorData.message || 'Something went wrong!',
                         });
                     }
                 } catch (error) {
-                    Swal.fire({
-                        title: 'Error removing offer',
-                        icon: 'error',
-                        text: 'Something went wrong!',
-                    });
+                    Swal.fire('Error applying offer');
                     console.error(error);
                 }
-            }
-        });
-    });
-});
+            });
 
-});
+            document.querySelectorAll('.remove-offer-btn').forEach(button => {
+                button.addEventListener('click', function () {
+                    const categoryId = this.dataset.categoryId;
+
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: 'You are about to remove the offer from this category.',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Yes, remove offer',
+                        cancelButtonText: 'No, keep offer',
+                    }).then(async (result) => {
+                        if (result.isConfirmed) {
+                            try {
+                                const response = await fetch('/admin/category/remove-offer', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify({ categoryId: categoryId })
+                                });
+
+                                if (response.ok) {
+                                    Swal.fire({
+                                        title: 'Offer removed successfully!',
+                                        icon: 'success',
+                                    }).then(() => {
+                                        location.reload();
+                                    });
+                                } else {
+                                    const errorData = await response.json();
+                                    Swal.fire({
+                                        title: 'Error removing offer',
+                                        icon: 'error',
+                                        text: errorData.message || 'Something went wrong!',
+                                    });
+                                }
+                            } catch (error) {
+                                Swal.fire({
+                                    title: 'Error removing offer',
+                                    icon: 'error',
+                                    text: 'Something went wrong!',
+                                });
+                                console.error(error);
+                            }
+                        }
+                    });
+                });
+            });
+
+        });
 
 
     </script>
 
     <script src="/assets/js/category.js"></script>
-    <!-- SweetAlert2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="stylesheet">
-
-    <!-- SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.js"></script>
 
 </body>

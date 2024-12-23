@@ -8,7 +8,7 @@ const productSchema = new mongoose.Schema({
     category: { type: ObjectId , ref: 'Category', required: true },
     images: { type: [String], required: true },  
     stock: { type: Number, default: 0 },
-    isActive: { type: Boolean, default: true }, // Soft delete flag,
+    isActive: { type: Boolean, default: true },
     offer: { type:ObjectId,
         ref:'Offer'
     },

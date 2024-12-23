@@ -50,13 +50,10 @@ const loadAdminDashboard = async (req, res) => {
         const products = await Product.countDocuments();
         const categorys = await Category.countDocuments()
         const monthlyEarning = await Order.aggregate([
-            {
-                $match: {
+            { $match: {
                     createdAt: {
                         $gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
-                    },
-                },
-            },
+                    }, }, },
             { $group: { _id: null, total: { $sum: "$totalPrice" }, }, },]);
 
         const monthly = monthlyEarning.length > 0 ? monthlyEarning[0].total : 0;
@@ -67,11 +64,9 @@ const loadAdminDashboard = async (req, res) => {
     
         const revenueByMonth = await Order.aggregate([
             {
-                $match: {
-                    createdAt: {
+                $match: { createdAt: {
                         $gte: startDate,  
-                        $lte: currentDate  
-                    }   
+                        $lte: currentDate    }   
                 }
             },
             {
@@ -257,66 +252,76 @@ const generatePDF = (res, orders, summary, startDate, endDate) => {
 
 const graph = async (req, res) => {
     try {
-      const topProducts = await Order.aggregate([
-        { $unwind: '$products' },
-        { 
-            $group: { _id: '$products.product', totalQuantity: { $sum: '$products.quantity' } } },
-        { $sort: { totalQuantity: -1 } },
-        { $limit: 10 },
-        {
-          $lookup: {
-            from: 'products',
-            localField: '_id',
-            foreignField: '_id',
-            as: 'productDetails'
-          }
-        },
-        { $unwind: '$productDetails' },
-        { $project: { name: '$productDetails.name', totalQuantity: 1 } }
-      ]);
-  
-      const topCategories = await Order.aggregate([
-        { $unwind: '$products' },
-        {
-          $lookup: {
-            from: 'products',
-            localField: 'products.product',
-            foreignField: '_id',
-            as: 'productDetails'
-          }
-        },
-        { $unwind: '$productDetails' },
-        {
-          $lookup: {
-            from: 'categories',
-            localField: 'productDetails.category',
-            foreignField: '_id',
-            as: 'categoryDetails'
-          }
-        },
-        { $unwind: '$categoryDetails' },
-        { 
-            $group: { _id: '$categoryDetails.name', totalQuantity: { $sum: '$products.quantity' } } },
-        { 
-            $sort: { totalQuantity: -1 } },
-        { $limit: 10 },
-        { 
-            $project: { name: '$_id', totalQuantity: 1 } }
-      ]);
-  
+        const { timeRange, startDate, endDate } = req.body;
+        let filter = {};
 
-      console.log('Top Products:', topProducts);
-      console.log('Top Categories:', topCategories);
-        return res.json({ productLabels: topProducts.map(p => p.name),
-        productSales: topProducts.map(p => p.totalQuantity),
-        categoryLabels: topCategories.map(c => c.name),
-        categorySales: topCategories.map(c => c.totalQuantity)
-      });
+        if (timeRange) {
+            const now = new Date();
+            const pastDate = new Date(now.getTime() - timeRange * 24 * 60 * 60 * 1000);
+            filter['createdAt'] = { $gte: pastDate };
+        }
+        if (startDate && endDate) { filter['createdAt'] = {
+                $gte: new Date(startDate),
+                $lte: new Date(endDate)};
+        }
+
+        const topProducts = await Order.aggregate([
+            { $match: filter },{ $unwind: '$products' },
+            { $group: {
+                    _id: '$products.product',
+                    totalQuantity: { $sum: '$products.quantity' }
+                }
+            },
+            { $sort: { totalQuantity: -1 } },{ $limit: 10 },
+            {
+                $lookup: {
+                    from: 'products',
+                    localField: '_id',
+                    foreignField: '_id',
+                    as: 'productDetails'
+                }
+            },
+            { $unwind: '$productDetails' },
+            { $project: { name: '$productDetails.name', totalQuantity: 1 } }
+        ]);
+
+        const topCategories = await Order.aggregate([
+            { $match: filter },{ $unwind: '$products' },
+            {
+                $lookup: {
+                    from: 'products',
+                    localField: 'products.product',
+                    foreignField: '_id',
+                    as: 'productDetails'
+                } },
+            { $unwind: '$productDetails' },
+            {$lookup: {
+                    from: 'categories',
+                    localField: 'productDetails.category',
+                    foreignField: '_id',
+                    as: 'categoryDetails'
+                } },
+            { $unwind: '$categoryDetails' },
+            {$group: {
+                    _id: '$categoryDetails.name',
+                    totalQuantity: { $sum: '$products.quantity' }}
+            },
+            { $sort: { totalQuantity: -1 } }, { $limit: 10 }
+        ]);
+
+
+        res.json({
+            productLabels: topProducts.map(p => p.name ),
+            productSales: topProducts.map(p => p.totalQuantity),
+            categoryLabels: topCategories.map(c => c._id),
+            categorySales: topCategories.map(c => c.totalQuantity)
+        });
     } catch (error) {
-      console.error('Error fetching graph data:', error);
-      res.status(500).send('Internal Server Error');
+        console.error('Error fetching sales data:', error);
+        res.status(500).json({ error: 'Failed to fetch sales data' });
     }
-  };
+};
+
   
   
 module.exports = {
