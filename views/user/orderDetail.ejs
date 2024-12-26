@@ -28,6 +28,8 @@
       </p>
       <p <%if(order.paymentStatus == 'Pending'){%>style="color: red;"<%}%> > Payment Status: <%= order.paymentStatus || 'Not specified'%></p>
       <p>Address: <%= order.addressId.addressLine || 'N/A' %>
+        <p>Total Price <%= order.totalPrice%></p>
+        <p>Price without coupon <%= order.totalPriceWithoutCouponOffer %></p>
       </p>
       <p>Shipping: <%= order.addressId.pincode %>, <%= order.addressId.city %>,
             <%= order.addressId.state %>,
@@ -35,9 +37,10 @@
       </p>
       <% if (order.paymentStatus === 'Pending' && order.payment === 'razorpay') { %>
         <button class="btn btn-success" onclick="continuePayment('<%= order._id %>')">Continue Payment</button>
-    <% } %>    
+    <% } %>   
+    <% if(order.paymentStatus === 'completed' && !order.products.some(product => product.status === 'cancelled' )){ %>
       <span><a href="/download-invoice/<%= order._id %>" class="btn btn-danger">Download Invoice</a></span><br><br>
-
+<% }%>
       <h2>Ordered Products</h2>
       <% order.products.forEach(product=> { %>
         <div class="product-row">
@@ -204,7 +207,6 @@
 
 async function continuePayment(orderId) {
     try {
-        // Fetch the payment order details from the backend
         const response = await fetch('/continue-payment', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },

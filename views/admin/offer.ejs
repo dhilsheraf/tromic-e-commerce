@@ -141,40 +141,55 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <% offer.forEach((offerItem ,index)=> { %>
+                                <% offers.forEach((offerItem, index) => { %>
                                     <tr>
-                                        <td>
-                                            <%= index+1 %>
-                                        </td>
-                                        <td>
-                                            <%= offerItem.name %>
-                                        </td>
-                                        <td>
-                                            <%= offerItem.discount %>
-                                        </td>
+                                        <td><%= (currentPage - 1) * limit + index + 1 %></td>
+                                        <td><%= offerItem.name %></td>
+                                        <td><%= offerItem.discount %></td>
                                         <td>
                                             <%= new Date(offerItem.activeAt).toLocaleDateString('en-US', {
-                                                day: '2-digit' , month: 'short' , year: 'numeric' }).toUpperCase()%>
+                                                day: '2-digit', month: 'short', year: 'numeric'
+                                            }).toUpperCase() %>
                                         </td>
                                         <td>
                                             <%= new Date(offerItem.expiresAt).toLocaleDateString('en-US', {
-                                                day: '2-digit' , month: 'short' , year: 'numeric' }).toUpperCase()%>
+                                                day: '2-digit', month: 'short', year: 'numeric'
+                                            }).toUpperCase() %>
                                         </td>
                                         <td>
-                                            <button class="btn btn-sm btn-danger"
-                                                onclick="deleteOffer('<%= offerItem.id %>')">
+                                            <button class="btn btn-sm btn-danger" onclick="deleteOffer('<%= offerItem.id %>')">
                                                 <i class="material-icons md-delete"></i> Delete
                                             </button>
                                         </td>
                                     </tr>
-                                    <% }) %>
-                            </tbody>
+                                <% }) %>
+                            </tbody>                            
                         </table>
                     </div>
                 </div>
             </div>
+            <div class="pagination-container text-center">
+                <ul class="pagination text-center">
+                    <% if (currentPage > 1) { %>
+                        <li class="page-item">
+                            <a class="page-link" href="?page=<%= currentPage - 1 %>&limit=<%= limit %>">Previous</a>
+                        </li>
+                    <% } %>
+                    <% for (let i = 1; i <= totalPages; i++) { %>
+                        <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+                            <a class="page-link" href="?page=<%= i %>&limit=<%= limit %>"><%= i %></a>
+                        </li>
+                    <% } %>
+                    <% if (currentPage < totalPages) { %>
+                        <li class="page-item">
+                            <a class="page-link" href="?page=<%= currentPage + 1 %>&limit=<%= limit %>">Next</a>
+                        </li>
+                    <% } %>
+                </ul>
+            </div>
         </section>
-
+        
+        
 
         <div class="modal fade" id="addOfferModal" tabindex="-1">
             <div class="modal-dialog">
@@ -214,6 +229,7 @@
                 </div>
             </div>
         </div>
+        
 
 
         <!-- content-main end// -->

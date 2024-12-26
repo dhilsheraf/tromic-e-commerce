@@ -202,7 +202,8 @@
                                     <!-- Category -->
                                     <div class="product-form">
                                         <label class="form-label">Category</label>
-                                        <select class="form-select" name="category" required>
+                                        <select class="form-select" name="category" >
+                                            <option value="">Select a category</option>
                                             <% categories.forEach(category=> { %>
                                                 <option value="<%= category._id %>">
                                                     <%= category.name %>
@@ -410,10 +411,15 @@
             const submitButton = document.getElementById('submitButton')
 
             submitButton.disabled = true
-
-            // Validate input fields
             const price = formData.get("price");
             const selectedFiles = Array.from(formData.getAll("images")).filter(file => file.size > 0);
+            const category = formData.get("category")
+
+            if(category.trim() === "" || !category){
+            Swal.fire("Please select a category")
+            submitButton.disabled = false;
+            return    
+        }
 
             if (isNaN(price) || price <= 0) {
                 Swal.fire("Please enter a valid price.");

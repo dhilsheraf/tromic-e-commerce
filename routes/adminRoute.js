@@ -64,7 +64,8 @@ router.post('/product/remove-offer/:productId',offerController.removeProductOffe
 router.get('/coupon',admin.checkAdminSession,couponController.getCoupon);
 router.post('/add-coupon',couponController.addCoupon)
 router.delete('/delete-coupon/:id',couponController.deleteCoupon)
-
+router.get('/get-coupon/:couponId',couponController.editCouponGet)
+router.put('/update-coupon/:couponCode',couponController.editCoupon)
 //sale report
 router.get('/sales-report',admin.checkAdminSession,adminController.salesReport)
 router.post('/graph',adminController.graph)

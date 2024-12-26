@@ -2,13 +2,23 @@ const Coupon = require('../models/couponModel');
 
 const getCoupon = async (req, res) => {
     try {
-        const coupons = await Coupon.find(); 
-        res.render('admin/coupon', { coupons }); 
+        const page = parseInt(req.query.page) || 1; 
+        const limit = 10; 
+        const skip = (page - 1) * limit;
+
+        const coupons = await Coupon.find().skip(skip).limit(limit);
+
+        const totalCoupons = await Coupon.countDocuments();
+
+        const totalPages = Math.ceil(totalCoupons / limit);
+
+        res.render('admin/coupon', { coupons, totalPages, currentPage: page });
     } catch (error) {
         console.error("Error occurred while rendering the coupon page", error);
         res.status(500).render('admin/404');
     }
 };
+
 
 
 const addCoupon = async (req, res) => {
@@ -63,9 +73,48 @@ const deleteCoupon = async (req, res) => {
     }
 };
 
+const editCouponGet = async (req,res) => {
+    try {
+        const { couponId } = req.params
+        const coupon = await Coupon.findById(couponId);
+        if(!coupon){
+            return res.json({success:true , message:'Coupon not found'})
+        }
+        return res.json({success:true,coupon})
+    } catch (error) {
+        console.error("Error occured while fetch coupon",error)
+        res.status(500).json({ success:false , message:'Error occured while fetch copon'})
+    }
+}
+
+const editCoupon = async (req, res) => {
+    const { couponCode } = req.params;
+    const { minAmount, discountValue, activationDate, expirationDate } = req.body;
+
+    try {
+        const coupon = await Coupon.findOneAndUpdate(
+            {code: couponCode },
+            {  minAmount,
+                discount: discountValue,
+                activeAt: new Date(activationDate),
+                expiresAt: new Date(expirationDate),},
+            {new: true}
+        );
+        if (!coupon) {
+            return res.status(404).json({ success: false, message: 'Coupon not found.' })
+        }
+
+        return res.json({success: true, message: 'Coupon updated successfully.',coupon,})
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Failed to update the coupon.' });
+    }
+}
 
 module.exports = {
     getCoupon,
     addCoupon,
-    deleteCoupon
+    deleteCoupon,
+    editCouponGet,
+    editCoupon
 }

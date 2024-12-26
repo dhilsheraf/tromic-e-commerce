@@ -5,13 +5,27 @@ const cron = require('node-cron');
 
 const getOffer = async (req, res) => {
     try {
-        const offer = await Offer.find();
-        res.render('admin/offer',{offer})
+        const page = parseInt(req.query.page) || 1; 
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
+
+        const totalOffers = await Offer.countDocuments();
+        const offers = await Offer.find().skip(skip).limit(limit);
+
+        const totalPages = Math.ceil(totalOffers / limit);
+
+        res.render('admin/offer', {
+            offers,
+            currentPage: page,
+            totalPages,
+            limit,
+        });
     } catch (error) {
-        console.error("Error occured whilerendering the offer page", error)
-        res.status(500).render('admin/404')
+        console.error("Error occurred while rendering the offer page", error);
+        res.status(500).render('admin/404');
     }
-}
+};
+
 
 const addOffer = async (req, res) => {
     try {

@@ -12,16 +12,16 @@ const addToCart = async (req, res) => {
         const userId = req.session.user;
 
 
-        const product = await Product.findById(productId).populate('category');
-        if (!product) return res.status(404).json({ message: "Product not found" });
+        const product = await Product.findById(productId).populate('category')
+        if (!product) return res.status(404).json({ message: "Product not found" })
           
-        if (!product || !product.isActive || product.category.isActive === false) {
-            return res.status(400).json({ success: false, message: 'Product is inactive or unavailable.\nIf it is on cart please remove it.' });
-        }
+        if (!product || !product.isActive || product.category.isActive === false) 
+            return res.status(400).json({ success: false, message: 'Product is inactive or unavailable.\nIf it is on cart please remove it.' })
         
-        if (quantity > product.stock) {
-            return res.status(400).json({ message: `Only ${product.stock} items left in stock.`});
-        }
+        
+        if (quantity > product.stock) 
+            return res.status(400).json({ message: `Only ${product.stock} items left in stock.`})
+        
 
         let cart = await Cart.findOne({ userId });
 
@@ -31,7 +31,6 @@ const addToCart = async (req, res) => {
 
         const productIndex = cart.items.findIndex(item => item.productId.toString() === productId);
         
-        
 
         if (productIndex > -1) {
             const existingItem = cart.items[productIndex];
@@ -39,7 +38,7 @@ const addToCart = async (req, res) => {
 
 
             if (newQuantity > product.stock) {
-                return res.status(400).json({ message: `Quantity exceeds stock. Available stock: ${product.stock}` });
+                return res.status(400).json({ message: `Quantity exceeds stock. Available stock: ${product.stock}` })
             }
 
             
@@ -55,9 +54,9 @@ const addToCart = async (req, res) => {
         }
 
         const productIncart = cart.items.find(item => item.productId.toString() === productId);
-        if(productIncart && productIncart.quantity >= 10 ){
+        if(productIncart && productIncart.quantity >= 10 )
             return res.status(429).json({ message:"Product Quantity limit exceeded"});
-        }
+        
 
 
         await cart.save();
@@ -149,12 +148,10 @@ const deleteCart = async (req, res) => {
             return sum += item.quantity * product.price;
         }, 0)
 
-        cart.totalQuantity = cart.items.reduce((sum, item) => sum + item.quantity, 0);
+        cart.totalQuantity = cart.items.reduce((sum, item) => sum + item.quantity, 0)
 
         await cart.save();
-
-        res.json({ success: true, message: "Item removed from cart " });
-
+        res.json({ success: true, message: "Item removed from cart " })
     } catch (error) {
         console.error("Error deleting cart item : ", error);
         res.status(500).json({ success: false, message: "Internal server error " })

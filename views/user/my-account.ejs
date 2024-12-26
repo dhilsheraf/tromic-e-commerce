@@ -190,8 +190,17 @@
                                           <td><Strong><%= order.payment %></Strong> </td>
                                           <td  <%if(order.paymentStatus === 'Pending'&& order.payment === 'razorpay'){%>style="color: red;"<%}%>><Strong><%= order.paymentStatus %></Strong> </td>
                                           <td>
-                                            ₹<%= order.totalPrice %> for <%= order.products.reduce((sum, item) => sum + item.quantity, 0) %> items
-                                          </td>
+                                            <% if (order.totalPrice === 0 || order.totalPriceWithoutCouponOffer === 0) { %>
+                                                <strong style="color: red;">Cancelled</strong>
+                                            <% } else { %>
+                                                ₹<%= order.totalPrice %> for <%= order.products.reduce((sum, item) => {
+                                                    if (item.status !== 'cancelled' && item.status !== 'returned') {
+                                                        return sum + item.quantity;
+                                                    }
+                                                    return sum;
+                                                }, 0) %> items
+                                            <% } %>
+                                        </td>                                        
                                           <td>
                                             <a href="/order/<%= order._id %>" class="btn btn-dark btn-primary-hover">
                                               <span>View</span>
