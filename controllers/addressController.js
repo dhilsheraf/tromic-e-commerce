@@ -1,5 +1,6 @@
 const Address = require('../models/addressModel');
 
+// adding addresss
 const addAddress = async (req,res) => {
     try {
         const userId = req.session.user ;
@@ -27,6 +28,7 @@ const addAddress = async (req,res) => {
     }
 }
 
+// user address editing
 const editAddress =  async (req, res) => {
     const { addressId, name, phone, addressLine, city, state, country, pincode, addressType } = req.body;
           
@@ -54,6 +56,7 @@ const editAddress =  async (req, res) => {
     }
 }
 
+// deleting the address
 const deleteAddress = async (req, res) => {
     const addressId = req.params.id;
 

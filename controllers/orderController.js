@@ -13,7 +13,7 @@ const fs = require('fs')
 const path = require('path');
 const mongoose  = require('mongoose');
 
-
+//checkout page loading
 const getCheckout = async (req, res) => {
     try {
 
@@ -61,11 +61,15 @@ const getCheckout = async (req, res) => {
     }
 }
 
+
+//instance of the razorpay
 const RazorpayInstance = new razorpay({
     key_id: process.env.RAZORPAY_KEY_ID,
     key_secret: process.env.RAZORPAY_KEY_SECRET
 })
 
+
+//checkout of working post 
 const checkout = async (req, res) => {
     try {
 
@@ -192,7 +196,7 @@ const checkout = async (req, res) => {
     }
 }
 
-
+//razorpay payment checking if fail or not
 const verifyPayment = async (req, res) => {
     try {
 
@@ -227,7 +231,7 @@ const verifyPayment = async (req, res) => {
 };
 
 
-
+//order confirm page user side
 const orderConfirm = async (req, res) => {
     try {
         const { orderId } = req.params;
@@ -238,7 +242,7 @@ const orderConfirm = async (req, res) => {
         res.render('error')
     }
 }
-
+//order details user side
 const detailOrder = async (req, res) => {
     try {
         const orderId = req.params.orderId;
@@ -289,8 +293,7 @@ const showOrder = async (req, res) => {
     }
 };
 
-
-
+//admin side order actions delivered cancel etc
 const orderAction = async (req, res) => {
     try {
 
@@ -311,6 +314,7 @@ const orderAction = async (req, res) => {
     }
 }
 
+//order status changing
 const orderStatus = async (req, res) => {
     const { orderId, productId } = req.params;
     const { status } = req.body;
@@ -359,6 +363,7 @@ const orderStatus = async (req, res) => {
     }
 }
 
+// cancelling the product while payment if razorpay also
 const cancelOrder = async (req, res) => {
     const { orderId, productId } = req.body;
     try {
@@ -433,6 +438,7 @@ const cancelOrder = async (req, res) => {
     }
 }
 
+//returning the order user
 const returnOrder = async (req,res) => {
     try {
         const { orderId, productId, reason } = req.body;
@@ -462,8 +468,7 @@ const returnOrder = async (req,res) => {
     }
 }
 
-
-
+//admin approving for the return 
 const approveReturn = async (req, res) => {
     const { orderId, productId } = req.params;
     
@@ -524,7 +529,7 @@ const approveReturn = async (req, res) => {
 };
 
 
-
+//admim rejecting the return 
 const rejectReturn = async (req, res) => {
     const { orderId, productId } = req.params;
 
@@ -549,7 +554,7 @@ const rejectReturn = async (req, res) => {
     }
 };
 
-
+//invoice download
 const invoice = async (req, res) => {
     try {
       const { orderId } = req.params;
@@ -634,7 +639,7 @@ const invoice = async (req, res) => {
     }
   };
 
-
+// payment continue after a failed payment
 const continuePayment = async (req,res) => {
     try {
         const { orderId } =req.body

@@ -2,7 +2,7 @@ const Offer = require('../models/offerModel')
 const Category = require('../models/categoryModel')
 const Product = require('../models/productModel')
 const cron = require('node-cron');
-
+//loadin the offer page
 const getOffer = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1; 
@@ -26,7 +26,7 @@ const getOffer = async (req, res) => {
     }
 };
 
-
+//creating offer
 const addOffer = async (req, res) => {
     try {
         const { name, discountPercentage, activationDate, expiryDate } = req.body;
@@ -68,7 +68,7 @@ const addOffer = async (req, res) => {
 };
 
 
-
+//deleting offer
 const deleteOffer = async (req,res) => {
     try {
         const { offerId } = req.params;
@@ -124,6 +124,7 @@ const addCategoryOffer = async (req, res) => {
     }
 };
 
+//removing the category offer
 const removeCategoryOffer = async (req, res) => {
     try {
         const { categoryId } = req.body;
@@ -145,6 +146,8 @@ const removeCategoryOffer = async (req, res) => {
         return res.status(500).json({ success: false, message: "Failed to remove offer", error });
     }
 };
+
+//addming offer for the product
 const addProductOffer = async (req, res) => {
     try {
         const { offerId, productId } = req.body;
@@ -180,6 +183,7 @@ const addProductOffer = async (req, res) => {
     }
 };
 
+//product offer removing
 const removeProductOffer = async (req,res) => {
    try {
 
@@ -201,6 +205,7 @@ const removeProductOffer = async (req,res) => {
    }
 }
 
+//removing the EXpired oofer
 const removeExpiredOffers = async () => {
     try {
         const currentDate = new Date();
@@ -221,7 +226,7 @@ const removeExpiredOffers = async () => {
     }
 };
 
-
+//offer checking at the midnight
 cron.schedule('0 0 * * *', removeExpiredOffers);
 
 

@@ -1,5 +1,6 @@
 const Coupon = require('../models/couponModel');
 
+///loading the coupon page
 const getCoupon = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1; 
@@ -20,7 +21,7 @@ const getCoupon = async (req, res) => {
 };
 
 
-
+//adding the coupon
 const addCoupon = async (req, res) => {
     const { code, discountValue, minAmount, expirationDate, activationDate } = req.body;
 
@@ -55,7 +56,7 @@ const addCoupon = async (req, res) => {
         res.status(500).json({ message: 'Server error, please try again later.' });
     }
 };
-
+//deleting the coupon 
 const deleteCoupon = async (req, res) => {
     const { id } = req.params;
 
@@ -72,7 +73,7 @@ const deleteCoupon = async (req, res) => {
         res.status(500).json({ success: false, message: 'Server error, please try again later.' });
     }
 };
-
+//editing the coupon copoun details sending 
 const editCouponGet = async (req,res) => {
     try {
         const { couponId } = req.params
@@ -86,7 +87,7 @@ const editCouponGet = async (req,res) => {
         res.status(500).json({ success:false , message:'Error occured while fetch copon'})
     }
 }
-
+//editing the coupon 
 const editCoupon = async (req, res) => {
     const { couponCode } = req.params;
     const { minAmount, discountValue, activationDate, expirationDate } = req.body;

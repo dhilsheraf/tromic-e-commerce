@@ -14,7 +14,7 @@ const Wallet = require('../models/walletModel')
 
 //route to home 
 
-
+// to load the home pages and others
 const loadHome = async (req, res) => {
     try {
 
@@ -54,7 +54,7 @@ const loadBlog = async (req, res) => {
     }
 }
 
-
+//signup for user login
 const loadSignup = async (req, res) => {
     try {
         if (req.session.user) {
@@ -67,7 +67,7 @@ const loadSignup = async (req, res) => {
     }
 }
 
-
+//user profile and account details
 const loadMyAccount = async (req, res) => {
     try {
         const userId = req.session.user
@@ -97,6 +97,7 @@ const loadWishlist = async (req, res) => {
     }
 }
 
+//add to wishlist and remove 
 const toggleWishlist = async (req, res) => {
     const { productId } = req.body;
     const userId = req.session.user;
@@ -125,7 +126,7 @@ const toggleWishlist = async (req, res) => {
     }
 };
 
-
+//remove from the wishlist
 const removeWishlist = async (req, res) => {
     const userId = req.session.user;
     const { productId } = req.params;
@@ -179,6 +180,7 @@ async function sendVerificationEmail(email, otp) {
     }
 }
 
+//user signup 
 const signUp = async (req, res) => {
     try {
         const { email, password, cpassword, number, username } = req.body;
@@ -222,6 +224,7 @@ const signUp = async (req, res) => {
 
 }
 
+//password hashing
 const securePassword = async (password) => {
     try {
 
@@ -235,6 +238,7 @@ const securePassword = async (password) => {
     }
 }
 
+//verifying the user otp
 const verifyOTP = async (req, res) => {
     try {
         const { otp } = req.body
@@ -283,9 +287,13 @@ const verifyOTP = async (req, res) => {
 
     }
 }
+
+
 // function generateReferral(name) {
 //     return name.slice(0, 4).toUpperCase() + Math.floor(1000 + Math.random() * 9000); 
 // }
+
+
 
 //n otp resending
 const resendOTP = async (req, res) => {
@@ -315,6 +323,7 @@ const resendOTP = async (req, res) => {
     }
 }
 
+// login page 
 const loadLogin = async (req, res) => {
     try {
         res.render('login', { message: "" })
@@ -324,7 +333,7 @@ const loadLogin = async (req, res) => {
 }
 
 
-
+// user login
 const login = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -354,6 +363,7 @@ const login = async (req, res) => {
     }
 }
 
+// user logiout
 const logout = async (req, res) => {
     try {
         delete req.session.user;
@@ -365,6 +375,7 @@ const logout = async (req, res) => {
 };
 
 
+// user profer updating
 const profileUpdate = async (req, res) => {
     try {
         const { username, number } = req.body;
@@ -392,6 +403,7 @@ const profileUpdate = async (req, res) => {
     }
 }
 
+// forgot pawword loading
 const forgotPasswordLoad = async (req, res) => {
     try {
         res.render('forgotPassword')
@@ -401,6 +413,7 @@ const forgotPasswordLoad = async (req, res) => {
     }
 }
 
+// working with the forgot password
 const forgotPassword = async (req, res) => {
     const { email } = req.body;
 
@@ -459,6 +472,8 @@ const forgotPassword = async (req, res) => {
     }
 }
 
+
+// doing it through the token
 const resetPasswordLoad = async (req, res) => {
     try {
         const { token } = req.params;
@@ -475,7 +490,7 @@ const resetPasswordLoad = async (req, res) => {
     }
 }
 
-
+//changin the password after the token
 const resetPassword = async (req, res) => {
     try {
         const { token } = req.params;
@@ -498,7 +513,7 @@ const resetPassword = async (req, res) => {
         res.status(500).send("Something went wrong.");
     }
 }
-
+//user profiler password chagnign
 const changePassword = async (req, res) => {
     const { currentPassword, newPassword, confirmPassword } = req.body;
 

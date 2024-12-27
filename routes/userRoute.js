@@ -12,21 +12,14 @@ const orderController = require('../controllers/orderController');
 router.set("view engine", "ejs");
 router.set("views", "./views/user");
 
-//otp routes
-
-
-
-
 //home about etc
 router.get("/", userController.loadHome);
-
 router.get("/about", userController.loadAbout)
-
 router.get("/blog", userController.loadBlog);
-
 router.get("/contact", userController.loadContact);
-
 router.get("/my-account", session.checkUserSession, userController.loadMyAccount)
+
+
 //wishlist
 router.get("/wishlist", session.checkUserSession, userController.loadWishlist)
 router.get("/wishlist", session.checkUserSession, userController.loadWishlist)
@@ -47,15 +40,17 @@ router.get("/auth/google/callback", passport.authenticate('google', { failureRed
     req.session.user = req.user._id
     res.redirect('/');
 })
-//otp
+
+
+//otp routes
 router.post("/verify-otp", userController.verifyOTP)
 router.post("/resend-otp", userController.resendOTP)
 
-//page not found
 
-//logout
+// user logout
 router.get("/logout", userController.logout)
 
+// product routes
 router.get("/products", productController.loadProduct)
 router.get('/product/:id', productController.getProductDetails);
 

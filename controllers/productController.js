@@ -4,6 +4,7 @@ const Offer = require('../models/offerModel')
 const mongoose = require('mongoose');
 const Wishlist = require('../models/wishlistModel')
 
+// admin side products showing products
 const getProduct = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
@@ -51,6 +52,7 @@ const getProduct = async (req, res) => {
 };
 
 
+// showing the add product page on the admin
 const loadAddProduct = async (req, res) => {
     try {
         const categories = await Category.find({ isActive: true });
@@ -61,6 +63,7 @@ const loadAddProduct = async (req, res) => {
     }
 }
 
+//adding the product admin side
 const addProduct = async (req, res) => {
     try {
 
@@ -101,6 +104,8 @@ const addProduct = async (req, res) => {
     }
 };
 
+
+//edit product admin
 const loadEditProduct = async (req, res) => {
     try {
         const productId = req.params.id;
@@ -117,7 +122,7 @@ const loadEditProduct = async (req, res) => {
 
 }
 
-
+//editing proudt post admin
 const editProduct = async (req, res) => {
     try {
         const { name, description, price, stock, category, existingImages } = req.body;
@@ -153,8 +158,7 @@ const editProduct = async (req, res) => {
     }
 };
 
-
-
+//soft delet product admin side
 const aiProduct = async (req, res) => {
     try {
 
@@ -175,6 +179,7 @@ const aiProduct = async (req, res) => {
     }
 };
 
+// products showing on the admin side
 const loadProduct = async (req, res) => {
     try {
         const { search = '', sort = '', categories = [], page = 1, limit = 12 } = req.query;
@@ -291,7 +296,7 @@ const loadProduct = async (req, res) => {
 };
 
 
-
+//single product details showing
 const getProductDetails = async (req, res) => {
     try {
         const userId = req.session.user;

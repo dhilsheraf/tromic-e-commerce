@@ -2,7 +2,7 @@ const Cart = require('../models/cartModel');
 const Product = require('../models/productModel')
 const mongoose = require('mongoose')
 
-
+//product adding to cart from the user side 
 const addToCart = async (req, res) => {
     try {
         if (!req.session.user) {
@@ -68,7 +68,7 @@ const addToCart = async (req, res) => {
 };
 
 
-
+//showing the products ont the cart of the user
 const listCart = async (req, res) => {
     try {
 
@@ -90,7 +90,7 @@ const listCart = async (req, res) => {
     }
 }
 
-
+//quantity of the cart changing
 const updateCartQuantity = async (req, res) => {
     try {
         const { productId, quantity } = req.body;
@@ -132,7 +132,7 @@ const updateCartQuantity = async (req, res) => {
     }
 }
 
-
+//product removingfrom th ecart
 const deleteCart = async (req, res) => {
     try {
         const { productId } = req.body;

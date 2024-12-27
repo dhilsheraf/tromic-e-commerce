@@ -10,6 +10,7 @@ const orderController = require('../controllers/orderController')
 const couponController = require('../controllers/couponController')
 const offerController = require('../controllers/offerController')
 
+//admin login dashboard
 router.get("/",admin.existAdmin, adminController.loadAdminLogin)
 router.post("/", adminController.adminLogin)
 router.get("/dashboard",admin.checkAdminSession, adminController.loadAdminDashboard)
@@ -20,13 +21,10 @@ router.get("/users", admin.checkAdminSession, adminController.loadUsers)
 router.post('/users/block-unblock/:userId', adminController.blockunblock)
 
 //category
-
 router.get("/category", admin.checkAdminSession, categoryController.loadCategory)
 router.get("/category/add", admin.checkAdminSession, categoryController.addCategoryLoad);
 router.post("/category/add", categoryController.addCategory)
-
 router.post('/category/:id/toggle-status', categoryController.activeInactive)
-
 router.get("/category/edit/:id", admin.checkAdminSession, categoryController.editCategoryLoad)
 router.post('/category/edit/:id', categoryController.editCategory);
 
@@ -34,10 +32,8 @@ router.post('/category/edit/:id', categoryController.editCategory);
 router.get("/products", admin.checkAdminSession, productController.getProduct)
 router.get("/products/add", admin.checkAdminSession, productController.loadAddProduct)
 router.post("/products/add", upload.array('images', 4), productController.addProduct);
-
 router.get('/products/edit/:id', admin.checkAdminSession, productController.loadEditProduct)
 router.post('/products/edit/:id', upload.array("images", 4), productController.editProduct);
-
 router.post('/products/toggle/:id', productController.aiProduct)
 
 //orders
@@ -52,6 +48,8 @@ router.put('/order/:orderId/product/:productId/reject-return', orderController.r
 router.get('/offer',admin.checkAdminSession,offerController.getOffer);
 router.post('/add-offer',offerController.addOffer)
 router.delete('/delete-offer/:offerId',offerController.deleteOffer)
+
+
 //category offer
 router.post('/category/apply-offer',offerController.addCategoryOffer)
 router.post('/category/remove-offer',offerController.removeCategoryOffer)
@@ -66,6 +64,8 @@ router.post('/add-coupon',couponController.addCoupon)
 router.delete('/delete-coupon/:id',couponController.deleteCoupon)
 router.get('/get-coupon/:couponId',couponController.editCouponGet)
 router.put('/update-coupon/:couponCode',couponController.editCoupon)
+
+
 //sale report
 router.get('/sales-report',admin.checkAdminSession,adminController.salesReport)
 router.post('/graph',adminController.graph)

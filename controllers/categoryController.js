@@ -1,5 +1,7 @@
 const Category = require('../models/categoryModel');
 const Offer = require('../models/offerModel')
+
+//loading the categories page
 const loadCategory = async (req, res) => {
     try {
         const { page = 1, limit = 10, search = "" } = req.query;
@@ -36,7 +38,7 @@ const loadCategory = async (req, res) => {
 };
 
 
-
+// loading the add category page
 const addCategoryLoad = (req,res) =>{
     try {
         res.render("admin/addCategory")
@@ -46,6 +48,7 @@ const addCategoryLoad = (req,res) =>{
     }
 }
 
+//adding a new category
 const addCategory = async (req, res) => {
     try {
         const { name, description } = req.body;
@@ -75,6 +78,7 @@ const addCategory = async (req, res) => {
 };
 
 
+// soft delete the category
 const activeInactive = async (req, res) => {
     const categoryId = req.params.id;
     
@@ -96,6 +100,8 @@ const activeInactive = async (req, res) => {
     }
 }
 
+
+//loading the edit category page
 const editCategoryLoad = async (req,res) =>{
     const categoryId = req.params.id;
     try {
@@ -106,7 +112,7 @@ const editCategoryLoad = async (req,res) =>{
         res.render('admin/404')
     }
 }
-
+//editing the category
 const editCategory = async (req, res) => {
     const categoryId = req.params.id;
     const { name, description } = req.body;

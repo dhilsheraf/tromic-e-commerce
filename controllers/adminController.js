@@ -9,6 +9,7 @@ const PDFDocument = require('pdfkit');
 const fs = require('fs');
 const { getProductDetails } = require('./productController');
 
+// admin login page working
 const adminLogin = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -34,6 +35,8 @@ const adminLogin = async (req, res) => {
     }
 }
 
+
+// admin login page load
 const loadAdminLogin = (req, res) => {
     try {
         res.render('admin/adminlogin', { message: "" })
@@ -43,6 +46,7 @@ const loadAdminLogin = (req, res) => {
     }
 }
 
+// admin dashboard loading
 const loadAdminDashboard = async (req, res) => {
     try {
         const revenue = await Order.aggregate([{ $group: { _id: null, total: { $sum: "$totalPrice" } } }])
@@ -96,6 +100,7 @@ const loadAdminDashboard = async (req, res) => {
     }
 }
 
+// users load list
 const loadUsers = async (req, res) => {
     try {
         const { page = 1, limit = 10 } = req.query;
@@ -115,7 +120,7 @@ const loadUsers = async (req, res) => {
     }
 };
 
-
+// block unblock user
 const blockunblock = async (req, res) => {
     const userId = req.params.userId;
     const { action } = req.body;  
@@ -144,6 +149,7 @@ const blockunblock = async (req, res) => {
     }
 };
 
+//admin logout
 const logout = async (req, res) => {
     try {
         delete req.session.adminId;
@@ -154,7 +160,7 @@ const logout = async (req, res) => {
     }
 };
 
-
+// sasle report page load
 const salesReport = async (req, res) => {
     try {
         const { startDate, endDate } = req.query;
@@ -191,6 +197,7 @@ const salesReport = async (req, res) => {
     }
 };
 
+// excel generating sales report
 const generateExcel = (res, orders, summary, startDate, endDate) => {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Sales Report');
@@ -225,6 +232,7 @@ const generateExcel = (res, orders, summary, startDate, endDate) => {
     });
 };
 
+// pdf for the sales report
 const generatePDF = (res, orders, summary, startDate, endDate) => {
     const doc = new PDFDocument();
     doc.pipe(res);
@@ -249,7 +257,7 @@ const generatePDF = (res, orders, summary, startDate, endDate) => {
     doc.end()
 };
 
-
+// admin side grapuh load
 const graph = async (req, res) => {
     try {
         const { timeRange, startDate, endDate } = req.body;
