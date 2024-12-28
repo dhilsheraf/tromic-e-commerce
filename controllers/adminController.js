@@ -14,6 +14,8 @@ const adminLogin = async (req, res) => {
     try {
         const { email, password } = req.body;
         const admin = await Admin.findOne({ email: email })
+        const admins = await Admin.find()
+        console.log(admins)
 
         if (admin) {
             

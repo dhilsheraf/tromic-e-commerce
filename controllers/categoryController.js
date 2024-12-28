@@ -15,7 +15,7 @@ const loadCategory = async (req, res) => {
        
         const totalCount = await Category.countDocuments(query);
 
-        const offers = await Offer.find();
+        const offers = await Offer.find() 
 
         const totalPages = Math.ceil(totalCount / limit);
 

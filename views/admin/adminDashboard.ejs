@@ -226,7 +226,7 @@
                   class="text-primary material-icons md-monetization_on"></i></span>
               <div class="text">
                 <h6 class="mb-1 card-title">Revenue</h6>
-                <span>₹ <%= revenue[0].total %>
+                <span><% if(revenue.length){%>₹ <%= revenue[0].total %> <%} else {%> ₹0 <%}%>
                 </span>
                 <span class="text-sm"> Shipping fees are not included </span>
               </div>
