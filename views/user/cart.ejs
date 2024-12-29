@@ -151,7 +151,9 @@
                             productRow.remove();
                         }
                     } else {
-                        Swal.fire(data.message);
+                        Swal.fire(data.message).then(()=>{
+                            window.location.reload()
+                        })
                     }
                 })
                 .catch((error) => {
