@@ -120,11 +120,14 @@ const updateCartQuantity = async (req, res) => {
         }
         if(item.quantity > product.stock) return res.status(409).json({success:false, message:`Stock exceed available stock${product.stock}`})
 
-        cart.totalPrice = cart.items.reduce((sum, item) => sum + item.quantity * product.price, 0);
+        cart.totalPrice = cart.items.reduce((sum, item) => sum += item.quantity * product.price, 0);
 
         await cart.save();
-
-        res.json({ success: true, message: "Cart updated Successfully" })
+        res.json({ success: true, message: "Cart updated Successfully",
+            newQuantity: item.quantity,
+            newTotal: item.quantity * product.price,
+            cartTotal: cart.totalPrice,   
+        })
 
     } catch (error) {
         console.error(error);

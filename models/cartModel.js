@@ -24,22 +24,14 @@ const CartSchema = new mongoose.Schema({
             },
         },
     ],
-    totalQuantity: {
-        type: Number,
-        default: 0,
-    },
     totalPrice: {
         type: Number,
-        default: 0.0,
+        default: 0,
     },
 });
 
 
 
-CartSchema.pre('save', function (next) {
-    this.totalQuantity = this.items.reduce((sum, item) => sum + item.quantity, 0);
-    this.totalPrice = this.items.reduce((sum, item) => sum + item.total, 0);
-    next();
-}); 
+
 
 module.exports = mongoose.model('Cart', CartSchema);

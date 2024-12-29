@@ -100,95 +100,118 @@
 <%- include("../partials/footer.ejs") %>
 
 <script>
-        //function for inc and dec for cart
-    document.addEventListener("DOMContentLoaded", ()=> {
-        document.querySelectorAll(".inc.qtybutton").forEach( button => {
-            button.addEventListener('click', ()=> {
-                const productId = button.getAttribute('data-id');
-                updateCartQuantity(productId,1)
-            })
-        })
-
-        document.querySelectorAll('.dec.qtybutton').forEach(button => {
-            button.addEventListener('click' ,()=>{
-                const productId = button.getAttribute('data-id');
-                updateCartQuantity(productId, -1)
-            } )
-        })
-        const updateCartQuantity = (productId,quantity) => {
-        fetch('/update-cart',{
-            method: "POST",
-            headers: {
-                'Content-Type' : 'application/json',
-            },
-            body : JSON.stringify({productId , quantity})
-        })
-         .then(response => response.json())
-         .then(data => {
-            if(data.success) {
-                location.reload();
-            }else{
-                Swal.fire(data.message).then(()=>{
-                    location.reload();
-                })            }
-         })
-         .catch(error => {
-            console.error('Error while updating Cart : ',error)
-         });
-    };
-
-    });
-
-document.addEventListener("DOMContentLoaded", ()=> {
-    document.querySelectorAll(".delete-item").forEach((button) => {
-        button.addEventListener("click", (e) => {
-            e.preventDefault();
-
-            const productId = button.getAttribute("data-id");
-
-            Swal.fire({
-                title:"Are you sure",
-                text:" To remove this item from you cart ?",
-                type:'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Confirm'
-            }).then((result) => {
-                if(result.isConfirmed) {
-                    deleteCartItem(productId);
-                    Swal.fire('Deleted',
-                        'Your item has been removed from the cart',
-                        'success'
-                    )
-                }
-            })
+    document.addEventListener("DOMContentLoaded", () => {
+        // Increment quantity
+        document.querySelectorAll(".inc.qtybutton").forEach((button) => {
+            button.addEventListener("click", () => {
+                const productId = button.getAttribute("data-id");
+                updateCartQuantity(productId, 1);
+            });
         });
+
+        // Decrement quantity
+        document.querySelectorAll(".dec.qtybutton").forEach((button) => {
+            button.addEventListener("click", () => {
+                const productId = button.getAttribute("data-id");
+                updateCartQuantity(productId, -1);
+            });
+        });
+
+        // Update cart quantity function
+        const updateCartQuantity = (productId, quantity) => {
+            fetch("/update-cart", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ productId, quantity }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.success) {
+                        const productRow = document.querySelector(
+                            `.delete-item[data-id="${productId}"]`
+                        ).closest("tr");
+                        const quantityInput = productRow.querySelector(
+                            ".cart-plus-minus-box"
+                        );
+                        const subtotal = productRow.querySelector(
+                            ".product-subtotal .amount"
+                        );
+                        const cartTotal = document.querySelector(
+                            ".cart-page-total ul li:last-child span"
+                        );
+
+                        // Update the DOM
+                        quantityInput.value = data.newQuantity;
+                        subtotal.textContent = `₹${data.newTotal}`;
+                        cartTotal.textContent = `₹${data.cartTotal}`;
+
+                        if (data.newQuantity < 1) {
+                            productRow.remove();
+                        }
+                    } else {
+                        Swal.fire(data.message);
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error while updating cart:", error);
+                });
+        };
+
+        // Delete cart item
+        document.querySelectorAll(".delete-item").forEach((button) => {
+            button.addEventListener("click", (e) => {
+                e.preventDefault();
+
+                const productId = button.getAttribute("data-id");
+
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "To remove this item from your cart?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Confirm",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        deleteCartItem(productId);
+                    }
+                });
+            });
+        });
+
+        // Delete cart item function
+        const deleteCartItem = (productId) => {
+            fetch("/delete-cart", {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ productId }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.success) {
+                        const productRow = document.querySelector(
+                            `.delete-item[data-id="${productId}"]`
+                        ).closest("tr");
+                        productRow.remove();
+
+                        const cartTotal = document.querySelector(
+                            ".cart-page-total ul li:last-child span"
+                        );
+                        cartTotal.textContent = `₹${data.cartTotal}`;
+                    } else {
+                        Swal.fire(data.message);
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error while deleting item:", error);
+                });
+        };
     });
-
-    const deleteCartItem = (productId) => {
-        fetch("/delete-cart",{
-            method: "DELETE",
-            headers: {
-                "Content-Type":"application/json",
-            },
-            body: JSON.stringify({ productId }),
-        })
-
-        .then((response) => response.json())
-        .then((data) => {
-            if(data.success){
-                location.reload();
-            }else{
-                Swal.message(data.message);
-            }
-        }) 
-        .catch((error)=>{
-            console.error("Error while deleting the item from cart : ",error)
-        })
-    }
-})
-
-
 </script>
+
 
