@@ -163,39 +163,48 @@ const logout = async (req, res) => {
 // sasle report page load
 const salesReport = async (req, res) => {
     try {
-        const { startDate, endDate } = req.query;
-        let orders;
+        const { startDate, endDate, format, page = 1, limit = 10 } = req.query;
+        const skip = (page - 1) * limit;
+        let query = {};
 
         if (startDate && endDate) {
-            const start = new Date(startDate)
-            const end = new Date(endDate)
-            orders = await Order.find({
-                createdAt: { $gte: start, $lte: end }
-            });
-        } else {
-            orders = await Order.find()
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            query.createdAt = { $gte: start, $lte: end };
         }
+
+        // Fetch all orders for Excel/PDF, or paginated data for display
+        const orders = format 
+            ? await Order.find(query) // Fetch all for export
+            : await Order.find(query).skip(skip).limit(parseInt(limit)); // Paginated for display
 
         const summary = orders.reduce((acc, order) => {
             acc.totalSales += order.totalPrice;
             acc.totalOrders += 1;
             return acc;
-        }, { totalSales: 0, totalOrders: 0 })
+        }, { totalSales: 0, totalOrders: 0 });
 
-        if (req.query.format === 'pdf') {
+        if (format === 'pdf') {
             return generatePDF(res, orders, summary, startDate, endDate);
         }
 
-        if (req.query.format === 'excel') {
-            return generateExcel(res, orders, summary, startDate, endDate)
+        if (format === 'excel') {
+            return generateExcel(res, orders, summary, startDate, endDate);
         }
 
-        return res.render('admin/salesReport', { summary, orders, startDate, endDate })
+        // Count total orders for pagination
+        const totalOrders = await Order.countDocuments(query);
+        const totalPages = Math.ceil(totalOrders / limit);
+
+        return res.render('admin/salesReport', {
+            summary, orders, startDate, endDate, totalPages, currentPage: page
+        });
     } catch (error) {
         console.error(error);
         res.render('admin/404');
     }
 };
+
 
 // excel generating sales report
 const generateExcel = (res, orders, summary, startDate, endDate) => {
