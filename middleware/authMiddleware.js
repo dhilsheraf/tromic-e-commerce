@@ -1,6 +1,6 @@
 const User = require('../models/userModel')
 
-
+// user check middleware
 const checkUserSession = async (req, res, next) => {
     if(req.session.user){
         try {
@@ -21,6 +21,7 @@ const checkUserSession = async (req, res, next) => {
 
 };
 
+// if user in session redirected to home page
 const existUser = (req,res,next) => {
     if(req.session.user ){
         return res.redirect('/')
@@ -28,7 +29,7 @@ const existUser = (req,res,next) => {
     next()
 }
 
-
+// checking admin session
 function checkAdminSession(req, res, next) {
 
     if (req.session.adminId) {
@@ -37,7 +38,7 @@ function checkAdminSession(req, res, next) {
         res.redirect('/admin');
     }
 }
-
+// admin i sin session redirected to dashboard
 const existAdmin = (req,res,next) => {
     if(req.session.adminId){
         return res.redirect('/admin/dashboard')
